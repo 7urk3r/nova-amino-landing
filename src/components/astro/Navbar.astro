@@ -1,0 +1,55 @@
+---
+export interface Props {
+  navbar?: any
+}
+
+const { navbar } = Astro.props
+
+// Fallback navbar if Sanity data fails to load
+if (!navbar) {
+  console.warn('No navbar data provided to Navbar component')
+}
+---
+
+{navbar && (
+  <header class="site-header {navbar.sticky ? 'nav-pill--sticky' : ''}">
+    <div class="container site-header__row">
+      <a href="/" class="site-logo" aria-label="Home">
+        {navbar.logo?.asset?.url ? (
+          <img src={navbar.logo.asset.url} alt={navbar.title} width="157" height="36" />
+        ) : (
+          <img src="/assets/NovaAminoLogo.svg" alt="Nova Amino" width="157" height="36" />
+        )}
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <div class="nav-pillbar" id="nav-pillbar">
+          {navbar.items?.map((it:any) => (
+            it.type === 'dropdown' ? (
+              <div class="nav-menu">
+                <button class="nav-link" aria-haspopup="menu" aria-expanded="false">{it.label}</button>
+                <div class="nav-dropdown" role="menu">
+                  {it.dropdownItems?.map((sub:any) => (
+                    <a class="nav-item" role="menuitem" href={sub.url} target={sub.newTab?'_blank':undefined} rel={sub.newTab?'noopener noreferrer':undefined}>{sub.label}</a>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div class="nav-menu"><a class="nav-link" href={it.url} target={it.newTab?'_blank':undefined} rel={it.newTab?'noopener noreferrer':undefined}>{it.label}</a></div>
+            )
+          ))}
+        </div>
+      </nav>
+      <div class="site-actions">
+        {navbar.actions?.map((a:any)=> (
+          a.variant==='link' ? (
+            <a href={a.url} class="link-plain" target={a.newTab?'_blank':undefined} rel={a.newTab?'noopener noreferrer':undefined}>{a.label}</a>
+          ) : (
+            <a href={a.url} class="btn btn--black btn--sm" style="margin-left:8px" target={a.newTab?'_blank':undefined} rel={a.newTab?'noopener noreferrer':undefined}>{a.label}</a>
+          )
+        ))}
+      </div>
+    </div>
+  </header>
+)}
+
+

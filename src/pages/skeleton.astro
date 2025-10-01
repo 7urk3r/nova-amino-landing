@@ -1,0 +1,236 @@
+---
+// Skeleton Landing Page - Shows loading states without Sanity content
+import '../css/base.css'
+import '../css/grid.css'
+import '../css/components.css'
+import '../css/utilities.css'
+import '../../src/styles/glass.css'
+import '../../src/styles/gradients.css'
+import '../../src/styles/marquee.css'
+import '../../src/styles/skeleton.css'
+
+import SkeletonHeroReal from '../components/astro/SkeletonHeroReal.astro'
+import SkeletonFeatureCardsReal from '../components/astro/SkeletonFeatureCardsReal.astro'
+import SkeletonFeaturedProducts from '../components/astro/SkeletonFeaturedProducts.astro'
+import SkeletonMarqueeReal from '../components/astro/SkeletonMarqueeReal.astro'
+import SkeletonFAQ from '../components/astro/SkeletonFAQ.astro'
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nova Amino - Loading...</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.svg" />
+
+    <link rel="stylesheet" href="https://use.typekit.net/ljx4huh.css">
+
+    <style>
+    :root{
+      --font-heading:"TT Commons Pro", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-body:"IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    body{
+      font-family:var(--font-body);
+      background: #fafafa;
+    }
+    h1,h2,h3,.heading{ font-family:var(--font-heading); }
+
+    /* Navigation skeleton styles */
+    .nav-skeleton .nav-link {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200px 100%;
+      animation: skeleton-loading 1.5s infinite;
+      color: transparent;
+      border-radius: 4px;
+      height: 1.2em;
+    }
+
+    .nav-skeleton .site-logo img {
+      opacity: 0.3;
+    }
+
+    .nav-skeleton .btn {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200px 100%;
+      animation: skeleton-loading 1.5s infinite;
+      color: transparent;
+      border: none;
+    }
+
+    /* Loading indicator */
+    .loading-indicator {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      z-index: 1000;
+    }
+
+    .loading-dot {
+      display: inline-block;
+      animation: loading-dots 1.5s infinite;
+    }
+
+    @keyframes loading-dots {
+      0%, 20% { opacity: 0; }
+      50% { opacity: 1; }
+      80%, 100% { opacity: 0; }
+    }
+
+    .loading-dot:nth-child(2) { animation-delay: 0.3s; }
+    .loading-dot:nth-child(3) { animation-delay: 0.6s; }
+
+    /* Make only navbar pill sticky */
+    .nav-pill--sticky { position: sticky !important; top: 0 !important; z-index: 1000 !important; }
+    </style>
+  </head>
+  <body>
+    <!-- Loading Indicator -->
+    <div class="loading-indicator">
+      Loading content<span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span>
+    </div>
+
+    <!-- Header with skeleton navigation -->
+    <header class="site-header nav-skeleton">
+      <div class="container site-header__row">
+        <a href="/" class="site-logo" aria-label="Nova Amino home">
+          <img src="/assets/NovaAminoLogo.svg" alt="Nova Amino" width="157" height="36" />
+        </a>
+        <nav class="site-nav" aria-label="Primary">
+          <div class="nav-pillbar" id="nav-pillbar">
+            <div class="nav-menu"><a class="nav-link" href="#" aria-current="page">Home</a></div>
+            <div class="nav-menu">
+              <a class="nav-link" href="/products">Catalog</a>
+            </div>
+            <div class="nav-menu"><a class="nav-link" href="#faq">FAQ</a></div>
+            <div class="nav-menu">
+              <button class="nav-link" aria-haspopup="menu" aria-expanded="false">Announcements</button>
+            </div>
+          </div>
+        </nav>
+        <div class="site-actions">
+          <a href="/login" class="link-plain">Sign in</a>
+          <a href="/signup" class="btn btn--black btn--sm" style="margin-left:8px">Sign up</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- Skeleton Hero Section - Real Structure -->
+      <SkeletonHeroReal />
+
+      <!-- Mission Statement Skeleton -->
+      <section class="container loading-state" style="padding-block: var(--space-8);">
+        <div class="grid">
+          <div class="col-12">
+            <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+              <div class="skeleton" style="height: 2rem; width: 30%; margin: 0 auto var(--space-4); border-radius: 8px;"></div>
+              <div class="skeleton" style="height: 1.2rem; width: 100%; margin-bottom: 0.75rem; border-radius: 6px;"></div>
+              <div class="skeleton" style="height: 1.2rem; width: 95%; margin: 0 auto 0.75rem; border-radius: 6px;"></div>
+              <div class="skeleton" style="height: 1.2rem; width: 85%; margin: 0 auto 0.75rem; border-radius: 6px;"></div>
+              <div class="skeleton" style="height: 1.2rem; width: 70%; margin: 0 auto; border-radius: 6px;"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Skeleton Feature Cards - Real Structure -->
+      <SkeletonFeatureCardsReal />
+
+      <!-- Skeleton Marquee - Real Structure -->
+      <SkeletonMarqueeReal />
+
+      <!-- Skeleton Featured Products -->
+      <SkeletonFeaturedProducts />
+
+      <!-- Study Feed Skeleton -->
+      <section class="container loading-state" style="padding-block: var(--space-8);">
+        <div class="grid">
+          <div class="col-12">
+            <div class="text-center" style="margin-bottom: var(--space-6);">
+              <div class="skeleton skeleton-text skeleton-headline" style="width: 40%; margin: 0 auto 1rem;"></div>
+              <div class="skeleton skeleton-text skeleton-subheadline" style="width: 50%; margin: 0 auto;"></div>
+            </div>
+
+            <div class="grid" style="gap: var(--space-4);">
+              <div class="col-4 md:col-12">
+                <div class="skeleton-card" style="min-height: 200px;">
+                  <div class="skeleton skeleton-image" style="height: 120px; margin-bottom: 1rem;"></div>
+                  <div class="skeleton skeleton-badge" style="margin-bottom: 0.5rem;"></div>
+                  <div class="skeleton skeleton-text skeleton-subheadline" style="width: 90%; margin-bottom: 0.5rem;"></div>
+                  <div class="skeleton skeleton-text skeleton-paragraph"></div>
+                  <div class="skeleton skeleton-text skeleton-paragraph" style="width: 75%;"></div>
+                </div>
+              </div>
+              <div class="col-4 md:col-12">
+                <div class="skeleton-card" style="min-height: 200px;">
+                  <div class="skeleton skeleton-image" style="height: 120px; margin-bottom: 1rem;"></div>
+                  <div class="skeleton skeleton-badge" style="margin-bottom: 0.5rem;"></div>
+                  <div class="skeleton skeleton-text skeleton-subheadline" style="width: 85%; margin-bottom: 0.5rem;"></div>
+                  <div class="skeleton skeleton-text skeleton-paragraph"></div>
+                  <div class="skeleton skeleton-text skeleton-paragraph" style="width: 80%;"></div>
+                </div>
+              </div>
+              <div class="col-4 md:col-12">
+                <div class="skeleton-card" style="min-height: 200px;">
+                  <div class="skeleton skeleton-image" style="height: 120px; margin-bottom: 1rem;"></div>
+                  <div class="skeleton skeleton-badge" style="margin-bottom: 0.5rem;"></div>
+                  <div class="skeleton skeleton-text skeleton-subheadline" style="width: 95%; margin-bottom: 0.5rem;"></div>
+                  <div class="skeleton skeleton-text skeleton-paragraph"></div>
+                  <div class="skeleton skeleton-text skeleton-paragraph" style="width: 70%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-center" style="margin-top: var(--space-6);">
+              <div class="skeleton skeleton-button" style="margin: 0 auto;"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Skeleton FAQ -->
+      <SkeletonFAQ />
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div>&copy; <span id="year"></span> Nova Amino. All rights reserved.</div>
+      </div>
+    </footer>
+
+    <!-- Simulate loading with JavaScript -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const year = document.getElementById('year');
+        if (year) year.textContent = new Date().getFullYear();
+
+        // Simulate periodic "loading" state changes
+        let loadingStates = [
+          'Loading content',
+          'Fetching products',
+          'Loading testimonials',
+          'Getting latest studies',
+          'Almost ready'
+        ];
+        let currentState = 0;
+
+        const indicator = document.querySelector('.loading-indicator');
+        if (indicator) {
+          setInterval(() => {
+            currentState = (currentState + 1) % loadingStates.length;
+            const text = loadingStates[currentState];
+            indicator.innerHTML = `${text}<span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span>`;
+          }, 2000);
+        }
+      });
+    </script>
+  </body>
+</html>

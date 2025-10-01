@@ -1,0 +1,367 @@
+---
+// Bring in existing global CSS via Astro/Vite so URLs resolve
+import '../css/base.css'
+import '../css/grid.css'
+import '../css/components.css'
+import '../css/utilities.css'
+import '../../src/styles/glass.css'
+import '../../src/styles/gradients.css'
+import '../../src/styles/marquee.css'
+
+import AgeGate from '../components/astro/AgeGate.astro'
+import Navbar from '../components/astro/Navbar.astro'
+import Hero from '../components/astro/Hero.astro'
+import MissionStatement from '../components/astro/MissionStatement.astro'
+import WhyUs from '../components/astro/WhyUs.astro'
+import FeaturedProducts from '../components/astro/FeaturedProducts.astro'
+import Marquee from '../components/astro/Marquee.astro'
+import StudyFeed from '../components/astro/StudyFeed.astro'
+import FAQ from '../components/astro/FAQ.astro'
+import Footer from '../components/astro/Footer.astro'
+import { q } from '../lib/sanityServer'
+
+// Temporarily fetch ALL documents (draft + published) to debug the issue
+const landingQ = `*[_type=="landingPage"]|order(_updatedAt desc)[0]{
+  _id,
+  title,
+
+  // Hero Section (embedded)
+  hero{
+    enabled,
+    headline,
+    subheadline,
+    ctaButton{text, url},
+    heroImage{
+      asset->{
+        _id,
+        url
+      },
+      alt
+    }
+  },
+
+  // Mission Statement (embedded)
+  missionStatement{
+    enabled,
+    headline,
+    content,
+    supportingImage{
+      asset->{
+        _id,
+        url
+      },
+      alt
+    }
+  },
+
+  // Why Us Section (embedded)
+  whyUs{
+    // treat missing enabled as true
+    "enabled": coalesce(enabled, true),
+    // fallbacks for older schema without headline/subheadline
+    "headline": coalesce(headline, "Why Choose Us"),
+    "subheadline": subheadline,
+    // map either new benefits[] or legacy cards[] into a unified shape
+    "benefits": coalesce(
+      benefits[]{
+        // optional string icon
+        "icon": icon,
+        // optional image/icon URL
+        "iconUrl": coalesce(iconUrl, icon.asset->url, image.asset->url),
+        "title": coalesce(title, headline),
+        "description": coalesce(description, subheadline)
+      },
+      cards[]{
+        "iconUrl": image.asset->url,
+        "title": headline,
+        "description": subheadline
+      }
+    )
+  },
+
+  // Featured Products Section (embedded with automatic selection)
+  featuredProducts{
+    enabled,
+    headline,
+    subheadline,
+    displayMode,
+    maxProducts,
+    ctaButtonText,
+    // Manual products (if displayMode is manual)
+    "manualProducts": select(
+      displayMode == "manual" => products[]->{
+        _id,
+        name,
+        slug,
+        mainImage{
+          asset->{
+            _id,
+            url
+          },
+          alt
+        },
+        backImage{
+          asset->{
+            _id,
+            url
+          },
+          alt
+        },
+        primaryCategory,
+        // collect multiple areas-of-study from several possible fields
+        "categories": coalesce(categories, areaOfStudy, studies, tags, []),
+        variants[]{
+          dosage,
+          price
+        },
+        inStock
+      }
+    ),
+    // Automatic featured products (if displayMode is automatic)
+    "automaticProducts": select(
+      displayMode == "automatic" =>
+      *[_type == "product" && featured.isFeatured == true]
+      | order(featured.featuredOrder asc) [0...8]{
+        _id,
+        name,
+        slug,
+        mainImage{
+          asset->{
+            _id,
+            url
+          },
+          alt
+        },
+        backImage{
+          asset->{
+            _id,
+            url
+          },
+          alt
+        },
+        primaryCategory,
+        "categories": coalesce(categories, areaOfStudy, studies, tags, []),
+        variants[]{
+          dosage,
+          price
+        },
+        inStock,
+        "featuredBadge": featured.featuredBadge,
+        "featuredOrder": featured.featuredOrder
+      }
+    )
+  },
+
+  // Marquee Section (embedded)
+  marquee{
+    enabled,
+    title,
+    subtitle,
+    // map schema fields (quote, scientist, organization) to component expectations
+    "quotes": quotes[]{
+      "text": coalesce(text, quote),
+      "author": coalesce(author, scientist),
+      "role": coalesce(role, ""),
+      "company": coalesce(company, organization, ""),
+      "source": source,
+      "sourceLink": coalesce(sourceLink, sourceURL),
+      // support optional avatar if it exists in some docs
+      "avatar": select(defined(avatar) => {
+        asset->{ _id, url },
+        alt
+      }, null)
+    }
+  },
+
+  // Study Feed Section (embedded)
+  studyFeed{
+    enabled,
+    headline,
+    subheadline,
+    maxStudies,
+    ctaButtonText,
+    "studies": *[_type == "study" && published == true]
+    | order(publishedDate desc) [0...3]{
+      _id,
+      title,
+      summary,
+      publishedDate,
+      category,
+      thumbnailImage{
+        asset->{
+          _id,
+          url
+        },
+        alt
+      },
+      authors[]{
+        name,
+        credentials
+      }
+    }
+  },
+
+  // FAQ Section (embedded)
+  faq{
+    enabled,
+    title,
+    sections[]{
+      sectionTitle,
+      questions[]{
+        question,
+        answer,
+        "slug": slug.current
+      }
+    }
+  },
+
+}`
+
+// Initialize content object with all sections
+let content: any = {
+  navbar: undefined,
+  hero: undefined,
+  missionStatement: undefined,
+  whyUs: undefined,
+  featuredProducts: undefined,
+  marquee: undefined,
+  studyFeed: undefined,
+  faq: undefined
+}
+
+try {
+  // Fetch navbar data
+  const navbarQ = `*[_type=="navbar"] | order(_updatedAt desc)[0] {
+    _id,
+    title,
+    sticky,
+    logo{
+      asset->{
+        _id,
+        url
+      },
+      url
+    },
+    items[]{
+      type,
+      label,
+      url,
+      dropdownItems[]{
+        label,
+        url
+      }
+    },
+    actions[]{
+      variant,
+      label,
+      url
+    }
+  }`
+
+  const navbar = await q(navbarQ)
+  if (navbar) {
+    content.navbar = navbar
+  }
+
+  // Quick check to verify hero image is now working
+  const testQ = `*[_type=="landingPage" && !(_id in path("drafts.**"))] | order(_updatedAt desc)[0] {
+    _id,
+    "heroImage": hero.heroImage
+  }`
+
+  const testDoc = await q(testQ)
+  console.log('=== HERO IMAGE STATUS ===')
+  console.log('Document ID:', testDoc?._id)
+  console.log('Hero Image Status:', testDoc?.heroImage?.asset?.url ? '✅ IMAGE FOUND' : '❌ NO IMAGE')
+  if (testDoc?.heroImage?.asset?.url) {
+    console.log('Hero Image URL:', testDoc.heroImage.asset.url)
+  }
+  console.log('=========================\n')
+
+  const lp = await q(landingQ)
+  console.log('Landing page data:', JSON.stringify(lp, null, 2))
+
+  if (lp) {
+    // Only use embedded sections from Sanity
+    content.hero = lp.hero
+    content.missionStatement = lp.missionStatement
+    content.whyUs = lp.whyUs
+    content.marquee = lp.marquee
+    content.studyFeed = lp.studyFeed
+    content.faq = lp.faq
+
+    // Featured products with automatic/manual selection
+    if (lp.featuredProducts) {
+      const products = lp.featuredProducts.displayMode === 'automatic'
+        ? lp.featuredProducts.automaticProducts || []
+        : lp.featuredProducts.manualProducts || []
+
+      content.featuredProducts = {
+        ...lp.featuredProducts,
+        products: products
+      }
+    }
+  }
+} catch (e) {
+  console.warn('Landing page fetch failed during SSR:', e)
+  console.error('Error details:', e)
+}
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nova Amino</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.svg" />
+
+    <link rel="stylesheet" href="https://use.typekit.net/ljx4huh.css">
+
+    <style>
+    :root{
+      --font-heading:"TT Commons Pro", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-body:"IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    body{ font-family:var(--font-body); }
+    h1,h2,h3,.heading{ font-family:var(--font-heading); }
+    /* hero supporting text font override */
+    #hero-supporting-text, 
+    #hero-supporting-text.hero-card__lead,
+    .hero-card #hero-supporting-text,
+    .hero-card__content #hero-supporting-text {
+      font-family: 'ibm-plex-mono', monospace !important;
+      font-weight: normal !important;
+    }
+    /* Make only navbar pill sticky */
+    .nav-pill--sticky { position: sticky !important; top: 0 !important; z-index: 1000 !important; }
+    </style>
+  </head>
+  <body>
+    <!-- Age Gate - 21+ Verification -->
+    <AgeGate />
+
+    <!-- the original body markup from index.html follows -->
+    <Navbar navbar={content.navbar} />
+
+    <main>
+      <Hero hero={content.hero} />
+      <WhyUs whyUs={content.whyUs} />
+      <FeaturedProducts featuredProducts={content.featuredProducts} />
+      <Marquee title={content.marquee?.title} subtitle={content.marquee?.subtitle} quotes={content.marquee?.quotes || []} />
+      <MissionStatement missionStatement={content.missionStatement} />
+      <StudyFeed studyFeed={content.studyFeed} />
+      <FAQ faq={content.faq} />
+    </main>
+
+    <Footer />
+
+    <!-- Progressive enhancement (nav behavior) -->
+    <script type="module" src="/src/js/index.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', ()=>{
+        const y = document.getElementById('year'); if(y) y.textContent = new Date().getFullYear();
+      })
+    </script>
+  </body>
+  </html>

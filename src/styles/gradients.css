@@ -1,0 +1,71 @@
+/* Lightweight aurora-style gradients + grain overlay */
+
+/* Usage: add `bg-aurora-hero` or `bg-aurora-marquee` to a container.
+   Add `has-grain` to apply a subtle film grain overlay. */
+
+.has-grain{ position: relative; isolation:isolate; overflow:hidden; border-radius: inherit; }
+.has-grain::after{
+  content:"";
+  position:absolute; inset:0; z-index:0; pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.5' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.8'/%3E%3C/svg%3E");
+  /* Card grain (default). Slightly stronger for Why Us cards */
+  background-repeat: repeat; background-size: 100px 100px; border-radius: inherit;
+  mix-blend-mode: overlay; opacity:.62; filter:contrast(240%) brightness(105%);
+}
+
+/* Stronger grain for very light backgrounds (hero, marquee) */
+.grain-hero{ position: relative; isolation:isolate; overflow:hidden; border-radius: inherit; }
+.grain-hero::after{
+  content:""; position:absolute; inset:0; z-index:0; pointer-events:none; border-radius: inherit;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.5' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.8'/%3E%3C/svg%3E");
+  background-repeat:repeat; background-size:150px 150px;
+  mix-blend-mode:overlay; opacity:.8; filter:contrast(260%) brightness(110%);
+}
+
+/* Marquee: matches hero grain effect */
+.grain-marquee{ position: relative; isolation:isolate; overflow:hidden; border-radius: inherit; }
+.grain-marquee::after{
+  content:""; position:absolute; inset:0; z-index:0; pointer-events:none; border-radius: inherit;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.5' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.8'/%3E%3C/svg%3E");
+  background-repeat:repeat; background-size:150px 150px;
+  mix-blend-mode:overlay; opacity:.8; filter:contrast(260%) brightness(110%);
+}
+
+/* Hero background (based on Assets/hero-gradient/style.css) - balanced vibrancy */
+.bg-aurora-hero{
+  background:
+    radial-gradient(ellipse at bottom left, #d4c2f960 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, #9dc4f960 0%, transparent 50%),
+    linear-gradient(90deg,#d4c2f9 0%,#c4aef6 25%,#b4a7f4 50%,#9dc4f6 75%,#87d2f4 100%);
+  background-repeat:no-repeat; background-size:cover; background-position:center;
+}
+
+/* Card background (replaces 3CardBackground.png) – gentle neutral gradient */
+.bg-aurora-card{
+  background:
+    radial-gradient(60% 60% at 20% 20%, #eef2ff80 0%, transparent 60%),
+    radial-gradient(60% 60% at 80% 60%, #e0f2fe80 0%, transparent 60%),
+    linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  background-repeat:no-repeat; background-size:cover; background-position:center;
+}
+
+/* 3 Cards background (hard-coded from 3CardBackground/style.css) */
+.bg-aurora-3cards{
+  background:
+    radial-gradient(ellipse 120% 80% at top left, #c8d8ff 0%, transparent 40%),
+    radial-gradient(ellipse at top right, #f3f5ea 0%, transparent 50%),
+    /* toned down green */
+    radial-gradient(ellipse 200% 120% at bottom left, #e9f6ea 0%, transparent 42%),
+    radial-gradient(ellipse 120% 80% at bottom right, #c8d8ff 0%, transparent 38%),
+    linear-gradient(135deg, #f6f8ff 0%, #f1f5ff 25%, #f7fbf6 50%, #fff8f3 75%, #f6f8ff 100%);
+  background-repeat:no-repeat; background-size:cover; background-position:center;
+}
+
+/* Marquee background (based on Assets/marquee-gradient/style.css) - increased vibrancy by 10% */
+.bg-aurora-marquee{
+  background:
+    radial-gradient(ellipse at left, #ded4ff 0%, transparent 60%),
+    radial-gradient(ellipse at top right, #b8c8ff 0%, transparent 60%),
+    linear-gradient(90deg,#e6d4ff 0%,#e2d4ff 25%,#ded4ff 50%,#c8d4ff 75%,#c0c8ff 100%);
+  background-repeat:no-repeat; background-size:cover; background-position:center;
+}

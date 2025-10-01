@@ -1,0 +1,46 @@
+{
+  "name": "cursor-novaamino-landing-page",
+  "version": "1.0.0",
+  "description": "",
+  "main": "tailwind.config.js",
+  "scripts": {
+    "dev": "astro dev --host 127.0.0.1 --port 3012",
+    "build": "astro build",
+    "preview": "astro preview --port 3012 --host 127.0.0.1",
+    "test": "playwright test --project=firefox",
+    "clean": "lsof -ti:3012,3013 | xargs kill -9 || true",
+    "migrate:products:dry": "node scripts/migrate-products.mjs --dry",
+    "migrate:products": "node scripts/migrate-products.mjs",
+    "migrate:landing:dry": "node scripts/migrate-landing.mjs --dry",
+    "migrate:landing": "node scripts/migrate-landing.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@sanity/astro": "3.2.10",
+    "@sanity/client": "^7.6.0",
+    "astro": "^4.15.0",
+    "esbuild": "0.25.10",
+    "typescript": "^5.9.2"
+  },
+  "overrides": {
+    "esbuild": "0.25.10"
+  },
+  "dependencies": {
+    "@astrojs/react": "^3.6.3",
+    "@sanity/vision": "^4.10.0",
+    "@tailwindcss/postcss": "^4.1.13",
+    "@types/react": "^18.3.24",
+    "@types/react-dom": "^18.3.7",
+    "autoprefixer": "^10.4.21",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-is": "^19.1.1",
+    "sanity": "^4.10.2",
+    "styled-components": "^6.1.19",
+    "tailwindcss": "^4.1.13"
+  }
+}

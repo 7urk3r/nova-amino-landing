@@ -1,0 +1,64 @@
+---
+interface Props {
+  whyUs?: {
+    enabled?: boolean
+    headline?: string
+    subheadline?: string
+    benefits?: Array<{
+      icon?: string
+      iconUrl?: string
+      title: string
+      description: string
+    }>
+  }
+}
+
+const { whyUs } = Astro.props
+
+// Don't render if explicitly disabled or no benefits
+if (whyUs?.enabled === false || !whyUs?.benefits?.length) {
+  return null
+}
+
+const {
+  headline = "Why Choose Us",
+  subheadline = "Discover what makes us the right choice for your research needs",
+  benefits = []
+} = whyUs
+---
+
+<section class="container" style="padding-block: var(--space-8);">
+  <div class="why-list">
+    {benefits.map((benefit) => (
+      <div class="why-row">
+        {(benefit.iconUrl || benefit.icon) && (
+          <div class="why-ill-surface bg-aurora-3cards has-grain">
+            {benefit.iconUrl ? (
+              <img src={benefit.iconUrl} alt={benefit.title} />
+            ) : (
+              <div class="why-ill--emoji">{benefit.icon}</div>
+            )}
+          </div>
+        )}
+        <div class="why-copy">
+          <h3 class="why-title">{benefit.title}</h3>
+          <p class="why-text">{benefit.description}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+.why-list{ display:flex; flex-direction:column; gap:28px; }
+.why-row{ display:flex; align-items:center; gap:24px; padding:8px 4px; }
+.why-row.is-reverse{ flex-direction: row-reverse; }
+.why-copy{ flex:1; min-width:0; }
+.why-title{ font-family: var(--font-heading); font-size: clamp(1.5rem, 2.2vw, 2rem); font-weight:700; color: var(--ink); margin:0 0 10px 0; }
+.why-text{ font-family:'ibm-plex-mono', monospace; font-size: .975rem; line-height:1.6; color:#000; margin:0; }
+.why-ill-surface{ width:220px; height:220px; border-radius:24px; overflow:hidden; border:1px solid rgba(2,6,23,.08); display:flex; align-items:center; justify-content:center; flex:0 0 220px; }
+.why-ill-surface img{ width:80%; height:80%; object-fit:contain; display:block; }
+.why-ill--emoji{ font-size:64px; line-height:1; }
+@media (max-width: 900px){ .why-ill-surface{ width:180px; height:180px; flex-basis:180px; } }
+@media (max-width: 640px){ .why-row, .why-row.is-reverse{ flex-direction: column; align-items:flex-start; } .why-ill-surface{ width:220px; height:220px; margin:12px 0 0; } }
+</style>

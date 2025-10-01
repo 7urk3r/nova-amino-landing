@@ -1,0 +1,354 @@
+---
+import { q } from '../../lib/sanityServer';
+
+// Fetch footer data from Sanity
+let footerData: any = null;
+// Valid FAQ slugs gathered from landing page to validate internal links
+let validFaqSlugs: Set<string> = new Set();
+try {
+  const footerQuery = `*[_type == "footer"][0]{
+    title,
+    enabled,
+    sections{
+      shop{
+        title,
+        links[]{
+          title,
+          url,
+          linkType,
+          faqSlug
+        }
+      },
+      learn{
+        title,
+        links[]{
+          title,
+          url,
+          linkType,
+          faqSlug,
+          hasExpandableContent,
+          expandableContent
+        }
+      },
+      support{
+        title,
+        links[]{
+          title,
+          url,
+          linkType,
+          faqSlug,
+          hasExpandableContent,
+          expandableContent
+        }
+      },
+      company{
+        title,
+        links[]{
+          title,
+          url,
+          linkType,
+          faqSlug,
+          hasExpandableContent,
+          expandableContent
+        }
+      }
+    }
+  }`;
+
+  footerData = await q(footerQuery);
+
+  // Fetch FAQ slugs for deep-link validation
+  try {
+    const faqQuery = `*[_type=="landingPage"]|order(_updatedAt desc)[0]{ faq{sections[]{questions[]{"slug": slug.current}}} }`;
+    const faqRes: any = await q(faqQuery);
+    (faqRes?.faq?.sections || []).forEach((sec: any) => {
+      (sec?.questions || []).forEach((q: any) => { if (q?.slug) validFaqSlugs.add(q.slug); });
+    });
+  } catch {}
+} catch (error) {
+  console.warn('Failed to fetch footer data from Sanity:', error);
+}
+
+// If no footer data from Sanity, show nothing or fallback
+if (!footerData || footerData.enabled === false) {
+  // You can either show nothing or add a minimal fallback
+  footerData = null;
+}
+// Helper to resolve hrefs; validates faq slugs and falls back to #faq
+function resolveHref(sectionLabel: string, item: any): string {
+  if (item?.linkType === 'faq') {
+    const slug = item?.faqSlug;
+    if (slug && validFaqSlugs.has(slug)) return `/#faq-${slug}`;
+    console.warn('[Footer] Invalid FAQ link', { section: sectionLabel, title: item?.title, faqSlug: slug });
+    return '#faq';
+  }
+  return item?.url || '#';
+}
+---
+
+{footerData && (
+  <footer style="padding-top: 0; padding-bottom: var(--space-7); padding-inline: var(--space-7);">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <div style="border-top: 1px solid #e5e7eb; padding-top: var(--space-6);">
+        <!-- Footer Links Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-7);">
+
+          <!-- SHOP Section -->
+          {footerData.sections?.shop && (
+            <div>
+              <h4 style="text-transform: uppercase; font-size: 0.75rem; font-weight: 600; margin-bottom: 16px; color: #9ca3af; font-family: var(--font-heading);">
+                {footerData.sections.shop.title || 'SHOP'}
+              </h4>
+              <ul style="display: flex; flex-direction: column; gap: 6px; list-style: none; padding: 0; margin: 0;">
+                {footerData.sections.shop.links?.map(item => (
+                  <li style="font-size: 0.875rem; font-family: var(--font-heading);">
+                    <a href={resolveHref('SHOP', item)} style="color: inherit; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#e5e7eb'">
+                      {item.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <!-- LEARN Section -->
+          {footerData.sections?.learn && (
+            <div>
+              <h4 style="text-transform: uppercase; font-size: 0.75rem; font-weight: 600; margin-bottom: 16px; color: #9ca3af; font-family: var(--font-heading);">
+                {footerData.sections.learn.title || 'LEARN'}
+              </h4>
+              <ul style="display: flex; flex-direction: column; gap: 6px; list-style: none; padding: 0; margin: 0;">
+                {footerData.sections.learn.links?.map((item, index) => (
+                  item.hasExpandableContent ? (
+                    <li style="font-size: 0.875rem; font-family: var(--font-heading);">
+                      <button
+                        onclick={`toggleExpand('learn-${index}')`}
+                        style="color: inherit; text-decoration: none; transition: color 0.2s; background: none; border: none; padding: 0; display: flex; align-items: center; gap: 8px; text-align: le ft; cursor: pointer; font-size: 0.875rem; font-family: var(--font-heading);"
+                        onmouseover="this.style.color='#fff'"
+                        onmouseout="this.style.color='#e5e7eb'"
+                      >
+                        {item.title}
+                        <svg class="chevron" id={`chevron-learn-${index}`} style="width: 14px; height: 14px; transition: transform 0.2s;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <polyline points="6,9 12,15 18,9"></polyline>
+                        </svg>
+                      </button>
+                    </li>
+                  ) : (
+                    <li style="font-size: 0.875rem; font-family: var(--font-heading);">
+                      <a href={resolveHref('LEARN', item)} style="color: inherit; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#e5e7eb'">
+                        {item.title}
+                      </a>
+                    </li>
+                  )
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <!-- SUPPORT Section -->
+          {footerData.sections?.support && (
+            <div>
+              <h4 style="text-transform: uppercase; font-size: 0.75rem; font-weight: 600; margin-bottom: 16px; color: #9ca3af; font-family: var(--font-heading);">
+                {footerData.sections.support.title || 'SUPPORT'}
+              </h4>
+              <ul style="display: flex; flex-direction: column; gap: 6px; list-style: none; padding: 0; margin: 0;">
+                {footerData.sections.support.links?.map((item, index) => (
+                  item.hasExpandableContent ? (
+                    <li style="font-size: 0.875rem; font-family: var(--font-heading);">
+                      <button
+                        onclick={`toggleExpand('support-${index}')`}
+                        style="color: inherit; text-decoration: none; transition: color 0.2s; background: none; border: none; padding: 0; display: flex; align-items: center; gap: 8px; text-align: left; cursor: pointer; font-size: 0.875rem; font-family: var(--font-heading);"
+                        onmouseover="this.style.color='#fff'"
+                        onmouseout="this.style.color='#e5e7eb'"
+                      >
+                        {item.title}
+                        <svg class="chevron" id={`chevron-support-${index}`} style="width: 14px; height: 14px; transition: transform 0.2s;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <polyline points="6,9 12,15 18,9"></polyline>
+                        </svg>
+                      </button>
+                    </li>
+                  ) : (
+                    <li style="font-size: 0.875rem; font-family: var(--font-heading);">
+                      <a href={resolveHref('SUPPORT', item)} style="color: inherit; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#e5e7eb'">
+                        {item.title}
+                      </a>
+                    </li>
+                  )
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <!-- COMPANY Section -->
+          {footerData.sections?.company && (
+            <div>
+              <h4 style="text-transform: uppercase; font-size: 0.75rem; font-weight: 600; margin-bottom: 16px; color: #9ca3af; font-family: var(--font-heading);">
+                {footerData.sections.company.title || 'COMPANY'}
+              </h4>
+              <ul style="display: flex; flex-direction: column; gap: 6px; list-style: none; padding: 0; margin: 0;">
+                {footerData.sections.company.links?.map((item, index) => (
+                  item.hasExpandableContent ? (
+                    <li style="font-size: 0.875rem; font-family: var(--font-heading);">
+                      <button
+                        onclick={`toggleExpand('company-${index}')`}
+                        style="color: inherit; text-decoration: none; transition: color 0.2s; background: none; border: none; padding: 0; display: flex; align-items: center; gap: 8px; text-align: left; cursor: pointer; font-size: 0.875rem; font-family: var(--font-heading);"
+                        onmouseover="this.style.color='#fff'"
+                        onmouseout="this.style.color='#e5e7eb'"
+                      >
+                        {item.title}
+                        <svg class="chevron" id={`chevron-company-${index}`} style="width: 14px; height: 14px; transition: transform 0.2s;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <polyline points="6,9 12,15 18,9"></polyline>
+                        </svg>
+                      </button>
+                    </li>
+                  ) : (
+                    <li style="font-size: 0.875rem; font-family: var(--font-heading);">
+                      <a href={resolveHref('COMPANY', item)} style="color: inherit; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#e5e7eb'">
+                        {item.title}
+                      </a>
+                    </li>
+                  )
+                ))}
+              </ul>
+            </div>
+          )}
+
+        </div>
+
+        <!-- Expandable Content Areas -->
+        <div style="margin-top: var(--space-6);">
+          <!-- Learn Expandable Content -->
+          {footerData.sections?.learn?.links?.map((item, index) => (
+            item.hasExpandableContent && item.expandableContent && (
+              <div id={`expanded-learn-${index}`} style="display: none; transition: all 0.3s;">
+                <div style="padding: 24px; background: #111827; border-radius: 8px; color: #d1d5db; line-height: 1.6; border: 1px solid #374151; font-family: 'ibm-plex-mono', monospace;">
+                  {item.expandableContent.split('\n\n').map(paragraph => (
+                    <p style="margin-bottom: 8px; font-family: 'ibm-plex-mono', monospace;">{paragraph}</p>
+                  ))}
+                </div>
+              </div>
+            )
+          ))}
+
+          <!-- Support Expandable Content -->
+          {footerData.sections?.support?.links?.map((item, index) => (
+            item.hasExpandableContent && item.expandableContent && (
+              <div id={`expanded-support-${index}`} style="display: none; transition: all 0.3s;">
+                <div style="padding: 24px; background: #111827; border-radius: 8px; color: #d1d5db; line-height: 1.6; border: 1px solid #374151; font-family: 'ibm-plex-mono', monospace;">
+                  {item.title === "Contact Us" ? (
+                    <a href={`mailto:${item.expandableContent}`} style="color: #60a5fa; text-decoration: none; font-size: 1.125rem; font-family: 'ibm-plex-mono', monospace;" onmouseover="this.style.color='#93c5fd'" onmouseout="this.style.color='#60a5fa'">
+                      {item.expandableContent}
+                    </a>
+                  ) : (
+                    item.expandableContent.split('\n\n').map(paragraph => (
+                      <p style="margin-bottom: 8px; font-family: 'ibm-plex-mono', monospace;">{paragraph}</p>
+                    ))
+                  )}
+                </div>
+              </div>
+            )
+          ))}
+
+          <!-- Company Expandable Content -->
+          {footerData.sections?.company?.links?.map((item, index) => (
+            item.hasExpandableContent && item.expandableContent && (
+              <div id={`expanded-company-${index}`} style="display: none; transition: all 0.3s;">
+                <div style="padding: 24px; background: #111827; border-radius: 8px; color: #d1d5db; line-height: 1.6; border: 1px solid #374151; max-height: 384px; overflow-y: auto; font-family: 'ibm-plex-mono', monospace;">
+                  {item.expandableContent.split('\n\n').map(paragraph => (
+                    <p style="margin-bottom: 8px; font-family: 'ibm-plex-mono', monospace;">{paragraph}</p>
+                  ))}
+                </div>
+              </div>
+            )
+          ))}
+        </div>
+
+      </div>
+    </div>
+  </footer>
+)}
+
+<style>
+  footer {
+    background: #191919;
+    color: #e5e7eb;
+  }
+
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    footer > div > div {
+      padding-top: var(--space-4);
+    }
+    footer > div > div > div:first-child {
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+    }
+    footer > div > div > div:first-child > div:first-child {
+      order: -1;
+    }
+  }
+
+  @media (max-width: 480px) {
+    footer > div > div > div:first-child {
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+    }
+    footer > div > div > div:first-child > div:first-child {
+      margin-bottom: var(--space-2);
+    }
+    footer > div > div > div:first-child > div:last-child {
+      grid-column: 1;
+      text-align: left;
+    }
+  }
+
+  @media (max-width: 360px) {
+    footer > div > div > div:first-child {
+      gap: var(--space-2);
+    }
+    footer > div > div > div:first-child > div:first-child {
+      margin-bottom: var(--space-1);
+    }
+    footer > div > div > div:first-child > div:last-child {
+      text-align: left;
+    }
+  }
+</style>
+
+<script>
+  // Footer expandable sections functionality
+  function toggleExpand(sectionId) {
+    const expandedElement = document.getElementById(`expanded-${sectionId}`);
+    const chevronElement = document.getElementById(`chevron-${sectionId}`);
+
+    if (expandedElement) {
+      const isVisible = expandedElement.style.display !== 'none';
+
+      // Hide all other expanded sections
+      document.querySelectorAll('[id^="expanded-"]').forEach(el => {
+        if (el !== expandedElement) {
+          el.style.display = 'none';
+        }
+      });
+
+      // Reset all chevrons
+      document.querySelectorAll('[id^="chevron-"]').forEach(chevron => {
+        if (chevron !== chevronElement) {
+          chevron.style.transform = 'rotate(0deg)';
+        }
+      });
+
+      // Toggle current section
+      if (isVisible) {
+        expandedElement.style.display = 'none';
+        if (chevronElement) chevronElement.style.transform = 'rotate(0deg)';
+      } else {
+        expandedElement.style.display = 'block';
+        if (chevronElement) chevronElement.style.transform = 'rotate(180deg)';
+      }
+    }
+  }
+
+  // Make toggleExpand available globally
+  window.toggleExpand = toggleExpand;
+</script>

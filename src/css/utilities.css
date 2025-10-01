@@ -1,0 +1,22 @@
+/* Helpers */
+.visually-hidden{ position:absolute !important; height:1px; width:1px; overflow:hidden; clip:rect(1px,1px,1px,1px); white-space:nowrap; }
+
+/* Aspect ratio utilities */
+.ar-16x9{ aspect-ratio:16 / 9; }
+.ar-4x5{ aspect-ratio:4 / 5; }
+@media (max-width:767px){
+  .sm\:ar-4x5{ aspect-ratio:4 / 5; }
+}
+
+/* Spacing utilities (subset) */
+.mt-0{ margin-top:0 }
+.mt-1{ margin-top:var(--space-1) }
+.mt-2{ margin-top:var(--space-2) }
+.mt-3{ margin-top:var(--space-3) }
+.mt-4{ margin-top:var(--space-4) }
+.mt-5{ margin-top:var(--space-5) }
+.mt-6{ margin-top:var(--space-6) }
+.mb-0{ margin-bottom:0 }
+.mb-3{ margin-bottom:var(--space-3) }
+.mb-5{ margin-bottom:var(--space-5) }
+

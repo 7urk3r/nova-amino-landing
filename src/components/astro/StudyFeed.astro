@@ -1,0 +1,180 @@
+---
+import { optimizeImage } from '../../lib/imageUtils'
+
+interface Study {
+  _id: string
+  title: string
+  summary?: string
+  publishedDate?: string
+  category?: string
+  thumbnailImage?: {
+    asset?: {
+      _id: string
+      url: string
+    }
+    alt?: string
+  }
+  authors?: Array<{
+    name: string
+    credentials?: string
+  }>
+}
+
+interface Props {
+  studyFeed?: {
+    enabled?: boolean
+    headline?: string
+    subheadline?: string
+    maxStudies?: number
+    ctaButtonText?: string
+    studies?: Study[]
+  }
+}
+
+const { studyFeed } = Astro.props
+
+// Don't render if disabled or no studies
+if (!studyFeed?.enabled || !studyFeed?.studies?.length) {
+  return null
+}
+
+const {
+  headline = "Latest Research",
+  subheadline = "Stay updated with the latest peptide research and scientific studies",
+  ctaButtonText = "View All Studies",
+  studies = []
+} = studyFeed
+
+// Helper function to format date
+const formatDate = (dateString?: string) => {
+  if (!dateString) return null
+  const date = new Date(dateString)
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  })
+}
+
+// Helper function to format authors
+const formatAuthors = (authors?: Study['authors']) => {
+  if (!authors?.length) return null
+  return authors.map(author =>
+    author.credentials ? `${author.name}, ${author.credentials}` : author.name
+  ).join(' • ')
+}
+---
+
+<section class="container" style="padding-block: var(--space-8);">
+  <div class="grid">
+    <div class="col-12">
+      <!-- Section Header -->
+      <div class="text-center" style="margin-bottom: var(--space-6);">
+        <h2 class="heading" style="font-size: 2.5rem; margin-bottom: 1rem;">
+          {headline}
+        </h2>
+        {subheadline && (
+          <p style="font-size: 1.125rem; color: var(--muted); max-width: 600px; margin: 0 auto;">
+            {subheadline}
+          </p>
+        )}
+      </div>
+
+      <!-- Studies Grid -->
+      <div class="grid" style="gap: 1.5rem; margin-top: 2rem;">
+        {studies.slice(0, 3).map(study => (
+          <div class="col-4 md:col-12">
+            <article class="card" style="height: 100%; display: flex; flex-direction: column; padding: 0; border-radius: 16px; overflow: hidden; transition: all 0.2s ease;">
+              {/* Study Image */}
+              <div style="height: 200px; overflow: hidden;">
+                {study.thumbnailImage?.asset?.url ? (
+                  <img
+                    src={optimizeImage(study.thumbnailImage.asset.url, { width: 300, height: 200, quality: 75 })}
+                    alt={study.thumbnailImage.alt || study.title}
+                    loading="lazy"
+                    style="width: 100%; height: 100%; object-fit: cover;"
+                  />
+                ) : (
+                  <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
+                    🧬
+                  </div>
+                )}
+              </div>
+
+              {/* Study Content */}
+              <div style="padding: 1.5rem; display: flex; flex-direction: column; flex: 1; gap: 1rem;">
+                {/* Category & Date */}
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem; color: var(--muted);">
+                  {study.category && (
+                    <span class="badge" style="text-transform: capitalize; background: #f0f9ff; color: #0369a1; padding: 0.25rem 0.75rem; border-radius: 12px;">
+                      {study.category.replace('-', ' ')}
+                    </span>
+                  )}
+                  {formatDate(study.publishedDate) && (
+                    <time datetime={study.publishedDate}>
+                      {formatDate(study.publishedDate)}
+                    </time>
+                  )}
+                </div>
+
+                {/* Title */}
+                <h3 style="font-size: 1.25rem; font-weight: 600; line-height: 1.3; margin: 0; color: var(--ink);">
+                  {study.title}
+                </h3>
+
+                {/* Summary */}
+                {study.summary && (
+                  <p style="font-size: 0.9375rem; line-height: 1.5; color: var(--muted); margin: 0; flex: 1;">
+                    {study.summary.length > 150
+                      ? `${study.summary.substring(0, 150)}...`
+                      : study.summary
+                    }
+                  </p>
+                )}
+
+                {/* Authors */}
+                {formatAuthors(study.authors) && (
+                  <div style="font-size: 0.875rem; color: var(--muted); font-style: italic; padding-top: 0.5rem; border-top: 1px solid #f0f0f0;">
+                    {formatAuthors(study.authors)}
+                  </div>
+                )}
+
+                {/* Read More Link */}
+                <a
+                  href={`/studies/${study._id}`}
+                  style="color: var(--brand); font-weight: 600; text-decoration: none; font-size: 0.9375rem; margin-top: 0.5rem;"
+                >
+                  Read Full Study →
+                </a>
+              </div>
+            </article>
+          </div>
+        ))}
+      </div>
+
+      <!-- CTA Button */}
+      {ctaButtonText && (
+        <div class="text-center" style="margin-top: var(--space-6);">
+          <a
+            href="/studies"
+            class="btn btn--primary"
+            style="font-size: 1.125rem; padding: 1rem 2rem;"
+          >
+            {ctaButtonText}
+          </a>
+        </div>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+article.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(2, 6, 23, 0.15);
+}
+
+article.card a:hover {
+  color: #1e40af;
+}
+</style>

@@ -1,0 +1,59 @@
+---
+import { optimizeImage } from '../../lib/imageUtils'
+
+interface Props {
+  hero?: {
+    enabled?: boolean
+    headline?: string
+    subheadline?: string
+    ctaButton?: {
+      text?: string
+      url?: string
+    }
+    heroImage?: {
+      asset?: {
+        _id: string
+        url: string
+      }
+      alt?: string
+    }
+  }
+}
+const { hero } = Astro.props
+const lines = (hero?.headline || 'The Future of Wellness|Research Is Here.').split('|')
+const sub = hero?.subheadline || 'Compare products, review research studies, and order with confidence. Our complete peptide catalog is just one click away.'
+const ctaText = hero?.ctaButton?.text || 'View Catalog'
+const ctaHref = hero?.ctaButton?.url || '/shop'
+
+// Optimize hero image - simplified approach
+const heroImageUrl = hero?.heroImage?.asset?.url ? optimizeImage(hero.heroImage.asset.url, {
+  width: 800,
+  height: 600,
+  quality: 85
+}) : null
+---
+<section class="hero-section" style="padding-top:0; padding-bottom:var(--space-7);">
+  <div class="hero-card bg-aurora-hero has-grain grain-hero" style="position: relative; display: flex; align-items: center; justify-content: space-between; padding: var(--space-7); border-radius: 16px;">
+    <div class="hero-card__content" style="flex: 1; max-width: 50%;">
+      <h1 class="heading hero-card__title" style="font-family: var(--font-heading); font-size: clamp(2.25rem, 4.5vw, 3.2rem); line-height: 1.2; margin: 0 0 var(--space-4); color: var(--ink);">
+        {lines.map(l => (<span style="display:block; white-space: normal;">{l.trim()}</span>))}
+      </h1>
+      <p id="hero-supporting-text" style="font-family: 'ibm-plex-mono', monospace !important; font-weight: 400; font-size: 1.125rem; line-height: 1.5; margin: 0 0 var(--space-5); color: #000; max-width: 560px;">
+        {sub}
+      </p>
+      <a class="btn btn--primary" href={ctaHref}>{ctaText}</a>
+    </div>
+
+    {heroImageUrl && (
+      <div class="hero-images" style="flex: 0 0 520px; display: flex; justify-content: center; align-items: flex-start; position: relative; z-index: 2;">
+        <img
+          src={heroImageUrl}
+          alt={hero?.heroImage?.alt || "Hero image"}
+          loading="eager"
+          style="width: 520px; height: auto; border-radius: 12px; position: relative; z-index: 2; display: block;"
+        />
+      </div>
+    )}
+  </div>
+  </section>
+

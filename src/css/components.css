@@ -1,0 +1,102 @@
+.btn{ display:inline-flex; align-items:center; gap:8px; padding:.75rem 1.25rem;
+  border-radius:999px; text-decoration:none; font-weight:600; }
+.btn--primary{ background:var(--brand); color:white; }
+.btn--ghost{ background:transparent; border:1px solid currentColor; color:var(--ink); }
+/* small size for header pills */
+.btn--sm{ padding:.3rem .75rem; font-size:.9375rem; }
+.btn--black{ background:#0b0d12; color:#fff; border:1px solid #0b0d12; }
+.btn--black:hover{ background:#111827; border-color:#111827; }
+
+/* plain header link */
+.link-plain{ color:#0b0d12; text-decoration:none; font-weight:600; padding:.25rem .5rem; height:var(--header-pill-h, 32px); display:inline-flex; align-items:center; }
+.link-plain:hover{ opacity:.85; }
+
+/* Center nav pill */
+.nav-pill{ display:inline-flex; align-items:center; gap:6px; height:var(--header-pill-h, 40px); padding:0 6px; border-radius:999px; background:rgba(255,255,255,.35); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); box-shadow:0 8px 30px rgba(2,6,23,.08); }
+.nav-pill__link{ display:inline-flex; align-items:center; gap:6px; height:100%; padding:0 14px; border-radius:999px; color:#0b0d12 !important; text-decoration:none; font-weight:600; font-family:var(--font-heading); }
+.nav-pill__link:visited{ color:#0b0d12 !important; }
+.nav-pill__link:hover{ background:rgba(2,6,23,.06); }
+.nav-pill__link{ outline:0 !important; -webkit-appearance:none; appearance:none; box-shadow:none !important; -webkit-tap-highlight-color:transparent; }
+.nav-pill__link:focus, .nav-pill__link:focus-visible{ outline:0 !important; outline-color:transparent !important; box-shadow:none !important; }
+
+/* Hard-kill focus ring in header scope (Safari) */
+header.site-header :is(a, button){ outline:0 !important; outline-color:transparent !important; box-shadow:none !important; -webkit-tap-highlight-color:transparent; }
+header.site-header :is(a, button):focus, header.site-header :is(a, button):focus-visible{ outline:0 !important; outline-color:transparent !important; box-shadow:none !important; }
+/* Belt-and-suspenders: kill any remaining UA focus ring in header */
+header.site-header *:focus{ outline:0 !important; outline-width:0 !important; outline-color:transparent !important; box-shadow:none !important; }
+header.site-header *:focus-visible{ outline:0 !important; outline-width:0 !important; outline-color:transparent !important; box-shadow:none !important; }
+
+/* Apply the same focus reset inside the sticky pill area */
+.sticky-pill :is(a, button){ outline:0 !important; outline-color:transparent !important; box-shadow:none !important; -webkit-tap-highlight-color:transparent; }
+.sticky-pill *:focus, .sticky-pill *:focus-visible{ outline:0 !important; outline-width:0 !important; outline-color:transparent !important; box-shadow:none !important; }
+/* Sticky pill inside header (aligned on load) */
+.nav-pill--sticky{ position:sticky; top:0; z-index:100; }
+/* Becomes fixed when header scrolls away (JS toggles this) */
+.nav-pill--fixed{ position:fixed; top:16px; left:50%; transform:translateX(-50%); z-index:110; }
+
+/* Header buttons font */
+header.site-header .site-actions :is(.btn, .link-plain){ font-family:var(--font-heading); }
+/* Ensure header actions are perfectly aligned */
+header.site-header .site-actions{ display:flex; align-items:center; gap:8px; }
+/* Match Sign up pill height with nav pill */
+header.site-header .site-actions .btn--black.btn--sm{ height:var(--header-pill-h, 40px); padding:0 16px; display:inline-flex; align-items:center; border-radius:999px; }
+
+/* Hero section fills most of viewport like Evervault */
+.hero-section{ max-width:100%; padding-inline:var(--space-7); margin-inline:0; }
+/* Hero wide card (below nav) */
+.hero-card{ display:flex; align-items:center; justify-content:space-between; gap:var(--space-6); padding:var(--space-7); border-radius:16px; background:#fff; height:calc(100vh - var(--header-height, 80px) - var(--space-7, 48px)); box-shadow:0 20px 60px rgba(2,6,23,.08); }
+.hero-card__title{ font-size:clamp(2rem, 4vw, 3rem); margin:0 0 var(--space-3); }
+.hero-card__lead{ color:var(--muted); font-size:1.125rem; margin:0 0 var(--space-5); }
+
+/* Cards, badges (placeholders for future needs) */
+.card{ border:1px solid #e5e7eb; border-radius:12px; padding:var(--space-4); background:#fff; }
+.badge{ display:inline-block; padding:2px 8px; border-radius:999px; font-size:.8125rem; background:#eef2ff; color:#3730a3; }
+
+/* FAQ using native details (a11y friendly) */
+.faq{ border-top:1px solid #e5e7eb; padding-block:var(--space-4); }
+.faq summary{ cursor:pointer; list-style:none; font-weight:600; }
+.faq summary::-webkit-details-marker{ display:none; }
+.faq[open] summary{ color:var(--brand); }
+
+/* Carousel skin (basic), works with Embla */
+.embla{ overflow:hidden; }
+.embla__container{ display:flex; gap:var(--gutter); }
+.embla__slide{ position:relative; min-width:280px; flex:0 0 75%; }
+.embla__slide img{ display:block; width:100%; height:auto; border-radius:12px; border:1px solid #e5e7eb; }
+
+/* Nav pill + dropdown (vanilla, frosted) */
+.nav-menu{ position:relative; display:inline-block; z-index:2001; }
+/* Single long pill bar */
+.nav-pillbar{ display:inline-flex; align-items:center; gap:6px; padding:4px; border-radius:999px; background:rgba(255,255,255,.35); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); box-shadow:inset 0 1px 0 rgba(255,255,255,.25), 0 1px 1px rgba(2,6,23,.06); border:1px solid rgba(255,255,255,.5); }
+/* Inner links styled as parts of the single pill */
+.nav-link{ display:inline-flex; align-items:center; gap:6px; padding:.5rem .9rem; border-radius:999px; font-weight:600; color:#000; text-decoration:none; cursor:pointer; background:transparent; border:0; font-family:var(--font-heading); }
+.site-nav .nav-link{ color:#000 !important; }
+.site-nav .nav-link:hover, .site-nav .nav-link:focus{ color:#000 !important; }
+/* Normalize anchors and buttons to be visually identical */
+.site-nav a.nav-link,
+.site-nav a.nav-link:visited,
+.site-nav a.nav-link:hover,
+.site-nav a.nav-link:active,
+.site-nav a.nav-link:focus,
+.site-nav button.nav-link{
+  color:#000 !important;
+  font-weight:600 !important;
+  text-decoration:none !important;
+}
+.nav-link:hover, .nav-link:focus{ background:rgba(255,255,255,.25); outline:none; }
+.nav-link[aria-current="page"]{ color:#000; }
+.nav-pill{ display:inline-flex; align-items:center; gap:8px; padding:.5rem .75rem; border-radius:999px; font-weight:600; color:#0b1220; background:transparent; cursor:pointer; }
+.nav-pill:focus{ outline:2px solid rgba(45,96,238,.35); outline-offset:2px; }
+.nav-chevron{ width:16px; height:16px; opacity:.6; }
+
+.nav-dropdown{ position:absolute; right:0; top:calc(100% + 8px); width:220px; padding:6px; border-radius:12px; background:rgba(255,255,255,.95); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,.5); box-shadow:0 10px 30px rgba(2,6,23,.15); display:none; z-index:2002; }
+/* Hover bridge to prevent accidental close when crossing the gap */
+.nav-dropdown::before{ content:""; position:absolute; top:-8px; left:0; right:0; height:8px; }
+.nav-menu.is-open .nav-dropdown,
+.nav-menu:hover .nav-dropdown{ display:block; }
+.nav-item{ width:100%; text-align:left; border:0; background:transparent; color:#000000; display:flex; align-items:center; gap:8px; padding:.5rem .75rem; border-radius:10px; cursor:pointer; font-size:14px; font-weight:500; }
+.nav-item:hover, .nav-item:focus{ background:rgba(255,255,255,.6); outline:none; }
+.nav-sep{ height:1px; margin:6px 4px; background:rgba(2,6,23,.06); }
+
+/* When sticky nav is active, hide original header dropdown panels */
+.has-sticky-nav header.site-header .nav-dropdown{ display:none !important; }

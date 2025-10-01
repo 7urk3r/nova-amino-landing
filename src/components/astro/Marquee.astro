@@ -1,0 +1,106 @@
+---
+import { defaultQuotes } from '../../content/defaultQuotes'
+import { imagePresets } from '../../lib/imageUtils'
+
+interface QuoteDoc { text?: string; author?: string; role?: string; company?: string; source?: string; sourceLink?: string; avatar?: { asset?: { url?: string }, alt?: string } }
+interface Props { title?: string; subtitle?: string; quotes?: QuoteDoc[] }
+
+const {
+  title = 'The Science Speaks',
+  subtitle = 'Across the world, scientists and institutions are uncovering the potential of peptides. Their findings reveal both the science and the promise these compounds hold.',
+  quotes = [],
+} = Astro.props as Props
+
+const effectiveQuotes = (Array.isArray(quotes) && quotes.length > 0) ? quotes : defaultQuotes
+
+const firstRow = effectiveQuotes.slice(0, Math.ceil(effectiveQuotes.length / 2))
+const secondRow = effectiveQuotes.slice(Math.ceil(effectiveQuotes.length / 2))
+---
+<section class="container marquee-section">
+  <div class="marquee-card-surface bg-aurora-marquee has-grain grain-marquee">
+    <div class="marquee-shell">
+      <div class="marquee-header">
+        <h2 class="marquee-title">{title}</h2>
+        <p class="marquee-subtitle">{subtitle}</p>
+      </div>
+      <div class="marquee-viewport">
+        <div class="marquee-row" style="top:0">
+          <div class="marquee-track">
+            {firstRow.map((q) => (
+              <figure class="quote-card">
+                {q.avatar?.asset?.url && (
+                  <div class="quote-avatar" style="margin-bottom: 1rem;">
+                    <img src={q.avatar.asset.url} alt={q.avatar.alt || q.author} style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;" />
+                  </div>
+                )}
+                <div class="quote-meta">
+                  <figcaption class="quote-scientist">{q.author}</figcaption>
+                  {q.source && (<p class="quote-org">{q.source}</p>)}
+                </div>
+                <blockquote class="quote-text">"{q.text}"</blockquote>
+                {q.sourceLink && (
+                  <a class="quote-source" href={q.sourceLink} rel="noopener noreferrer" target="_blank">Source Link</a>
+                )}
+              </figure>
+            ))}
+            {firstRow.map((q) => (
+              <figure class="quote-card">
+                {q.avatar?.asset?.url && (
+                  <div class="quote-avatar" style="margin-bottom: 1rem;">
+                    <img src={q.avatar.asset.url} alt={q.avatar.alt || q.author} style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;" />
+                  </div>
+                )}
+                <div class="quote-meta">
+                  <figcaption class="quote-scientist">{q.author}</figcaption>
+                  {q.source && (<p class="quote-org">{q.source}</p>)}
+                </div>
+                <blockquote class="quote-text">"{q.text}"</blockquote>
+                {q.sourceLink && (
+                  <a class="quote-source" href={q.sourceLink} rel="noopener noreferrer" target="_blank">Source Link</a>
+                )}
+              </figure>
+            ))}
+          </div>
+        </div>
+        <div class="marquee-row" style="top:288px">
+          <div class="marquee-track slower">
+            {secondRow.map((q) => (
+              <figure class="quote-card">
+                {q.avatar?.asset?.url && (
+                  <div class="quote-avatar" style="margin-bottom: 1rem;">
+                    <img src={q.avatar.asset.url} alt={q.avatar.alt || q.author} style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;" />
+                  </div>
+                )}
+                <div class="quote-meta">
+                  <figcaption class="quote-scientist">{q.author}</figcaption>
+                  {q.source && (<p class="quote-org">{q.source}</p>)}
+                </div>
+                <blockquote class="quote-text">"{q.text}"</blockquote>
+                {q.sourceLink && (
+                  <a class="quote-source" href={q.sourceLink} rel="noopener noreferrer" target="_blank">Source Link</a>
+                )}
+              </figure>
+            ))}
+            {secondRow.map((q) => (
+              <figure class="quote-card">
+                {q.avatar?.asset?.url && (
+                  <div class="quote-avatar" style="margin-bottom: 1rem;">
+                    <img src={q.avatar.asset.url} alt={q.avatar.alt || q.author} style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;" />
+                  </div>
+                )}
+                <div class="quote-meta">
+                  <figcaption class="quote-scientist">{q.author}</figcaption>
+                  {q.source && (<p class="quote-org">{q.source}</p>)}
+                </div>
+                <blockquote class="quote-text">"{q.text}"</blockquote>
+                {q.sourceLink && (
+                  <a class="quote-source" href={q.sourceLink} rel="noopener noreferrer" target="_blank">Source Link</a>
+                )}
+              </figure>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,264 @@
+---
+import '../css/base.css'
+import '../css/grid.css'
+import '../css/components.css'
+import '../css/utilities.css'
+import '../../src/styles/glass.css'
+
+import { q } from '../lib/sanityServer'
+import ProductCard from '../components/astro/ProductCard.astro'
+import Footer from '../components/astro/Footer.astro'
+
+// Be flexible: map multiple possible field names from existing documents
+const productsQ = `*[_type=="product"]|order(order asc, title asc){
+  // try multiple title field variations
+  "title": coalesce(title, name, productName, displayName, _id),
+  // text
+  "description": coalesce(description, body, blurb),
+  category,
+  available,
+  "slug": slug.current,
+  // images (front/back/gallery fallbacks)
+  "front": coalesce(
+    frontImage.asset->url,
+    imageFront.asset->url,
+    images.front.asset->url,
+    images[0].asset->url,
+    gallery[0].asset->url,
+    pictures[0].asset->url,
+    photos[0].asset->url,
+    mainImage.asset->url,
+    image.asset->url
+  ),
+  "back": coalesce(
+    backImage.asset->url,
+    imageBack.asset->url,
+    images.back.asset->url,
+    images[1].asset->url,
+    gallery[1].asset->url,
+    pictures[1].asset->url,
+    photos[1].asset->url
+  ),
+  "imageUrl": coalesce(
+    frontImage.asset->url,
+    imageFront.asset->url,
+    images.front.asset->url,
+    images[0].asset->url,
+    gallery[0].asset->url,
+    mainImage.asset->url,
+    image.asset->url
+  ),
+  "gallery": coalesce(
+    gallery[].asset->url,
+    images[].asset->url,
+    pictures[].asset->url,
+    photos[].asset->url,
+    productImages[].asset->url
+  ),
+  // pricing
+  "basePrice": coalesce(basePrice, price, msrp, defaultPrice),
+  // unify dosages/variants/sizes - prioritize variants which has the actual dosage info
+  "dosages": coalesce(variants, dosages, dosageOptions, sizes, options, [])[]{
+    "label": coalesce(dosage, label, name, title, string(amount)+coalesce(unit, "")),
+    amount, unit, price, sku, dosage
+  },
+  // tags / facets - use categories which contains the areas of study
+  "areaOfStudy": categories,
+  "benefits": coalesce(benefits, benefitAssignments)
+}`
+
+let products: any[] = []
+try {
+  products = await q(productsQ)
+} catch (e) {
+  console.warn('Failed to fetch products from Sanity:', e)
+  products = []
+}
+
+// Extract unique categories for filter pills
+const allCategories = products
+  .flatMap(p => p.areaOfStudy || [])
+  .filter(Boolean)
+  .reduce((unique, category) => {
+    if (!unique.includes(category)) {
+      unique.push(category)
+    }
+    return unique
+  }, [] as string[])
+  .sort()
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>All Products • Nova Amino</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container site-header__row">
+        <a href="/" class="site-logo" aria-label="Nova Amino home">
+          <img src="/assets/NovaAminoLogo.svg" alt="Nova Amino" width="157" height="36" />
+        </a>
+        <nav class="site-nav" aria-label="Primary">
+          <a class="nav-link" href="/">Home</a>
+          <a class="nav-link" href="/products" aria-current="page">Catalog</a>
+          <a class="nav-link" href="/studio" target="_blank">Studio</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container" style="padding-block:var(--space-7);">
+      <h1 id="page-heading" class="heading" style="margin-bottom:var(--space-5);">All Products</h1>
+
+      {/* Filter Pills */}
+      {allCategories.length > 0 && (
+        <div class="filter-section" style="margin-bottom: var(--space-6);">
+          <div class="filter-pills">
+            <button class="filter-pill active" data-category="all">
+              All Products
+            </button>
+            {allCategories.map((category: string) => (
+              <button class="filter-pill" data-category={category}>
+                {category.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {products.length === 0 ? (
+        <p>No products found. Publish some in Studio.</p>
+      ) : (
+        <div class="grid products-grid" style="gap: 1.5rem; margin-top: 2rem;">
+          {products.map((product: any) => (
+            <div class="col-3 md:col-6 sm:col-12" data-categories={JSON.stringify(product.areaOfStudy || [])}>
+              <ProductCard product={{
+                ...product,
+                back: product.back || product.imageUrl // fallback to front image if no back image
+              }} />
+            </div>
+          ))}
+        </div>
+      )}
+    </main>
+
+    <Footer />
+  </body>
+</html>
+
+<style>
+  /* Filter Pills */
+  .filter-section {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+
+  .filter-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .filter-pill {
+    border: 1px solid #e5e7eb;
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    background: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+  }
+
+  .filter-pill:hover {
+    border-color: #d1d5db;
+    background: #f9fafb;
+  }
+
+  .filter-pill.active {
+    background: #111827;
+    color: #ffffff;
+    border-color: #111827;
+  }
+
+  .filter-pill:focus {
+    box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.2);
+  }
+
+  /* Product grid animations */
+  .products-grid .col-3,
+  .products-grid .col-6,
+  .products-grid .col-12 {
+    transition: all 0.3s ease;
+  }
+
+  @media (max-width: 768px) {
+    .filter-pills {
+      justify-content: flex-start;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .filter-pill {
+      flex-shrink: 0;
+    }
+  }
+</style>
+
+<script>
+  // Filter functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const filterPills = document.querySelectorAll('.filter-pill');
+    const productsGrid = document.querySelector('.products-grid');
+    const pageHeading = document.getElementById('page-heading');
+    const productCards = Array.from(document.querySelectorAll('.products-grid > div'));
+
+    // Store original cards data
+    const originalCards = productCards.map(card => ({
+      element: card,
+      categories: JSON.parse(card.getAttribute('data-categories') || '[]')
+    }));
+
+    filterPills.forEach(pill => {
+      pill.addEventListener('click', function() {
+        const selectedCategory = this.getAttribute('data-category');
+        const pillText = this.textContent.trim();
+
+        // Update active pill
+        filterPills.forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+
+        // Update page heading
+        if (selectedCategory === 'all') {
+          pageHeading.textContent = 'All Products';
+        } else {
+          pageHeading.textContent = pillText;
+        }
+
+        // Filter and reorder products
+        let filteredCards;
+        if (selectedCategory === 'all') {
+          filteredCards = originalCards;
+        } else {
+          filteredCards = originalCards.filter(card =>
+            card.categories.includes(selectedCategory)
+          );
+        }
+
+        // Clear the grid
+        productsGrid.innerHTML = '';
+
+        // Add filtered cards back in order
+        filteredCards.forEach(card => {
+          productsGrid.appendChild(card.element);
+        });
+      });
+    });
+  });
+</script>
+

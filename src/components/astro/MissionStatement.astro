@@ -1,0 +1,74 @@
+---
+import { optimizeImage } from '../../lib/imageUtils'
+
+interface Props {
+  missionStatement?: {
+    enabled?: boolean
+    headline?: string
+    content?: string
+    supportingImage?: {
+      asset?: {
+        _id: string
+        url: string
+      }
+      alt?: string
+    }
+  }
+}
+
+const { missionStatement } = Astro.props
+
+// Don't render if explicitly disabled or no content
+if (missionStatement?.enabled === false || !missionStatement?.content) {
+  return null
+}
+
+const {
+  headline = "Our Mission",
+  content,
+  supportingImage
+} = missionStatement
+// Format paragraphs and highlight brand name
+const paragraphs = (content || '').split('\n')
+function highlightBrand(text:string){
+  return text.replace(/Nova Amino/g, '<span class="ms-brand">Nova Amino</span>')
+}
+---
+
+<section class="container" style="padding-block: var(--space-9);">
+  <div class="grid">
+    <div class="col-12">
+      <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+        {headline && (
+          <h2 class="heading" style="font-size: clamp(2.25rem, 4.5vw, 3.2rem); line-height: 1.2; margin-bottom: var(--space-4);">
+            {headline}
+          </h2>
+        )}
+
+        {content && (
+          <div style="font-family: var(--font-heading); font-weight: 700; font-size: clamp(2.25rem, 4.5vw, 3.2rem); line-height: 1.2; color: var(--muted);">
+            {paragraphs.map(paragraph => (
+              <p set:html={highlightBrand(paragraph)} style="margin: .75rem 0;">
+              </p>
+            ))}
+          </div>
+        )}
+
+        {supportingImage?.asset?.url && (
+          <div style="margin-top: var(--space-6);">
+            <img
+              src={optimizeImage(supportingImage.asset.url, { width: 600, height: 400, quality: 80 })}
+              alt={supportingImage.alt || "Mission statement supporting image"}
+              loading="lazy"
+              style="width: 100%; max-width: 600px; height: auto; border-radius: 12px; margin: 0 auto; display: block;"
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.ms-brand{ color:#000; }
+</style>

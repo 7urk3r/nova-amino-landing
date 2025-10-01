@@ -1,0 +1,36 @@
+---
+interface Props {
+  items: import('../../lib/sanity').FeatureCardDoc[]
+}
+const { items } = Astro.props
+const defaults = [
+  { title:'Shipped Within 24 Hours', body:'Most orders are processed and out the door in one business day. Delays have no place in discovery.', icon:'/assets/Card1FastShipping.svg' },
+  { title:'Purity You Can Trust', body:'Every compound is tested for identity and purity using gold-standard lab techniques. Clarity at the molecular scale.', icon:'/assets/Card2Testing.svg' },
+  { title:'Schedule Your Supply', body:'Choose recurring deliveries so you’re always stocked. Ideal for long-term protocols and consistent outcomes.', icon:'/assets/Card3Autoship.svg' }
+]
+const cards = (items && items.length) ? items.slice(0,3).map((f,i)=>({
+  title: f.title || defaults[i]?.title,
+  body: f.body || defaults[i]?.body,
+  icon: f.iconUrl || defaults[i]?.icon,
+})) : defaults
+---
+<section class="container" style="padding-block:var(--space-8);">
+  <div class="grid">
+    {cards.map((c) => (
+      <div class="col-4 md:col-12">
+        <div class="card" style="text-align: center; padding: var(--space-6); min-height: 400px; display: flex; flex-direction: column; background-image: url('/assets/3CardBackground.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+          <div style="flex: 1; display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-6);">
+            <img src={c.icon} alt={c.title} style="width: 90%; height: auto; max-width: none;" />
+          </div>
+          <div class="card-content" style="height: 120px; display: flex; align-items: center; justify-content: center; text-align:center;">
+            <div>
+              <div class="heading" style="font-family: var(--font-heading); font-weight:600; font-size:1.125rem; line-height:1.2; color:var(--ink); margin-bottom: var(--space-2);">{c.title}</div>
+              <p style="font-family: 'ibm-plex-mono', monospace; font-weight:400; font-size:0.9375rem; line-height:1.4; color:var(--muted); max-width: 30ch; margin: 0 auto; text-align:left;">{c.body}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+

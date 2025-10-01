@@ -1,0 +1,170 @@
+---
+import ProductCard from './ProductCard.astro'
+
+interface Product {
+  _id: string
+  name: string
+  slug?: { current: string }
+  mainImage?: {
+    asset?: {
+      _id: string
+      url: string
+    }
+    alt?: string
+  }
+  primaryCategory?: string
+  variants?: Array<{
+    dosage: string
+    price: number
+  }>
+  inStock?: boolean
+  featuredBadge?: string
+  featuredOrder?: number
+}
+
+interface Props {
+  featuredProducts?: {
+    enabled?: boolean
+    headline?: string
+    subheadline?: string
+    displayMode?: 'automatic' | 'manual'
+    maxProducts?: number
+    ctaButtonText?: string
+    products?: Product[]
+  }
+}
+
+const { featuredProducts } = Astro.props
+
+// Extract products from either the products field or manualProducts field
+const products = featuredProducts?.products || featuredProducts?.manualProducts || []
+
+// Don't render if disabled or no products
+if (!featuredProducts?.enabled || !products?.length) {
+  return null
+}
+
+const {
+  headline = "Featured Compounds",
+  subheadline = "Currently driving studies across cognitive, metabolic, and therapeutic research",
+  ctaButtonText = "View All Products"
+} = featuredProducts
+
+// Helper function to get product URL
+const getProductUrl = (product: Product) => {
+  return `/products/${product.slug?.current || product._id}`
+}
+
+// Helper function to format price
+const formatPrice = (variants: Product['variants']) => {
+  if (!variants?.length) return null
+  const minPrice = Math.min(...variants.map(v => v.price))
+  return `From $${minPrice}`
+}
+---
+
+<section id="featured-products" class="container" style="padding-block: var(--space-10);">
+  <div class="grid">
+    <div class="col-12">
+      <!-- Section Header -->
+      <div class="featured-header" style="text-align:center;">
+        <h1
+          class="featured-title"
+          style="font-family: var(--font-heading); font-weight: 700; font-size: clamp(2.25rem, 4.5vw, 3.2rem); line-height: 1.2; margin: 0 0 var(--space-5); color: #000;"
+        >
+          {headline}
+        </h1>
+        {subheadline && (
+          <p
+            class="featured-subtitle"
+            style="font-family: 'ibm-plex-mono', monospace !important; font-weight: 400; font-size: 1.125rem; line-height: 1.5; margin: 0 auto; color: #000; max-width: 560px;"
+          >
+            {subheadline}
+          </p>
+        )}
+      </div>
+
+      <!-- Products Grid -->
+      <div class="grid" style="gap: 1.5rem; margin-top: var(--space-8);">
+        {products.slice(0, 8).map(product => {
+          // Transform the product data to match our ProductCard interface
+          const transformedProduct = {
+            title: (product as any).title || product.name,
+            description: (product as any).description,
+            slug: product.slug?.current,
+            imageUrl: (product as any).imageUrl ||
+                     product.mainImage?.asset?.url ||
+                     (product as any).frontImage?.asset?.url ||
+                     (product as any).front,
+            back: (product as any).back ||
+                  (product as any).backImage?.asset?.url ||
+                  (product as any).imageBack?.asset?.url ||
+                  product.mainImage?.asset?.url,
+            basePrice: (product as any).basePrice,
+            dosages: (product as any).dosages || (product.variants ? product.variants.map(v => ({
+              label: v.dosage,
+              price: v.price,
+              dosage: v.dosage
+            })) : []),
+            areaOfStudy: (product as any).areaOfStudy || (product as any).categories,
+            available: product.inStock !== false
+          };
+
+          return (
+            <div class="col-3 md:col-6 sm:col-12">
+              <ProductCard product={transformedProduct} />
+            </div>
+          );
+        })}
+      </div>
+
+      <!-- CTA Button */
+      {ctaButtonText && (
+        <div class="text-center" style="margin-top: var(--space-6);">
+          <a
+            href="/products"
+            class="btn btn--primary"
+            style="font-size: 1.125rem; padding: 1rem 2rem;"
+          >
+            {ctaButtonText}
+          </a>
+        </div>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .featured-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .featured-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: clamp(2.25rem, 4.5vw, 3.2rem);
+    line-height: 1.2;
+    margin: 0 0 32px 0;
+    color: #000;
+    text-align: center;
+  }
+
+  .featured-subtitle {
+    font-family: 'ibm-plex-mono', monospace;
+    font-size: 1.125rem; /* match hero supporting text */
+    line-height: 1.5; /* match hero supporting text */
+    margin: 0 auto;
+    max-width: 560px; /* match hero supporting text width */
+    color: #000;
+    text-align: center;
+  }
+
+  @media (max-width: 767px) {
+    .featured-title {
+      font-size: 36px;
+      line-height: 44px;
+    }
+  }
+</style>
+

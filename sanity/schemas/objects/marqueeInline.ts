@@ -1,0 +1,13 @@
+import { defineType, defineField } from 'sanity'
+
+export default defineType({
+  name: 'marqueeInline',
+  title: 'Marquee (Inline)',
+  type: 'object',
+  fields: [
+    defineField({ name: 'title', type: 'string', initialValue: 'The Science Speaks' }),
+    defineField({ name: 'subtitle', type: 'text' }),
+    defineField({ name: 'quotes', type: 'array', of: [{ type: 'quoteInline' }] })
+  ]
+})
+

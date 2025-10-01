@@ -1,0 +1,9 @@
+.grid{ display:grid; grid-template-columns:repeat(12,1fr); gap:var(--gutter); }
+.col-12{grid-column:span 12}.col-8{grid-column:span 8}.col-6{grid-column:span 6}
+.col-4{grid-column:span 4}.col-3{grid-column:span 3}
+
+/* breakpoints: desktop 12, tablet 8, mobile 4 */
+@media (max-width:1024px){ .lg\:col-12{grid-column:span 12}.lg\:col-8{grid-column:span 8}.lg\:col-6{grid-column:span 6} }
+@media (max-width:768px){ .md\:col-12{grid-column:span 12}.md\:col-6{grid-column:span 6} }
+@media (max-width:640px){ .sm\:col-12{grid-column:span 12} }
+
