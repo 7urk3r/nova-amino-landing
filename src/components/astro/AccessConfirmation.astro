@@ -698,6 +698,8 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         const langSwitch = overlay.querySelector('.ac-lang-switch')
         const header = overlay.querySelector('.ac-header')
         const logoMeasure = overlay.querySelector('.ac-logo-measure')
+        const main = overlay.querySelector('.ac-main')
+        const cardRect = overlay.querySelector('.ac-card-background')
 
         const rememberForMs = typeof config.rememberForMs === 'number' && Number.isFinite(config.rememberForMs)
           ? Math.max(0, config.rememberForMs)
@@ -826,6 +828,20 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
           header.style.right = `${Math.max(0, rightPadding + bleedCompensation + userNudge)}px`
         }
 
+        const matchScrollBox = () => {
+          if (!main || !cardRect || !textEl) return
+
+          const mainRect = main.getBoundingClientRect()
+          const cardRectData = cardRect.getBoundingClientRect()
+
+          const leftOffset = Math.round(cardRectData.left - mainRect.left)
+          const rightOffset = Math.round(mainRect.right - cardRectData.right)
+
+          textEl.style.marginLeft = `${leftOffset}px`
+          textEl.style.marginRight = `${rightOffset}px`
+          textEl.style.width = 'auto'
+        }
+
         const resizeObservers = []
 
         if (window.ResizeObserver) {
@@ -839,13 +855,25 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         window.addEventListener('resize', alignLanguages)
         window.addEventListener('orientationchange', alignLanguages)
 
+        if (window.ResizeObserver) {
+          const observer = new ResizeObserver(() => matchScrollBox())
+          if (main) observer.observe(main)
+          resizeObservers.push(observer)
+        }
+
+        window.addEventListener('resize', matchScrollBox)
+        window.addEventListener('orientationchange', matchScrollBox)
+
         window.requestAnimationFrame(() => {
           alignLanguages()
+          matchScrollBox()
         })
 
         const cleanup = () => {
           window.removeEventListener('resize', alignLanguages)
           window.removeEventListener('orientationchange', alignLanguages)
+          window.removeEventListener('resize', matchScrollBox)
+          window.removeEventListener('orientationchange', matchScrollBox)
           resizeObservers.forEach((observer) => observer.disconnect())
           resizeObservers.length = 0
         }
