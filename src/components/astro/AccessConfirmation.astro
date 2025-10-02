@@ -704,6 +704,7 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
 
         const contentEl = overlay.querySelector('.access-content');
         const mainEl = overlay.querySelector('.access-main');
+        const cardWrapperEl = overlay.querySelector('.access-card');
         const cardBackgroundEl = overlay.querySelector('.access-card-background');
         const textEl = overlay.querySelector('.access-text');
         const titleEl = overlay.querySelector('.access-title');
@@ -851,11 +852,12 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         };
 
         const updateHorizontalPadding = () => {
-          if (!contentEl || !cardBackgroundEl || !mainEl) return;
-          const contentRect = contentEl.getBoundingClientRect();
-          const cardRect = cardBackgroundEl.getBoundingClientRect();
+          if (!contentEl || !mainEl) return;
 
-          if (!contentRect.width || !cardRect.width) return;
+          const contentRect = contentEl.getBoundingClientRect();
+          const cardRect = (cardWrapperEl || cardBackgroundEl)?.getBoundingClientRect();
+
+          if (!contentRect.width || !cardRect?.width) return;
 
           const minPad = 32;
           const leftOffset = Math.max(minPad, Math.round(cardRect.left - contentRect.left));
@@ -877,7 +879,8 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         if (window.ResizeObserver) {
           const observer = new ResizeObserver(() => updateHorizontalPadding());
           if (contentEl) observer.observe(contentEl);
-          if (cardBackgroundEl) observer.observe(cardBackgroundEl);
+          if (cardWrapperEl) observer.observe(cardWrapperEl);
+          else if (cardBackgroundEl) observer.observe(cardBackgroundEl);
           resizeObservers.push(observer);
         }
 
