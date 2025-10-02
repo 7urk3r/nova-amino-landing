@@ -160,35 +160,8 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         </div>
 
         <div class="access-card" role="dialog" aria-modal="true" aria-labelledby="access-confirmation-title">
-          <svg class="access-card-cutout" viewBox="0 0 72 70" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-            <defs>
-              <g id="access-logo">
-                <path d="M135.06,94.71h-12.75v-58.98h12.75l28.85,43.52h-3.99v-43.52h12.75v58.98h-12.75l-28.85-43.44h3.99v43.44Z" />
-                <path d="M218.5,62.26c-1.97-3.3-4.65-5.86-8.08-7.69-3.45-1.84-7.38-2.75-11.8-2.75s-8.39.92-11.84,2.75c-3.47,1.84-6.18,4.39-8.15,7.69-1.97,3.3-2.95,7.12-2.95,11.49s.98,8.19,2.95,11.47c1.97,3.28,4.68,5.81,8.15,7.65,3.45,1.84,7.41,2.73,11.84,2.73s8.35-.9,11.8-2.73c3.43-1.84,6.12-4.37,8.08-7.65,1.97-3.28,2.95-7.08,2.95-11.47s-.98-8.19-2.95-11.49ZM198.56,82.29c-4.72,0-8.59-3.85-8.59-8.59s3.87-8.59,8.59-8.59,8.61,3.85,8.61,8.59-3.85,8.59-8.61,8.59Z" />
-                <path d="M236,94.71l-15.54-39.85h13.23l4.86,13.95c1.01,2.92,1.87,5.54,2.59,7.85.72,2.31,1.16,3.92,1.32,4.82.27-1.17.78-2.92,1.55-5.26.77-2.34,1.66-4.81,2.67-7.41l5.34-13.95h12.75l-16.66,39.85h-12.11Z" />
-                <path d="M279.48,95.3c-4.2,0-7.53-1.16-10-3.47-2.47-2.31-3.71-5.41-3.71-9.29,0-3.67,1.26-6.59,3.79-8.77,2.52-2.18,6.18-3.45,10.96-3.83l11.16-.88v-.64c0-1.33-.27-2.43-.8-3.31-.53-.88-1.29-1.54-2.27-1.99-.98-.45-2.22-.68-3.71-.68-2.6,0-4.58.48-5.94,1.43-1.36.96-2.03,2.34-2.03,4.14h-10.2c0-3.03.77-5.66,2.31-7.89,1.54-2.23,3.73-3.96,6.58-5.18,2.84-1.22,6.15-1.83,9.92-1.83s7.16.69,9.84,2.07c2.68,1.38,4.73,3.4,6.14,6.06,1.41,2.66,2.11,5.9,2.11,9.72v23.27h-10.84l-.8-5.26c-.64,1.81-2.14,3.31-4.5,4.5-2.37,1.2-5.04,1.79-8.01,1.79ZM283.78,86.22c2.34,0,4.25-.57,5.74-1.71,1.49-1.14,2.23-2.86,2.23-5.14v-2.15l-6.22.56c-2.66.21-4.53.65-5.62,1.32-1.09.67-1.63,1.63-1.63,2.91,0,1.43.45,2.5,1.36,3.19.9.69,2.28,1.04,4.14,1.04Z" />
-                <path d="M330.1,94.78h-13.47l21.04-58.98h12.6l20.96,58.98h-13.71l-4.14-12.43h-19.05l-4.23,12.43ZM342.29,58.92l-4.22,12.59h11.64l-4.23-12.59c-.32-1.01-.63-2.04-.95-3.11-.32-1.06-.53-1.94-.64-2.63-.11.69-.31,1.55-.6,2.59-.29,1.04-.63,2.09-1,3.15Z" />
-                <g>
-                  <path d="M542.98,62.26c-1.97-3.3-4.65-5.86-8.08-7.69-3.45-1.84-7.38-2.75-11.8-2.75s-8.39.92-11.84,2.75c-3.47,1.84-6.18,4.39-8.15,7.69-1.97,3.3-2.95,7.12-2.95,11.49s.98,8.19,2.95,11.47c1.97,3.28,4.68,5.81,8.15,7.65,3.45,1.84,7.41,2.73,11.84,2.73s8.35-.9,11.8-2.73c3.43-1.84,6.12-4.37,8.08-7.65,1.97-3.28,2.95-7.08,2.95-11.47s-.98-8.19-2.95-11.49ZM523.04,82.29c-4.72,0-8.59-3.85-8.59-8.59s3.87-8.59,8.59-8.59,8.61,3.85,8.61,8.59-3.85,8.59-8.61,8.59Z" />
-                  <path d="M385.5,94.78h-12.27v-39.85h11.48l1.36,6.85-1.28-1.43c.8-1.59,2.23-3.11,4.3-4.54,2.07-1.43,4.75-2.15,8.05-2.15,3.51,0,6.32.88,8.45,2.63,2.12,1.75,3.69,4.04,4.7,6.85h-1.91c.64-2.82,2.18-5.1,4.62-6.85,2.44-1.75,5.37-2.63,8.77-2.63,5.15,0,9.01,1.37,11.56,4.1,2.55,2.74,3.83,6.39,3.83,10.96v26.06h-12.27v-22.64c0-2.5-.6-4.36-1.79-5.58-1.2-1.22-2.78-1.83-4.74-1.83-1.17,0-2.28.25-3.35.76-1.06.51-1.94,1.38-2.63,2.63-.69,1.25-1.04,3.02-1.04,5.3v21.36h-12.27v-22.64c0-2.5-.59-4.34-1.75-5.54-1.17-1.2-2.74-1.79-4.7-1.79-1.17,0-2.3.25-3.39.76-1.09.51-1.98,1.38-2.67,2.63-.69,1.25-1.04,2.99-1.04,5.22v21.36Z" />
-                  <path d="M469.9,94.78h-12.27v-39.85h11.56l.8,4.14c1.22-1.7,2.91-3.03,5.06-3.99,2.15-.96,4.53-1.43,7.13-1.43,4.73,0,8.41,1.45,11.04,4.34,2.63,2.9,3.95,6.95,3.95,12.15v24.63h-12.27v-21.68c0-2.5-.64-4.5-1.91-6.02-1.28-1.51-2.98-2.27-5.1-2.27-2.44,0-4.38.73-5.82,2.19-1.43,1.46-2.15,3.44-2.15,5.94v21.84Z" />
-                  <rect x="441.25" y="54.93" width="12.27" height="39.85" />
-                  <path d="M447.39,49.98c-4.55,0-8.24-3.69-8.24-8.24s3.69-8.24,8.24-8.24,8.24,3.69,8.24,8.24-3.68,8.24-8.24,8.24Z" />
-                </g>
-                <path d="M72.07,27.25c-.58,20.98-17.39,37.87-38.3,38.51,20.91.58,37.73,17.53,38.3,38.45.51-20.92,17.33-37.87,38.24-38.45-20.91-.64-37.73-17.53-38.24-38.51h0Z" />
-              </g>
-
-              <mask id="access-card-cutout" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse" x="0" y="0" width="72" height="70">
-                <rect width="72" height="70" fill="white" />
-                <g transform="translate(3,3) scale(0.04486) translate(-33,-27)" fill="black">
-                  <use href="#access-logo" />
-                </g>
-              </mask>
-            </defs>
-            <rect class="access-card-background" width="72" height="70" rx="4" mask="url(#access-card-cutout)" />
-          </svg>
-
-          <div class="access-content">
+          <div class="access-card-surface">
+            <div class="access-content">
             <div class="access-header">
               <div class="access-lang-switch" role="tablist" aria-label="Language selector">
                 {normalizedLanguages.map((lang) => {
@@ -322,20 +295,30 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         max-height: 700px;
         z-index: 2;
         pointer-events: auto;
+        border-radius: 34px;
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.85), rgba(208, 217, 255, 0.55));
+        padding: 2px;
+        box-shadow: 0 35px 65px rgba(15, 23, 42, 0.35);
       }
 
-      .access-card-cutout {
+      .access-card::before {
+        content: "";
         position: absolute;
         inset: 0;
-        width: 100%;
-        height: 100%;
+        border-radius: 34px;
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        pointer-events: none;
       }
 
-      .access-card-background {
+      .access-card-surface {
+        position: relative;
         width: 100%;
         height: 100%;
-        fill: rgba(255, 255, 255, 0.95);
-        filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.1));
+        border-radius: 30px;
+        background: rgba(255, 255, 255, 0.98);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        overflow: hidden;
+        pointer-events: auto;
       }
 
       .access-content {
@@ -673,13 +656,13 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
       }
     </style>
 
-    <script>
-      const OVERLAY_ID = "{overlayId}";
-      const CONFIG_ID = "{configScriptId}";
-      const ACCEPT_KEY = "{confirmationKey}";
-      const ACCEPT_AT_KEY = "{confirmationTimestampKey}";
-      const DEFAULT_REMEMBER_MS = {defaultRememberDays * 24 * 60 * 60 * 1000};
-      const DEFAULT_DECLINE_URL = "{defaultDeclineUrl}";
+    <script is:inline>
+      const OVERLAY_ID = 'access-confirmation-overlay';
+      const CONFIG_ID = 'access-confirmation-config';
+      const ACCEPT_KEY = 'novaAminoAccessConfirmed';
+      const ACCEPT_AT_KEY = 'novaAminoAccessConfirmedAt';
+      const DEFAULT_REMEMBER_MS = 2592000000;
+      const DEFAULT_DECLINE_URL = 'https://www.google.com';
       const LOCK_CLASS = 'access-lock';
 
       const ready = (fn) => {
@@ -705,7 +688,7 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         const contentEl = overlay.querySelector('.access-content');
         const mainEl = overlay.querySelector('.access-main');
         const cardWrapperEl = overlay.querySelector('.access-card');
-        const cardBackgroundEl = overlay.querySelector('.access-card-background');
+        const cardSurfaceEl = overlay.querySelector('.access-card-surface');
         const textEl = overlay.querySelector('.access-text');
         const titleEl = overlay.querySelector('.access-title');
         const questionEl = overlay.querySelector('.access-question');
@@ -855,7 +838,7 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
           if (!contentEl || !mainEl) return;
 
           const contentRect = contentEl.getBoundingClientRect();
-          const cardRect = (cardWrapperEl || cardBackgroundEl)?.getBoundingClientRect();
+          const cardRect = (cardSurfaceEl || cardWrapperEl)?.getBoundingClientRect();
 
           if (!contentRect.width || !cardRect?.width) return;
 
@@ -879,8 +862,8 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         if (window.ResizeObserver) {
           const observer = new ResizeObserver(() => updateHorizontalPadding());
           if (contentEl) observer.observe(contentEl);
-          if (cardWrapperEl) observer.observe(cardWrapperEl);
-          else if (cardBackgroundEl) observer.observe(cardBackgroundEl);
+          if (cardSurfaceEl) observer.observe(cardSurfaceEl);
+          else if (cardWrapperEl) observer.observe(cardWrapperEl);
           resizeObservers.push(observer);
         }
 
