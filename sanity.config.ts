@@ -17,8 +17,8 @@ const structure = (S) =>
         ),
 
       S.listItem()
-        .title('Age Gate Pop Up')
-        .child(S.documentTypeList('ageGatePage')),
+        .title('Access Confirmation')
+        .child(S.documentTypeList('accessConfirmation')),
 
       S.listItem()
         .title('Landing Page')

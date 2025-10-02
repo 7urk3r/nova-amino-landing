@@ -1,0 +1,923 @@
+---
+const overlayId = 'access-confirmation-overlay'
+const configScriptId = 'access-confirmation-config'
+const confirmationKey = 'novaAminoAccessConfirmed'
+const confirmationTimestampKey = 'novaAminoAccessConfirmedAt'
+const defaultDeclineUrl = 'https://www.google.com'
+const defaultRememberDays = 30
+
+interface AccessLanguage {
+  label?: string
+  langCode?: string
+  title?: string
+  question?: string
+  paragraphs?: string[]
+  acceptButtonLabel?: string
+  declineButtonLabel?: string
+}
+
+interface AccessConfirmationDocument {
+  enabled?: boolean
+  minimumAge?: number
+  rememberForDays?: number
+  termsUrl?: string
+  termsLabel?: string
+  privacyUrl?: string
+  privacyLabel?: string
+  declineRedirectUrl?: string
+  successRedirectUrl?: string
+  defaultLanguage?: string
+  languages?: AccessLanguage[]
+}
+
+const defaultLanguage: Required<AccessLanguage> = {
+  label: 'English',
+  langCode: 'en',
+  title: 'Access Confirmation',
+  question: 'Do you accept these terms?',
+  paragraphs: [
+    'By entering this site, I confirm that I am at least 21 years of age and a qualified researcher. I understand that all Nova Amino products are sold strictly for laboratory research use only (RUO) and are not intended for human or veterinary consumption, medical treatment, or diagnostic purposes.',
+    'I acknowledge that all information provided is for educational and informational purposes only and should not be interpreted as medical advice. I accept full responsibility for complying with all applicable laws in my jurisdiction and agree to hold Nova Amino harmless from any misuse of products.',
+    'I also consent to the use of cookies required for essential site functions (such as remembering language preferences) and analytics. By clicking "Yes," I agree to these terms as well as Nova Amino\'s Terms of Service and Privacy Policy.'
+  ],
+  acceptButtonLabel: 'Yes, Enter Site',
+  declineButtonLabel: 'No, Exit'
+}
+
+const defaultSpanish: Required<AccessLanguage> = {
+  label: 'Español',
+  langCode: 'es',
+  title: 'Confirmación de Acceso',
+  question: '¿Acepta estos términos?',
+  paragraphs: [
+    'Al ingresar a este sitio, confirmo que tengo al menos 21 años de edad y que soy un investigador calificado. Entiendo que todos los productos de Nova Amino se venden estrictamente para uso de investigación de laboratorio (RUO) y no están destinados al consumo humano o veterinario, ni para tratamiento médico o fines de diagnóstico.',
+    'Reconozco que toda la información proporcionada es únicamente con fines educativos e informativos y no debe interpretarse como consejo médico. Acepto la responsabilidad total de cumplir con todas las leyes aplicables en mi jurisdicción y acepto liberar a Nova Amino de cualquier responsabilidad derivada del uso indebido de los productos.',
+    'También autorizo el uso de cookies necesarias para las funciones esenciales del sitio (como recordar las preferencias de idioma) y con fines analíticos. Al hacer clic en "Sí", acepto estos términos, así como los Términos de Servicio y la Política de Privacidad de Nova Amino.'
+  ],
+  acceptButtonLabel: 'Sí, entrar al sitio',
+  declineButtonLabel: 'No, salir'
+}
+
+const propsData = (Astro.props?.data ?? {}) as AccessConfirmationDocument
+const isEnabled = propsData.enabled ?? true
+
+const escapeHtml = (value: string) =>
+  value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+
+const escapeRegExp = (value: string) => value.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
+
+const rawLanguages = Array.isArray(propsData.languages) && propsData.languages.length
+  ? propsData.languages
+  : [defaultLanguage, defaultSpanish]
+
+const termsLabel = propsData.termsLabel?.trim() || 'Terms of Service'
+const privacyLabel = propsData.privacyLabel?.trim() || 'Privacy Policy'
+const termsUrl = propsData.termsUrl?.trim() || '#'
+const privacyUrl = propsData.privacyUrl?.trim() || '#'
+
+const highlightLinks = (text: string) => {
+  let html = escapeHtml(text)
+
+  if (termsUrl && termsLabel) {
+    const sanitizedTerms = escapeHtml(termsLabel)
+    const pattern = new RegExp(escapeRegExp(sanitizedTerms), 'g')
+    html = html.replace(
+      pattern,
+      `<a href="${termsUrl}" class="ac-link" target="_blank" rel="noopener">${sanitizedTerms}</a>`
+    )
+  }
+
+  if (privacyUrl && privacyLabel) {
+    const sanitizedPrivacy = escapeHtml(privacyLabel)
+    const pattern = new RegExp(escapeRegExp(sanitizedPrivacy), 'g')
+    html = html.replace(
+      pattern,
+      `<a href="${privacyUrl}" class="ac-link" target="_blank" rel="noopener">${sanitizedPrivacy}</a>`
+    )
+  }
+
+  return `<p>${html}</p>`
+}
+
+const normalizedLanguages = rawLanguages
+  .map((lang) => ({
+    label: lang.label?.trim() || defaultLanguage.label,
+    langCode: lang.langCode?.trim() || defaultLanguage.langCode,
+    title: lang.title?.trim() || defaultLanguage.title,
+    question: lang.question?.trim() || defaultLanguage.question,
+    acceptButtonLabel: lang.acceptButtonLabel?.trim() || defaultLanguage.acceptButtonLabel,
+    declineButtonLabel: lang.declineButtonLabel?.trim() || defaultLanguage.declineButtonLabel,
+    paragraphs: (lang.paragraphs && lang.paragraphs.length ? lang.paragraphs : defaultLanguage.paragraphs).map(highlightLinks),
+  }))
+  .filter((lang, index, self) => lang && lang.langCode && self.findIndex((candidate) => candidate.langCode === lang.langCode) === index)
+
+const safeRememberDays = Number.isFinite(propsData.rememberForDays)
+  ? Math.max(1, Math.min(Number(propsData.rememberForDays), 365))
+  : defaultRememberDays
+
+const defaultLanguageCode = propsData.defaultLanguage && normalizedLanguages.some((lang) => lang.langCode === propsData.defaultLanguage)
+  ? propsData.defaultLanguage
+  : normalizedLanguages[0]?.langCode ?? defaultLanguage.langCode
+
+const initialLanguage = normalizedLanguages.find((lang) => lang.langCode === defaultLanguageCode) || normalizedLanguages[0]
+
+const config = {
+  overlayId,
+  acceptKey: confirmationKey,
+  acceptAtKey: confirmationTimestampKey,
+  rememberForMs: safeRememberDays * 24 * 60 * 60 * 1000,
+  declineRedirectUrl: propsData.declineRedirectUrl?.trim() || defaultDeclineUrl,
+  successRedirectUrl: propsData.successRedirectUrl?.trim() || '',
+  termsUrl,
+  privacyUrl,
+  termsLabel,
+  privacyLabel,
+  languages: normalizedLanguages,
+  defaultLanguage: initialLanguage?.langCode ?? defaultLanguage.langCode,
+  minimumAge: propsData.minimumAge ?? 21,
+}
+
+const configJson = JSON.stringify(config).replace(/</g, '\\u003c')
+const shouldRender = isEnabled && normalizedLanguages.length > 0
+---
+{shouldRender && (
+  <>
+    <div
+      id={overlayId}
+      class="ac-overlay"
+      data-active="true"
+      aria-hidden="true"
+    >
+      <div class="ac-container">
+        <div class="ac-gradients" aria-hidden="true">
+          <div class="ac-orb ac-orb-top-left"></div>
+          <div class="ac-orb ac-orb-bottom-left"></div>
+          <div class="ac-orb ac-orb-top-right"></div>
+          <div class="ac-orb ac-orb-bottom-right"></div>
+          <div class="ac-orb ac-orb-top-center"></div>
+          <div class="ac-orb ac-orb-bottom-center"></div>
+          <div class="ac-orb ac-orb-left-vertical"></div>
+        </div>
+
+        <div class="ac-card" role="dialog" aria-modal="true" aria-labelledby="access-confirmation-title">
+          <svg class="ac-card-cutout" viewBox="0 0 72 70" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <defs>
+              <g id="nova-amino-logo">
+                <path d="M135.06,94.71h-12.75v-58.98h12.75l28.85,43.52h-3.99v-43.52h12.75v58.98h-12.75l-28.85-43.44h3.99v43.44Z" />
+                <path d="M218.5,62.26c-1.97-3.3-4.65-5.86-8.08-7.69-3.45-1.84-7.38-2.75-11.8-2.75s-8.39.92-11.84,2.75c-3.47,1.84-6.18,4.39-8.15,7.69-1.97,3.3-2.95,7.12-2.95,11.49s.98,8.19,2.95,11.47c1.97,3.28,4.68,5.81,8.15,7.65,3.45,1.84,7.41,2.73,11.84,2.73s8.35-.9,11.8-2.73c3.43-1.84,6.12-4.37,8.08-7.65,1.97-3.28,2.95-7.08,2.95-11.47s-.98-8.19-2.95-11.49ZM198.56,82.29c-4.72,0-8.59-3.85-8.59-8.59s3.87-8.59,8.59-8.59,8.61,3.85,8.61,8.59-3.85,8.59-8.61,8.59Z" />
+                <path d="M236,94.71l-15.54-39.85h13.23l4.86,13.95c1.01,2.92,1.87,5.54,2.59,7.85.72,2.31,1.16,3.92,1.32,4.82.27-1.17.78-2.92,1.55-5.26.77-2.34,1.66-4.81,2.67-7.41l5.34-13.95h12.75l-16.66,39.85h-12.11Z" />
+                <path d="M279.48,95.3c-4.2,0-7.53-1.16-10-3.47-2.47-2.31-3.71-5.41-3.71-9.29,0-3.67,1.26-6.59,3.79-8.77,2.52-2.18,6.18-3.45,10.96-3.83l11.16-.88v-.64c0-1.33-.27-2.43-.8-3.31-.53-.88-1.29-1.54-2.27-1.99-.98-.45-2.22-.68-3.71-.68-2.6,0-4.58.48-5.94,1.43-1.36.96-2.03,2.34-2.03,4.14h-10.2c0-3.03.77-5.66,2.31-7.89,1.54-2.23,3.73-3.96,6.58-5.18,2.84-1.22,6.15-1.83,9.92-1.83s7.16.69,9.84,2.07c2.68,1.38,4.73,3.4,6.14,6.06,1.41,2.66,2.11,5.9,2.11,9.72v23.27h-10.84l-.8-5.26c-.64,1.81-2.14,3.31-4.5,4.5-2.37,1.2-5.04,1.79-8.01,1.79ZM283.78,86.22c2.34,0,4.25-.57,5.74-1.71,1.49-1.14,2.23-2.86,2.23-5.14v-2.15l-6.22.56c-2.66.21-4.53.65-5.62,1.32-1.09.67-1.63,1.63-1.63,2.91,0,1.43.45,2.5,1.36,3.19.9.69,2.28,1.04,4.14,1.04Z" />
+                <path d="M330.1,94.78h-13.47l21.04-58.98h12.6l20.96,58.98h-13.71l-4.14-12.43h-19.05l-4.23,12.43ZM342.29,58.92l-4.22,12.59h11.64l-4.23-12.59c-.32-1.01-.63-2.04-.95-3.11-.32-1.06-.53-1.94-.64-2.63-.11.69-.31,1.55-.6,2.59-.29,1.04-.63,2.09-1,3.15Z" />
+                <g>
+                  <path d="M542.98,62.26c-1.97-3.3-4.65-5.86-8.08-7.69-3.45-1.84-7.38-2.75-11.8-2.75s-8.39.92-11.84,2.75c-3.47,1.84-6.18,4.39-8.15,7.69-1.97,3.3-2.95,7.12-2.95,11.49s.98,8.19,2.95,11.47c1.97,3.28,4.68,5.81,8.15,7.65,3.45,1.84,7.41,2.73,11.84,2.73s8.35-.9,11.8-2.73c3.43-1.84,6.12-4.37,8.08-7.65,1.97-3.28,2.95-7.08,2.95-11.47s-.98-8.19-2.95-11.49ZM523.04,82.29c-4.72,0-8.59-3.85-8.59-8.59s3.87-8.59,8.59-8.59,8.61,3.85,8.61,8.59-3.85,8.59-8.61,8.59Z" />
+                  <path d="M385.5,94.78h-12.27v-39.85h11.48l1.36,6.85-1.28-1.43c.8-1.59,2.23-3.11,4.3-4.54,2.07-1.43,4.75-2.15,8.05-2.15,3.51,0,6.32.88,8.45,2.63,2.12,1.75,3.69,4.04,4.7,6.85h-1.91c.64-2.82,2.18-5.1,4.62-6.85,2.44-1.75,5.37-2.63,8.77-2.63,5.15,0,9.01,1.37,11.56,4.1,2.55,2.74,3.83,6.39,3.83,10.96v26.06h-12.27v-22.64c0-2.5-.6-4.36-1.79-5.58-1.2-1.22-2.78-1.83-4.74-1.83-1.17,0-2.28.25-3.35.76-1.06.51-1.94,1.38-2.63,2.63-.69,1.25-1.04,3.02-1.04,5.3v21.36h-12.27v-22.64c0-2.5-.59-4.34-1.75-5.54-1.17-1.2-2.74-1.79-4.7-1.79-1.17,0-2.3.25-3.39.76-1.09.51-1.98,1.38-2.67,2.63-.69,1.25-1.04,2.99-1.04,5.22v21.36Z" />
+                  <path d="M469.9,94.78h-12.27v-39.85h11.56l.8,4.14c1.22-1.7,2.91-3.03,5.06-3.99,2.15-.96,4.53-1.43,7.13-1.43,4.73,0,8.41,1.45,11.04,4.34,2.63,2.9,3.95,6.95,3.95,12.15v24.63h-12.27v-21.68c0-2.5-.64-4.5-1.91-6.02-1.28-1.51-2.98-2.27-5.1-2.27-2.44,0-4.38.73-5.82,2.19-1.43,1.46-2.15,3.44-2.15,5.94v21.84Z" />
+                  <rect x="441.25" y="54.93" width="12.27" height="39.85" />
+                  <path d="M447.39,49.98c-4.55,0-8.24-3.69-8.24-8.24s3.69-8.24,8.24-8.24,8.24,3.69,8.24,8.24-3.68,8.24-8.24,8.24Z" />
+                </g>
+                <path d="M72.07,27.25c-.58,20.98-17.39,37.87-38.3,38.51,20.91.58,37.73,17.53,38.3,38.45.51-20.92,17.33-37.87,38.24-38.45-20.91-.64-37.73-17.53-38.24-38.51h0Z" />
+              </g>
+
+              <mask id="card-cutout" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse" x="0" y="0" width="72" height="70">
+                <rect width="72" height="70" fill="white" />
+                <g transform="translate(3,3) scale(0.04486) translate(-33,-27)" fill="black">
+                  <use href="#nova-amino-logo" />
+                </g>
+              </mask>
+            </defs>
+            <rect class="ac-card-background" width="72" height="70" rx="4" mask="url(#card-cutout)" />
+          </svg>
+
+          <div class="ac-content">
+            <div class="ac-header">
+              <div class="ac-lang-switch" role="tablist" aria-label="Language selector">
+                {normalizedLanguages.map((lang) => (
+                  <button
+                    class={`ac-lang-option${lang.langCode === (initialLanguage?.langCode ?? defaultLanguage.langCode) ? ' ac-lang-active' : ''}`}
+                    role="tab"
+                    aria-selected={lang.langCode === (initialLanguage?.langCode ?? defaultLanguage.langCode) ? 'true' : 'false'}
+                    data-lang={lang.langCode}
+                    tabIndex={lang.langCode === (initialLanguage?.langCode ?? defaultLanguage.langCode) ? 0 : -1}
+                  >
+                    {lang.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div class="ac-logo-measure" aria-hidden="true"></div>
+
+            <div class="ac-main">
+              <h1 id="access-confirmation-title" class="ac-title">{initialLanguage?.title ?? defaultLanguage.title}</h1>
+              <div class="ac-text" set:html={(initialLanguage?.paragraphs ?? defaultLanguage.paragraphs.map(highlightLinks)).join('')}></div>
+              <p class="ac-question">{initialLanguage?.question ?? defaultLanguage.question}</p>
+              <div class="ac-buttons">
+                <button class="ac-btn ac-btn-primary" type="button" data-action="confirm">{initialLanguage?.acceptButtonLabel ?? defaultLanguage.acceptButtonLabel}</button>
+                <button class="ac-btn ac-btn-secondary" type="button" data-action="exit">{initialLanguage?.declineButtonLabel ?? defaultLanguage.declineButtonLabel}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="application/json" id={configScriptId}>
+      {configJson}
+    </script>
+
+    <style>
+      .ac-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(6, 12, 30, 0.6);
+        backdrop-filter: blur(10px);
+        transition: opacity 0.4s ease, visibility 0.4s ease;
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .ac-overlay[data-active="false"] {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .ac-container {
+        position: relative;
+        height: 100%;
+        width: 100%;
+      }
+
+      .ac-gradients {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        filter: blur(25px);
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .ac-orb {
+        position: absolute;
+        width: 180vmin;
+        height: 180vmin;
+        border-radius: 50%;
+        opacity: 0.8;
+        background: radial-gradient(circle at 30% 40%, rgba(75, 0, 130, 1) 0%, rgba(106, 90, 205, 0.9) 25%, rgba(138, 43, 226, 0.8) 50%, rgba(102, 51, 153, 0.6) 75%, rgba(75, 0, 130, 0.4) 90%, transparent 100%);
+        will-change: transform;
+      }
+
+      .ac-orb-top-left { animation: ac-orbit-1 8s ease-in-out infinite; animation-delay: -1s; }
+      .ac-orb-bottom-left { animation: ac-orbit-4-rev 9s ease-in-out infinite; animation-delay: -3.5s; }
+      .ac-orb-top-right { animation: ac-orbit-3-rev 7s ease-in-out infinite; animation-delay: -2s; }
+      .ac-orb-bottom-right { animation: ac-orbit-6 8.5s ease-in-out infinite; animation-delay: -2.5s; }
+      .ac-orb-top-center { animation: ac-orbit-clockwise-rev 6s ease-in-out infinite; }
+      .ac-orb-bottom-center { animation: ac-orbit-5 7.5s ease-in-out infinite; animation-delay: -3s; }
+      .ac-orb-left-vertical { animation: ac-orbit-vertical 10s ease-in-out infinite; }
+
+      .ac-card {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: min(70vw, 900px);
+        height: min(85vh, 700px);
+        max-width: 900px;
+        max-height: 700px;
+        z-index: 2;
+      }
+
+      .ac-card-cutout {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .ac-card-background {
+        width: 100%;
+        height: 100%;
+        fill: rgba(255, 255, 255, 0.95);
+        filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.1));
+      }
+
+      .ac-content {
+        position: relative;
+        z-index: 3;
+        border-radius: 28px;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        pointer-events: none;
+      }
+
+      .ac-content > * {
+        pointer-events: auto;
+      }
+
+      .ac-logo-measure {
+        position: absolute;
+        top: 5%;
+        left: 5%;
+        width: 25%;
+        aspect-ratio: 535 / 78;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .ac-header {
+        position: absolute;
+        top: 24px;
+        right: 5%;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .ac-lang-switch {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 9999px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+        backdrop-filter: saturate(140%) blur(6px);
+        height: 44px;
+      }
+
+      .ac-lang-option {
+        position: relative;
+        display: flex;
+        align-items: center;
+        height: 100%;
+        padding: 0 14px;
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1;
+        color: #4b5563;
+        cursor: pointer;
+        user-select: none;
+        transition: color 160ms ease;
+        white-space: nowrap;
+        background: transparent;
+        border: none;
+      }
+
+      .ac-lang-option:focus-visible {
+        outline: 2px solid #2D5BFF;
+        outline-offset: 2px;
+      }
+
+      .ac-lang-option.ac-lang-active {
+        color: #ffffff;
+      }
+
+      .ac-lang-option.ac-lang-active::before {
+        content: "";
+        position: absolute;
+        inset: 2px;
+        border-radius: 9999px;
+        background: #2D5BFF;
+        z-index: -1;
+      }
+
+      @media (max-width: 640px) {
+        .ac-lang-switch {
+          height: 40px;
+        }
+
+        .ac-lang-option {
+          padding: 0 12px;
+          font-size: 13px;
+        }
+      }
+
+      .ac-main {
+        position: relative;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        height: 100%;
+        padding: 80px 0 40px;
+        gap: 32px;
+        box-sizing: border-box;
+      }
+
+      .ac-title {
+        font-size: 32px;
+        font-weight: 700;
+        line-height: 40px;
+        color: #111827;
+        margin: 40px 64px 0;
+        text-align: center;
+        letter-spacing: -0.025em;
+      }
+
+      .ac-text {
+        overflow-y: auto;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 24px 64px;
+        background: rgba(0, 0, 0, 0.02);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06), inset 0 1px 2px rgba(0, 0, 0, 0.04);
+        margin: 0;
+        border-radius: 0;
+      }
+
+      .ac-text p {
+        font-size: 15px;
+        line-height: 24px;
+        color: #374151;
+        margin: 0 0 16px;
+        font-weight: 400;
+      }
+
+      .ac-text p:last-child {
+        margin-bottom: 0;
+      }
+
+      .ac-link {
+        color: #2D5BFF;
+        text-decoration: none;
+        font-weight: 500;
+        border-bottom: 1px solid #2D5BFF;
+        transition: color 0.15s ease, border-color 0.15s ease;
+      }
+
+      .ac-link:hover {
+        color: #1e40af;
+        border-bottom-color: #1e40af;
+      }
+
+      .ac-question {
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 24px;
+        text-align: center;
+        color: #111827;
+        margin: 0 64px;
+      }
+
+      .ac-buttons {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        margin: 0 64px;
+      }
+
+      .ac-btn {
+        padding: 16px 32px;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 20px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        min-width: 144px;
+        text-align: center;
+        font-family: inherit;
+      }
+
+      .ac-btn-primary {
+        background: #2D5BFF;
+        color: #ffffff;
+        box-shadow: 0 1px 3px rgba(45, 91, 255, 0.3);
+      }
+
+      .ac-btn-primary:hover {
+        background: #1e40af;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(45, 91, 255, 0.4);
+      }
+
+      .ac-btn-primary:active {
+        transform: translateY(0);
+        box-shadow: 0 1px 3px rgba(45, 91, 255, 0.3);
+      }
+
+      .ac-btn-secondary {
+        background: #ffffff;
+        color: #374151;
+        border: 1px solid #d1d5db;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .ac-btn-secondary:hover {
+        background: #f9fafb;
+        border-color: #9ca3af;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .ac-btn-secondary:active {
+        transform: translateY(0);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      @media (max-width: 640px) {
+        .ac-card {
+          width: min(92vw, 520px);
+          height: min(92vh, 640px);
+        }
+
+        .ac-main {
+          padding: 64px 0 32px;
+          gap: 24px;
+        }
+
+        .ac-title {
+          font-size: 28px;
+          line-height: 32px;
+          margin: 32px 32px 0;
+        }
+
+        .ac-text {
+          padding: 20px 32px;
+        }
+
+        .ac-question {
+          margin: 0 32px;
+        }
+
+        .ac-buttons {
+          margin: 0 32px;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .ac-btn {
+          width: 100%;
+          padding: 14px 24px;
+          font-size: 15px;
+          min-width: unset;
+        }
+      }
+
+      @keyframes ac-orbit-5 {
+        0% { transform: translate(calc(43vw - 90vmin), calc(50vh - 90vmin)) rotate(0deg) translateX(150px) rotate(0deg); }
+        100% { transform: translate(calc(43vw - 90vmin), calc(50vh - 90vmin)) rotate(360deg) translateX(150px) rotate(-360deg); }
+      }
+
+      @keyframes ac-orbit-3 {
+        0% { top: calc(30% + 16.67% - 90vmin); left: calc(53% + 12.5% - 90vmin); }
+        25% { top: calc(45% + 16.67% - 90vmin); left: calc(43% + 12.5% - 90vmin); }
+        50% { top: calc(55% + 16.67% - 90vmin); left: calc(48% + 12.5% - 90vmin); }
+        75% { top: calc(45% + 16.67% - 90vmin); left: calc(53% + 12.5% - 90vmin); }
+        100% { top: calc(30% + 16.67% - 90vmin); left: calc(53% + 12.5% - 90vmin); }
+      }
+
+      @keyframes ac-orbit-3-rev {
+        0% { top: calc(30% + 16.67% - 90vmin); left: calc(53% + 12.5% - 90vmin); }
+        25% { top: calc(55% + 16.67% - 90vmin); left: calc(53% + 12.5% - 90vmin); }
+        50% { top: calc(35% + 16.67% - 90vmin); left: calc(53% + 12.5% - 90vmin); }
+        75% { top: calc(45% + 16.67% - 90vmin); left: calc(43% + 12.5% - 90vmin); }
+        100% { top: calc(30% + 16.67% - 90vmin); left: calc(53% + 12.5% - 90vmin); }
+      }
+
+      @keyframes ac-orbit-1 {
+        0% { top: calc(35% + 16.67% - 90vmin); left: calc(33% + 12.5% - 90vmin); }
+        16.67% { top: calc(38% + 16.67% - 90vmin); left: calc(35% + 12.5% - 90vmin); }
+        33.33% { top: calc(50% + 16.67% - 90vmin); left: calc(35% + 12.5% - 90vmin); }
+        50% { top: calc(58% + 16.67% - 90vmin); left: calc(35% + 12.5% - 90vmin); }
+        66.67% { top: calc(52% + 16.67% - 90vmin); left: calc(33% + 12.5% - 90vmin); }
+        83.33% { top: calc(40% + 16.67% - 90vmin); left: calc(33% + 12.5% - 90vmin); }
+        100% { top: calc(35% + 16.67% - 90vmin); left: calc(33% + 12.5% - 90vmin); }
+      }
+
+      @keyframes ac-orbit-4 {
+        0% { top: calc(55% + 16.67% - 90vmin); left: calc(33% + 12.5% - 90vmin); }
+        25% { top: calc(35% + 16.67% - 90vmin); left: calc(33% + 12.5% - 90vmin); }
+        50% { top: calc(35% + 16.67% - 90vmin); left: calc(53% + 12.5% - 90vmin); }
+        75% { top: calc(55% + 16.67% - 90vmin); left: calc(53% + 12.5% - 90vmin); }
+        100% { top: calc(55% + 16.67% - 90vmin); left: calc(33% + 12.5% - 90vmin); }
+      }
+
+      @keyframes ac-orbit-4-rev {
+        0% { top: calc(55% + 16.67% - 90vmin); left: calc(33% + 12.5% - 90vmin); }
+        25% { top: calc(55% + 16.67% - 90vmin); left: calc(53% + 12.5% - 90vmin); }
+        50% { top: calc(35% + 16.67% - 90vmin); left: calc(53% + 12.5% - 90vmin); }
+        75% { top: calc(35% + 16.67% - 90vmin); left: calc(33% + 12.5% - 90vmin); }
+        100% { top: calc(55% + 16.67% - 90vmin); left: calc(33% + 12.5% - 90vmin); }
+      }
+
+      @keyframes ac-orbit-6 {
+        0% { top: calc(50% + 16.67% - 90vmin); left: calc(48% + 12.5% - 90vmin); }
+        12.5% { top: calc(55% + 16.67% - 90vmin); left: calc(43% + 12.5% - 90vmin); }
+        25% { top: calc(50% + 16.67% - 90vmin); left: calc(35% + 12.5% - 90vmin); }
+        37.5% { top: calc(38% + 16.67% - 90vmin); left: calc(35% + 12.5% - 90vmin); }
+        50% { top: calc(35% + 16.67% - 90vmin); left: calc(41% + 12.5% - 90vmin); }
+        62.5% { top: calc(38% + 16.67% - 90vmin); left: calc(45% + 12.5% - 90vmin); }
+        75% { top: calc(55% + 16.67% - 90vmin); left: calc(51% + 12.5% - 90vmin); }
+        87.5% { top: calc(55% + 16.67% - 90vmin); left: calc(43% + 12.5% - 90vmin); }
+        100% { top: calc(50% + 16.67% - 90vmin); left: calc(48% + 12.5% - 90vmin); }
+      }
+
+      @keyframes ac-orbit-clockwise {
+        0% { transform: translate(calc(33vw - 90vmin), calc(40vh - 90vmin)) rotate(0deg) translateX(120px) rotate(0deg); }
+        100% { transform: translate(calc(33vw - 90vmin), calc(40vh - 90vmin)) rotate(360deg) translateX(120px) rotate(-360deg); }
+      }
+
+      @keyframes ac-orbit-clockwise-rev {
+        0% { transform: translate(calc(33vw - 90vmin), calc(40vh - 90vmin)) rotate(0deg) translateX(120px) rotate(0deg); }
+        100% { transform: translate(calc(33vw - 90vmin), calc(40vh - 90vmin)) rotate(-360deg) translateX(120px) rotate(360deg); }
+      }
+
+      @keyframes ac-orbit-vertical {
+        0% { top: 10%; left: 3%; }
+        50% { top: 70%; left: 3%; }
+        100% { top: 10%; left: 3%; }
+      }
+
+      :global(body.ac-no-scroll) {
+        overflow: hidden !important;
+      }
+    </style>
+
+    <script>
+      const OVERLAY_ID = "{overlayId}"
+      const CONFIG_SCRIPT_ID = "{configScriptId}"
+      const ACCEPT_KEY = "{confirmationKey}"
+      const ACCEPT_AT_KEY = "{confirmationTimestampKey}"
+
+      const ready = (fn) => {
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', fn, { once: true })
+        } else {
+          fn()
+        }
+      }
+
+      ready(() => {
+        const overlay = document.getElementById(OVERLAY_ID)
+        if (!overlay) return
+
+        const configEl = document.getElementById(CONFIG_SCRIPT_ID)
+        let config = {}
+
+        try {
+          config = configEl?.textContent ? JSON.parse(configEl.textContent) : {}
+        } catch (error) {
+          console.warn('Failed to parse access confirmation config', error)
+          config = {}
+        }
+
+        const languages = Array.isArray(config.languages) ? config.languages : []
+        const confirmBtn = overlay.querySelector('[data-action="confirm"]')
+        const exitBtn = overlay.querySelector('[data-action="exit"]')
+        const langButtons = Array.from(overlay.querySelectorAll('.ac-lang-option'))
+        const titleEl = overlay.querySelector('.ac-title')
+        const questionEl = overlay.querySelector('.ac-question')
+        const textEl = overlay.querySelector('.ac-text')
+        const langSwitch = overlay.querySelector('.ac-lang-switch')
+        const header = overlay.querySelector('.ac-header')
+        const logoMeasure = overlay.querySelector('.ac-logo-measure')
+        const main = overlay.querySelector('.ac-main')
+        const cardRect = overlay.querySelector('.ac-card-background')
+
+        const rememberForMs = typeof config.rememberForMs === 'number' && Number.isFinite(config.rememberForMs)
+          ? Math.max(0, config.rememberForMs)
+          : 30 * 24 * 60 * 60 * 1000
+
+        const declineUrl = typeof config.declineRedirectUrl === 'string' ? config.declineRedirectUrl : ''
+        const successUrl = typeof config.successRedirectUrl === 'string' ? config.successRedirectUrl : ''
+
+        const setDataset = (value) => {
+          overlay.dataset.active = value ? 'true' : 'false'
+          overlay.setAttribute('aria-hidden', value ? 'false' : 'true')
+        }
+
+        const applyLanguage = (language) => {
+          if (!language) return
+          if (titleEl) titleEl.textContent = language.title || ''
+          if (questionEl) questionEl.textContent = language.question || ''
+          if (textEl && Array.isArray(language.paragraphs)) {
+            textEl.innerHTML = language.paragraphs.join('')
+          }
+          if (confirmBtn) confirmBtn.textContent = language.acceptButtonLabel || confirmBtn.textContent
+          if (exitBtn) exitBtn.textContent = language.declineButtonLabel || exitBtn.textContent
+        }
+
+        const setLanguage = (button, langCode) => {
+          const language = languages.find((entry) => entry.langCode === langCode) || languages[0]
+          langButtons.forEach((btn) => {
+            const isActive = btn === button
+            btn.classList.toggle('ac-lang-active', isActive)
+            btn.setAttribute('aria-selected', String(isActive))
+            btn.tabIndex = isActive ? 0 : -1
+          })
+
+          if (language) {
+            applyLanguage(language)
+            if (language.langCode) {
+              document.documentElement.setAttribute('lang', language.langCode)
+              try {
+                localStorage.setItem('novaAminoLang', language.langCode)
+              } catch (error) {
+                // ignore storage issues
+              }
+            }
+          }
+        }
+
+        const storedLang = (() => {
+          try {
+            return localStorage.getItem('novaAminoLang')
+          } catch (error) {
+            return null
+          }
+        })()
+
+        const initialLangCode = languages.find((entry) => entry.langCode === storedLang)?.langCode
+          || (typeof config.defaultLanguage === 'string' ? config.defaultLanguage : languages[0]?.langCode)
+
+        const initialButton = langButtons.find((btn) => btn.dataset.lang === initialLangCode) || langButtons[0]
+        if (initialButton) {
+          setLanguage(initialButton, initialButton.dataset.lang)
+        } else if (languages[0]) {
+          applyLanguage(languages[0])
+        }
+
+        langButtons.forEach((button) => {
+          button.addEventListener('click', () => setLanguage(button, button.dataset.lang))
+          button.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault()
+              setLanguage(button, button.dataset.lang)
+            }
+
+            if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+              event.preventDefault()
+              const index = langButtons.indexOf(button)
+              const nextIndex = event.key === 'ArrowRight'
+                ? (index + 1) % langButtons.length
+                : (index - 1 + langButtons.length) % langButtons.length
+              const nextButton = langButtons[nextIndex]
+              setLanguage(nextButton, nextButton.dataset.lang)
+              nextButton.focus()
+            }
+          })
+        })
+
+        const hasValidAcceptance = () => {
+          try {
+            const stored = localStorage.getItem(ACCEPT_KEY)
+            if (stored !== 'true') return false
+
+            if (!rememberForMs) return true
+
+            const storedAt = localStorage.getItem(ACCEPT_AT_KEY)
+            if (!storedAt) return true
+
+            const timestamp = Date.parse(storedAt)
+            if (Number.isNaN(timestamp)) return true
+
+            if (Date.now() - timestamp <= rememberForMs) {
+              return true
+            }
+
+            localStorage.removeItem(ACCEPT_KEY)
+            localStorage.removeItem(ACCEPT_AT_KEY)
+            return false
+          } catch (error) {
+            return false
+          }
+        }
+
+        const alignLanguages = () => {
+          if (!langSwitch || !logoMeasure || !header) return
+          const contentRect = overlay.querySelector('.ac-content')?.getBoundingClientRect()
+          const measureRect = logoMeasure.getBoundingClientRect()
+
+          if (!contentRect?.width || !measureRect?.width) return
+
+          const switchHeight = langSwitch.offsetHeight || parseFloat(window.getComputedStyle(langSwitch).height) || 48
+          const top = (measureRect.top - contentRect.top) + (measureRect.height - switchHeight) / 2
+          const verticalNudge = -5
+          header.style.top = `${Math.max(0, Math.round(top) + verticalNudge)}px`
+
+          const rightPadding = Math.round(measureRect.left - contentRect.left)
+          const bleedCompensation = 10
+          const userNudge = 70
+          header.style.right = `${Math.max(0, rightPadding + bleedCompensation + userNudge)}px`
+        }
+
+        const matchScrollBox = () => {
+          if (!main || !cardRect || !textEl) return
+          const mainRect = main.getBoundingClientRect()
+          const cardRectData = cardRect.getBoundingClientRect()
+          const leftOffset = Math.round(cardRectData.left - mainRect.left)
+          const rightOffset = Math.round(mainRect.right - cardRectData.right)
+          textEl.style.marginLeft = `${leftOffset}px`
+          textEl.style.marginRight = `${rightOffset}px`
+          textEl.style.width = 'auto'
+        }
+
+        const resizeObservers = []
+
+        if (window.ResizeObserver) {
+          const observer = new ResizeObserver(() => alignLanguages())
+          const contentEl = overlay.querySelector('.ac-content')
+          if (contentEl) observer.observe(contentEl)
+          if (logoMeasure) observer.observe(logoMeasure)
+          resizeObservers.push(observer)
+        }
+
+        window.addEventListener('resize', alignLanguages)
+        window.addEventListener('orientationchange', alignLanguages)
+
+        if (window.ResizeObserver) {
+          const observer = new ResizeObserver(() => matchScrollBox())
+          if (main) observer.observe(main)
+          resizeObservers.push(observer)
+        }
+
+        window.addEventListener('resize', matchScrollBox)
+        window.addEventListener('orientationchange', matchScrollBox)
+
+        window.requestAnimationFrame(() => {
+          alignLanguages()
+          matchScrollBox()
+        })
+
+        const cleanup = () => {
+          window.removeEventListener('resize', alignLanguages)
+          window.removeEventListener('orientationchange', alignLanguages)
+          window.removeEventListener('resize', matchScrollBox)
+          window.removeEventListener('orientationchange', matchScrollBox)
+          resizeObservers.forEach((observer) => observer.disconnect())
+          resizeObservers.length = 0
+        }
+
+        const hideOverlay = ({ persist }) => {
+          cleanup()
+          setDataset(false)
+          document.body.classList.remove('ac-no-scroll')
+
+          window.setTimeout(() => {
+            overlay.remove()
+            if (persist && successUrl) {
+              window.location.href = successUrl
+            }
+          }, 400)
+
+          if (persist) {
+            try {
+              localStorage.setItem(ACCEPT_KEY, 'true')
+              localStorage.setItem(ACCEPT_AT_KEY, new Date().toISOString())
+            } catch (error) {
+              console.warn('Unable to persist access confirmation', error)
+            }
+          }
+        }
+
+        if (hasValidAcceptance()) {
+          cleanup()
+          setDataset(false)
+          window.requestAnimationFrame(() => overlay.remove())
+          return
+        }
+
+        setDataset(true)
+        document.body.classList.add('ac-no-scroll')
+
+        confirmBtn?.addEventListener('click', () => hideOverlay({ persist: true }))
+
+        exitBtn?.addEventListener('click', () => {
+          if (declineUrl) {
+            window.location.href = declineUrl
+            return
+          }
+
+          if (window.history.length > 1) {
+            window.history.back()
+          } else {
+            window.location.href = 'https://www.google.com'
+          }
+        })
+
+        overlay.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') {
+            hideOverlay({ persist: false })
+          }
+        })
+
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'hidden') {
+            resizeObservers.forEach((observer) => observer.disconnect())
+          }
+        }, { once: true })
+      })
+    </script>
+  </>
+)}

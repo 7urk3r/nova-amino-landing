@@ -8,7 +8,8 @@ import '../../src/styles/glass.css'
 import '../../src/styles/gradients.css'
 import '../../src/styles/marquee.css'
 
-import AgeGate from '../components/astro/AgeGate.astro'
+import AccessConfirmation from '../components/astro/AccessConfirmation.astro'
+import AccessConfirmation from '../components/astro/AccessConfirmation.astro'
 import Navbar from '../components/astro/Navbar.astro'
 import Hero from '../components/astro/Hero.astro'
 import MissionStatement from '../components/astro/MissionStatement.astro'
@@ -217,8 +218,31 @@ const landingQ = `*[_type=="landingPage"]|order(_updatedAt desc)[0]{
 
 }`
 
+const accessConfirmationQ = `*[_type=="accessConfirmation"]|order(_updatedAt desc)[0]{
+  enabled,
+  minimumAge,
+  rememberForDays,
+  termsUrl,
+  termsLabel,
+  privacyUrl,
+  privacyLabel,
+  declineRedirectUrl,
+  successRedirectUrl,
+  defaultLanguage,
+  languages[]{
+    label,
+    langCode,
+    title,
+    question,
+    paragraphs,
+    acceptButtonLabel,
+    declineButtonLabel
+  }
+}`
+
 // Initialize content object with all sections
 let content: any = {
+  accessConfirmation: undefined,
   navbar: undefined,
   hero: undefined,
   missionStatement: undefined,
@@ -261,6 +285,11 @@ try {
   const navbar = await q(navbarQ)
   if (navbar) {
     content.navbar = navbar
+  }
+
+  const accessConfirmation = await q(accessConfirmationQ)
+  if (accessConfirmation) {
+    content.accessConfirmation = accessConfirmation
   }
 
   // Quick check to verify hero image is now working
@@ -338,8 +367,7 @@ try {
     </style>
   </head>
   <body>
-    <!-- Age Gate - 21+ Verification -->
-    <AgeGate />
+    <AccessConfirmation data={content.accessConfirmation} />
 
     <!-- the original body markup from index.html follows -->
     <Navbar navbar={content.navbar} />
