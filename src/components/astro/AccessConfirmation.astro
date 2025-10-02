@@ -231,11 +231,6 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
     </script>
 
     <style>
-      .ac-overlay,
-      .ac-overlay * {
-        box-sizing: border-box;
-      }
-
       .ac-overlay {
         position: fixed;
         inset: 0;
@@ -343,10 +338,14 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         height: 100%;
         overflow: hidden;
         pointer-events: none;
+        box-sizing: border-box;
+        --ac-pad-left: 64px;
+        --ac-pad-right: 64px;
       }
 
       .ac-content > * {
         pointer-events: auto;
+        box-sizing: border-box;
       }
 
       .ac-logo-measure {
@@ -432,7 +431,7 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         display: grid;
         grid-template-rows: auto 1fr auto;
         height: 100%;
-        padding: 80px 0 40px 0;
+        padding: 80px var(--ac-pad-right) 40px var(--ac-pad-left);
         gap: 32px;
         box-sizing: border-box;
       }
@@ -442,7 +441,7 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         font-weight: 700;
         line-height: 40px;
         color: #111827;
-        margin: 40px 64px 0 64px;
+        margin: 40px var(--ac-pad-right) 0 var(--ac-pad-left);
         text-align: center;
         letter-spacing: -0.025em;
       }
@@ -451,7 +450,7 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         overflow-y: auto;
         width: 100%;
         box-sizing: border-box;
-        padding: 24px 64px;
+        padding: 24px var(--ac-pad-right) 24px var(--ac-pad-left);
         background: rgba(0, 0, 0, 0.02);
         border: 1px solid rgba(0, 0, 0, 0.06);
         box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06), inset 0 1px 2px rgba(0, 0, 0, 0.04);
@@ -490,14 +489,14 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         line-height: 24px;
         text-align: center;
         color: #111827;
-        margin: 0 64px;
+        margin: 0 var(--ac-pad-right) 0 var(--ac-pad-left);
       }
 
       .ac-buttons {
         display: flex;
         gap: 16px;
         justify-content: center;
-        margin: 0 64px;
+        margin: 0 var(--ac-pad-right) 0 var(--ac-pad-left);
       }
 
       .ac-btn {
@@ -551,28 +550,32 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
       }
 
       @media (max-width: 640px) {
+        .ac-content {
+          --ac-pad-left: 32px;
+          --ac-pad-right: 32px;
+        }
+
         .ac-card {
           width: min(92vw, 520px);
           height: min(92vh, 640px);
         }
 
         .ac-main {
-          padding: 64px 0 32px 0;
+          padding: 64px var(--ac-pad-right) 32px var(--ac-pad-left);
           gap: 24px;
         }
 
         .ac-title {
           font-size: 28px;
           line-height: 32px;
-          margin: 32px 32px 0 32px;
+          margin: 32px var(--ac-pad-right) 0 var(--ac-pad-left);
         }
 
         .ac-text {
-          padding: 20px 32px;
+          padding: 20px var(--ac-pad-right) 20px var(--ac-pad-left);
         }
 
         .ac-buttons {
-          margin: 0 32px;
           flex-direction: column;
           gap: 12px;
         }
@@ -700,11 +703,11 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         const titleEl = overlay.querySelector('.ac-title')
         const questionEl = overlay.querySelector('.ac-question')
         const textEl = overlay.querySelector('.ac-text')
+        const contentEl = overlay.querySelector('.ac-content')
         const langSwitch = overlay.querySelector('.ac-lang-switch')
         const header = overlay.querySelector('.ac-header')
         const logoMeasure = overlay.querySelector('.ac-logo-measure')
-        const main = overlay.querySelector('.ac-main')
-        const cardRect = overlay.querySelector('.ac-card-background')
+        const cardRectEl = overlay.querySelector('.ac-card-background')
 
         const rememberForMs = typeof config.rememberForMs === 'number' && Number.isFinite(config.rememberForMs)
           ? Math.max(0, config.rememberForMs)
@@ -816,8 +819,8 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         }
 
         const alignLanguages = () => {
-          if (!langSwitch || !logoMeasure || !header) return
-          const contentRect = overlay.querySelector('.ac-content')?.getBoundingClientRect()
+          if (!langSwitch || !logoMeasure || !header || !contentEl) return
+          const contentRect = contentEl.getBoundingClientRect()
           const measureRect = logoMeasure.getBoundingClientRect()
 
           if (!contentRect?.width || !measureRect?.width) return
@@ -833,18 +836,19 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
           header.style.right = `${Math.max(0, rightPadding + bleedCompensation + userNudge)}px`
         }
 
-        const matchScrollBox = () => {
-          if (!main || !cardRect || !textEl) return
+        const updateHorizontalPadding = () => {
+          if (!contentEl || !cardRectEl) return
 
-          const mainRect = main.getBoundingClientRect()
-          const cardRectData = cardRect.getBoundingClientRect()
+          const contentRect = contentEl.getBoundingClientRect()
+          const cardRect = cardRectEl.getBoundingClientRect()
 
-          const leftOffset = Math.round(cardRectData.left - mainRect.left)
-          const rightOffset = Math.round(mainRect.right - cardRectData.right)
+          if (!contentRect.width || !cardRect.width) return
 
-          textEl.style.marginLeft = `${leftOffset}px`
-          textEl.style.marginRight = `${rightOffset}px`
-          textEl.style.width = 'auto'
+          const leftOffset = Math.max(24, Math.round(cardRect.left - contentRect.left))
+          const rightOffset = Math.max(24, Math.round(contentRect.right - cardRect.right))
+
+          contentEl.style.setProperty('--ac-pad-left', `${leftOffset}px`)
+          contentEl.style.setProperty('--ac-pad-right', `${rightOffset}px`)
         }
 
         const resizeObservers = []
@@ -861,24 +865,25 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         window.addEventListener('orientationchange', alignLanguages)
 
         if (window.ResizeObserver) {
-          const observer = new ResizeObserver(() => matchScrollBox())
-          if (main) observer.observe(main)
+          const observer = new ResizeObserver(() => updateHorizontalPadding())
+          if (contentEl) observer.observe(contentEl)
+          if (cardRectEl) observer.observe(cardRectEl)
           resizeObservers.push(observer)
         }
 
-        window.addEventListener('resize', matchScrollBox)
-        window.addEventListener('orientationchange', matchScrollBox)
+        window.addEventListener('resize', updateHorizontalPadding)
+        window.addEventListener('orientationchange', updateHorizontalPadding)
 
         window.requestAnimationFrame(() => {
           alignLanguages()
-          matchScrollBox()
+          updateHorizontalPadding()
         })
 
         const cleanup = () => {
           window.removeEventListener('resize', alignLanguages)
           window.removeEventListener('orientationchange', alignLanguages)
-          window.removeEventListener('resize', matchScrollBox)
-          window.removeEventListener('orientationchange', matchScrollBox)
+          window.removeEventListener('resize', updateHorizontalPadding)
+          window.removeEventListener('orientationchange', updateHorizontalPadding)
           resizeObservers.forEach((observer) => observer.disconnect())
           resizeObservers.length = 0
         }
