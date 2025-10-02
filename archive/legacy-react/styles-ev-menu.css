@@ -1,0 +1,26 @@
+.ev-menu{ position:relative; display:inline-block; }
+/* Force all menu text to black */
+.ev-menu, .ev-menu *{ color:#0b0d12 !important; }
+.ev-menu a:visited{ color:#0b0d12 !important; }
+
+/* Evervault-like dark frosted styling */
+/* Variant used inside centered nav: text-like button */
+.ev-menu__button{ padding:.3rem .6rem; border-radius:999px; color:#0b0d12 !important; background:transparent; border:0; font-weight:500; outline:0 !important; -webkit-appearance:none; appearance:none; box-shadow:none; -webkit-tap-highlight-color:transparent; font-family:var(--font-heading); }
+.ev-menu__button:focus, .ev-menu__button:focus-visible{ outline:0 !important; outline-color:transparent !important; box-shadow:none !important; }
+.ev-menu__button:hover{ background:rgba(2,6,23,.06); }
+.ev-menu__items{ position:absolute; top:100%; left:0; min-width:14rem; border-radius:16px; padding:.25rem; color:#0b0d12; background:linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.88)); border:1px solid rgba(15,23,42,.12); box-shadow:0 24px 60px rgba(2,6,23,.12); display:none; z-index:1000; }
+.ev-menu__section{ padding:.25rem 0; border-top:1px solid rgba(255,255,255,.08); }
+.ev-menu__section:first-child{ border-top:0; }
+.ev-menu__item{ display:flex; align-items:center; gap:.5rem; padding:.5rem .75rem; border-radius:12px; text-decoration:none; color:#0b0d12 !important; outline:0 !important; -webkit-tap-highlight-color:transparent; }
+.ev-menu__item.danger{ color:#b91c1c !important; }
+.ev-menu__item:focus, .ev-menu__item:focus-visible{ outline:0 !important; outline-color:transparent !important; box-shadow:none !important; }
+.ev-menu__item:hover, .ev-menu__item.is-active, .ev-menu__item:focus{ background:rgba(2,6,23,.06); }
+.ev-menu__item.danger{ color:#fecaca; }
+
+/* Transitions */
+.ev-transition-enter{ transition:transform .1s ease-out, opacity .1s ease-out; }
+.ev-transition-enter-from{ transform:scale(.98); opacity:0; }
+.ev-transition-enter-to{ transform:scale(1); opacity:1; }
+.ev-transition-leave{ transition:transform .08s ease-in, opacity .08s ease-in; }
+.ev-transition-leave-from{ transform:scale(1); opacity:1; }
+.ev-transition-leave-to{ transform:scale(.98); opacity:0; }

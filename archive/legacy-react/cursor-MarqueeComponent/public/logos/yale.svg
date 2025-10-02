@@ -1,0 +1,7 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect x="5" y="5" width="90" height="90" fill="#0F4D92" stroke="#fff" stroke-width="2" rx="5"/>
+  <text x="50" y="30" text-anchor="middle" fill="white" font-family="serif" font-size="14" font-weight="bold">YALE</text>
+  <text x="50" y="50" text-anchor="middle" fill="white" font-family="serif" font-size="8">UNIVERSITY</text>
+  <text x="50" y="65" text-anchor="middle" fill="white" font-family="serif" font-size="6">LUX ET VERITAS</text>
+  <text x="50" y="80" text-anchor="middle" fill="white" font-family="serif" font-size="5">EST. 1701</text>
+</svg>

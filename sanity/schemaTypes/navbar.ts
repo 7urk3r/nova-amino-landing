@@ -112,7 +112,8 @@ export default defineType({
               options: {
                 list: [
                   {title: 'Link', value: 'link'},
-                  {title: 'Button', value: 'button'}
+                  {title: 'Button', value: 'button'},
+                  {title: 'Primary', value: 'primary'}
                 ]
               },
               initialValue: 'button'

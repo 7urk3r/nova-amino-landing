@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanity CMS Debug View</title>
+    <style>
+        body {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            margin: 0;
+            padding: 20px;
+            background: #0a0a0a;
+            color: #00ff00;
+            line-height: 1.4;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #00ff00;
+            background: #111;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status.success { background: #004400; color: #00ff00; }
+        .status.error { background: #440000; color: #ff4444; }
+        .status.pending { background: #444400; color: #ffff00; }
+        .status.not-found { background: #333; color: #888; }
+
+        .section {
+            margin-bottom: 30px;
+            border: 1px solid #333;
+            background: #111;
+        }
+        .section-header {
+            background: #222;
+            padding: 15px;
+            border-bottom: 1px solid #333;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .section-content {
+            padding: 15px;
+        }
+        .item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #333;
+            background: #0a0a0a;
+        }
+        .item-title {
+            font-weight: bold;
+            color: #00aaff;
+            margin-bottom: 5px;
+        }
+        .field {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .field-name {
+            color: #ffaa00;
+            width: 150px;
+            display: inline-block;
+        }
+        .field-value {
+            color: #fff;
+            word-break: break-all;
+        }
+        .selector {
+            color: #ff6600;
+            font-style: italic;
+        }
+        pre {
+            background: #000;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        .refresh-btn {
+            background: #004400;
+            color: #00ff00;
+            border: 2px solid #00ff00;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: inherit;
+            margin: 10px;
+        }
+        .refresh-btn:hover {
+            background: #006600;
+        }
+        .timestamp {
+            color: #888;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Sanity CMS Debug Dashboard</h1>
+            <p>Real-time content monitoring and injection status</p>
+            <button class="refresh-btn" onclick="refreshData()">🔄 Refresh Data</button>
+            <div class="timestamp" id="lastUpdate"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                📡 Connection Status
+            </div>
+            <div class="section-content" id="connectionStatus">
+                <div class="item">
+                    <div class="field">
+                        <span class="field-name">Sanity Project:</span>
+                        <span class="field-value">ojsvc60h</span>
+                    </div>
+                    <div class="field">
+                        <span class="field-name">Dataset:</span>
+                        <span class="field-value">production</span>
+                    </div>
+                    <div class="field">
+                        <span class="field-name">API Status:</span>
+                        <span class="field-value" id="apiStatus">Testing...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                🎯 Hero Section
+            </div>
+            <div class="section-content" id="heroStatus">
+                Loading...
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                📋 Feature Cards
+            </div>
+            <div class="section-content" id="cardsStatus">
+                Loading...
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                📝 Copy Block / Mission Statement
+            </div>
+            <div class="section-content" id="copyStatus">
+                Loading...
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                🎠 Marquee Section
+            </div>
+            <div class="section-content" id="marqueeStatus">
+                Loading...
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                🔧 DOM Injection Status
+            </div>
+            <div class="section-content" id="domStatus">
+                Loading...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sanity config
+        const SANITY = {
+            projectId: 'ojsvc60h',
+            dataset: 'production',
+            apiVersion: '2021-10-21'
+        }
+
+        function endpoint(query) {
+            const base = `https://${SANITY.projectId}.api.sanity.io/v${SANITY.apiVersion}/data/query/${SANITY.dataset}`
+            return `${base}?query=${encodeURIComponent(query)}`
+        }
+
+        async function sanityQuery(query) {
+            const res = await fetch(endpoint(query))
+            if (!res.ok) {
+                throw new Error(`Query failed: ${res.status}`)
+            }
+            const json = await res.json()
+            return json.result
+        }
+
+        function createStatus(success, text = '') {
+            const className = success ? 'success' : 'error'
+            const icon = success ? '✅' : '❌'
+            return `<span class="status ${className}">${icon} ${text}</span>`
+        }
+
+        function createField(name, value, status = null) {
+            const statusHtml = status ? createStatus(status.success, status.text) : ''
+            return `
+                <div class="field">
+                    <span class="field-name">${name}:</span>
+                    <span class="field-value">${value}</span>
+                    ${statusHtml}
+                </div>
+            `
+        }
+
+        function checkDOMElement(selector, expectedContent = null) {
+            const element = document.querySelector(selector)
+            const exists = !!element
+            let contentMatch = null
+
+            if (exists && expectedContent) {
+                const actualContent = element.textContent || element.innerHTML
+                contentMatch = actualContent.includes(expectedContent)
+            }
+
+            return {
+                exists,
+                element,
+                contentMatch,
+                selector
+            }
+        }
+
+        async function testHeroSection() {
+            try {
+                const [hero] = await sanityQuery(`*[_type=="hero"] | order(_createdAt desc)[0...1]{
+                    headline, subheadline, ctaButtonCopy, "heroImageUrl": heroImage.asset->url
+                }`)
+
+                const domTests = {
+                    title: checkDOMElement('.hero-card__title', hero?.headline),
+                    subtitle: checkDOMElement('#hero-supporting-text', hero?.subheadline),
+                    button: checkDOMElement('.hero-card__content .btn', hero?.ctaButtonCopy),
+                    image: checkDOMElement('.hero-card__image img')
+                }
+
+                const html = `
+                    <div class="item">
+                        <div class="item-title">Sanity Data</div>
+                        ${createField('Headline', hero?.headline || 'Not found')}
+                        ${createField('Subheadline', hero?.subheadline || 'Not found')}
+                        ${createField('CTA Button', hero?.ctaButtonCopy || 'Not found')}
+                        ${createField('Hero Image URL', hero?.heroImageUrl || 'Not found')}
+                    </div>
+                    <div class="item">
+                        <div class="item-title">DOM Elements</div>
+                        ${Object.entries(domTests).map(([key, test]) =>
+                            createField(
+                                `${key} (${test.selector})`,
+                                test.exists ? 'Found' : 'Not found',
+                                { success: test.exists, text: test.exists ? 'FOUND' : 'MISSING' }
+                            )
+                        ).join('')}
+                    </div>
+                `
+
+                document.getElementById('heroStatus').innerHTML = html
+            } catch (error) {
+                document.getElementById('heroStatus').innerHTML = `
+                    <div class="item">
+                        ${createStatus(false, 'Error: ' + error.message)}
+                    </div>
+                `
+            }
+        }
+
+        async function testCardsSection() {
+            try {
+                const cardDoc = await sanityQuery(`*[_type=="card"][0]{
+                    cards[]{
+                        headline,
+                        subheadline,
+                        "imageUrl": image.asset->url
+                    }
+                }`)
+
+                const cards = cardDoc?.cards || []
+                const domCards = document.querySelectorAll('.card')
+
+                let html = `
+                    <div class="item">
+                        <div class="item-title">Sanity Data (${cards.length} cards)</div>
+                        <pre>${JSON.stringify(cards, null, 2)}</pre>
+                    </div>
+                    <div class="item">
+                        <div class="item-title">DOM Status</div>
+                        ${createField('Cards found in DOM', domCards.length)}
+                `
+
+                cards.forEach((card, i) => {
+                    const cardEl = domCards[i]
+                    if (cardEl) {
+                        const titleEl = cardEl.querySelector('.card-content .heading')
+                        const bodyEl = cardEl.querySelector('.card-content p')
+                        const imgEl = cardEl.querySelector('img')
+
+                        html += `
+                            <div style="margin: 10px 0; padding: 10px; border: 1px solid #444;">
+                                <strong>Card ${i + 1}:</strong><br>
+                                ${createField('Title Element', titleEl ? 'Found' : 'Not found', { success: !!titleEl, text: !!titleEl ? 'FOUND' : 'MISSING' })}
+                                ${createField('Body Element', bodyEl ? 'Found' : 'Not found', { success: !!bodyEl, text: !!bodyEl ? 'FOUND' : 'MISSING' })}
+                                ${createField('Image Element', imgEl ? 'Found' : 'Not found', { success: !!imgEl, text: !!imgEl ? 'FOUND' : 'MISSING' })}
+                                ${createField('Expected Title', card.headline)}
+                                ${createField('Current Title', titleEl?.textContent || 'N/A')}
+                            </div>
+                        `
+                    }
+                })
+
+                html += '</div>'
+                document.getElementById('cardsStatus').innerHTML = html
+            } catch (error) {
+                document.getElementById('cardsStatus').innerHTML = `
+                    <div class="item">
+                        ${createStatus(false, 'Error: ' + error.message)}
+                    </div>
+                `
+            }
+        }
+
+        async function testCopyBlock() {
+            try {
+                const copyBlock = await sanityQuery(`*[_type=="copyBlock"][0]{content}`)
+
+                const selectors = [
+                    'section p[style*="font-family: var(--font-heading)"]',
+                    'section p[style*="clamp(2rem, 4vw, 3.25rem)"]',
+                    'section.container p',
+                    'p[style*="color: #6b7280"]'
+                ]
+
+                let html = `
+                    <div class="item">
+                        <div class="item-title">Sanity Data</div>
+                        ${createField('Copy Block Content', copyBlock?.content || 'Not found')}
+                    </div>
+                    <div class="item">
+                        <div class="item-title">DOM Search</div>
+                `
+
+                selectors.forEach(selector => {
+                    const element = document.querySelector(selector)
+                    html += createField(
+                        `Selector: ${selector}`,
+                        element ? 'Found' : 'Not found',
+                        { success: !!element, text: !!element ? 'FOUND' : 'MISSING' }
+                    )
+                })
+
+                html += '</div>'
+                document.getElementById('copyStatus').innerHTML = html
+            } catch (error) {
+                document.getElementById('copyStatus').innerHTML = `
+                    <div class="item">
+                        ${createStatus(false, 'Error: ' + error.message)}
+                    </div>
+                `
+            }
+        }
+
+        async function testMarqueeSection() {
+            try {
+                const marquee = await sanityQuery(`*[_type=="marqueeSection"]{title, subtitle, quotes[]->{compound, quote, scientist, organization, source}}`)
+
+                const html = `
+                    <div class="item">
+                        <div class="item-title">Sanity Data</div>
+                        <pre>${JSON.stringify(marquee, null, 2)}</pre>
+                    </div>
+                `
+                document.getElementById('marqueeStatus').innerHTML = html
+            } catch (error) {
+                document.getElementById('marqueeStatus').innerHTML = `
+                    <div class="item">
+                        ${createStatus(false, 'Error: ' + error.message)}
+                    </div>
+                `
+            }
+        }
+
+        async function testDOMInjection() {
+            const mainPageUrl = window.location.origin
+            const iframe = document.createElement('iframe')
+            iframe.style.display = 'none'
+            document.body.appendChild(iframe)
+
+            iframe.onload = () => {
+                const iframeDoc = iframe.contentDocument
+                const debugEl = iframeDoc.getElementById('debug-cms')
+                const debugStatus = debugEl ? debugEl.textContent : 'Debug element not found'
+
+                let html = `
+                    <div class="item">
+                        <div class="item-title">CMS Debug Indicator</div>
+                        ${createField('Debug Element Status', debugStatus)}
+                        ${createField('Debug Element Found', debugEl ? 'Yes' : 'No', { success: !!debugEl, text: !!debugEl ? 'FOUND' : 'MISSING' })}
+                    </div>
+                `
+
+                document.getElementById('domStatus').innerHTML = html
+                document.body.removeChild(iframe)
+            }
+
+            iframe.src = mainPageUrl
+        }
+
+        async function testConnection() {
+            try {
+                await sanityQuery('*[_type=="hero"][0]')
+                document.getElementById('apiStatus').innerHTML = createStatus(true, 'Connected')
+            } catch (error) {
+                document.getElementById('apiStatus').innerHTML = createStatus(false, error.message)
+            }
+        }
+
+        async function refreshData() {
+            document.getElementById('lastUpdate').textContent = `Last updated: ${new Date().toLocaleTimeString()}`
+
+            await testConnection()
+            await testHeroSection()
+            await testCardsSection()
+            await testCopyBlock()
+            await testMarqueeSection()
+            await testDOMInjection()
+        }
+
+        // Auto-refresh every 5 seconds
+        setInterval(refreshData, 5000)
+
+        // Initial load
+        refreshData()
+    </script>
+</body>
+</html>

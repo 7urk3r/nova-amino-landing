@@ -1,0 +1,18 @@
+{
+  "memory": {
+    "file": "agen_memory.md",
+    "enabled": true
+  },
+  "context": {
+    "autoCompact": false,
+    "microCompact": false,
+    "maxContextLength": 200000
+  },
+  "todo": {
+    "file": "agen_memory.md",
+    "format": "markdown",
+    "enabled": true
+  }
+}
+
+

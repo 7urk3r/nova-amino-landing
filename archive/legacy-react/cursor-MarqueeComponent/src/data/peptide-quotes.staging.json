@@ -1,0 +1,50 @@
+{
+  "metadata": {
+    "title": "Peptide Quotes (Staging)",
+    "note": "Benefit-focused, peer-reviewed quotes awaiting approval before promotion.",
+    "targets": [
+      "GHK-Cu",
+      "KPV",
+      "Selank"
+    ],
+    "generated_by": "scripts/harvest_quotes.py"
+  },
+  "quotes": [
+    {
+      "id": 1,
+      "peptide_name": "GHK-Cu",
+      "quote": "Results GHK-Cu alleviated weight loss, improved the disease activity index (DAI), reduced colonic edema and shortening, attenuated inflammatory damage, increased goblet cell numbers, suppressed inflammatory cytokines such as TNF-\u03b1, IL-6, and IL-1\u03b2, and promoted mucosal repair.",
+      "scientist": "Mao S, Huang J, Li J, Sun F, Zhang Q, Cheng Q, Zeng W, Lei D, Wang S, Yao J.",
+      "organization": "Exploring the beneficial effects of GHK-Cu on an experimental model of colitis and the underlying mechanisms.",
+      "credentials": "",
+      "logo": "/logos/medical.svg",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12263609/",
+      "source_type": "Peer-Reviewed (Abstract/Conclusion)",
+      "verification_status": "Staging - Needs approval"
+    },
+    {
+      "id": 2,
+      "peptide_name": "GHK-Cu",
+      "quote": "Such a welcome situation affords grounds to hope that the enhanced uptake of GHK\u2013Cu encapsulated in liposomes would become accessible before long.",
+      "scientist": "Og\u00f3rek K, Nowak K, Wadych E, Ruzik L, Timerbaev AR, Matczuk M.",
+      "organization": "Are We Ready to Measure Skin Permeation of Modern Antiaging GHK-Cu Tripeptide Encapsulated in Liposomes?",
+      "credentials": "",
+      "logo": "/logos/medical.svg",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11721469/",
+      "source_type": "Peer-Reviewed (Abstract/Conclusion)",
+      "verification_status": "Staging - Needs approval"
+    },
+    {
+      "id": 3,
+      "peptide_name": "GHK-Cu",
+      "quote": "Conclusion: Although GHK-Cu and Pal-GHK are effective and relatively skin permeable, their permeability could be successfully increased using permeation enhancement methodologies.",
+      "scientist": "Mortazavi SM, Mohammadi Vadoud SA, Moghimi HR.",
+      "organization": "Topically applied GHK as an anti-wrinkle peptide: Advantages, problems and prospective.",
+      "credentials": "",
+      "logo": "/logos/medical.svg",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11830136/",
+      "source_type": "Peer-Reviewed (Abstract/Conclusion)",
+      "verification_status": "Staging - Needs approval"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect x="5" y="5" width="90" height="90" fill="#7B1113" stroke="#fff" stroke-width="2" rx="5"/>
+  <text x="50" y="28" text-anchor="middle" fill="white" font-family="serif" font-size="8" font-weight="bold">NANJING</text>
+  <text x="50" y="40" text-anchor="middle" fill="white" font-family="serif" font-size="8" font-weight="bold">UNIVERSITY</text>
+  <text x="50" y="58" text-anchor="middle" fill="#FFD700" font-family="serif" font-size="6">南京大学</text>
+  <text x="50" y="75" text-anchor="middle" fill="white" font-family="serif" font-size="5">MEDICAL SCHOOL</text>
+  <text x="50" y="85" text-anchor="middle" fill="white" font-family="serif" font-size="4">EST. 1902</text>
+</svg>

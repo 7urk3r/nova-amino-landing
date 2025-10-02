@@ -1,0 +1,8 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="45" fill="#003056" stroke="#fff" stroke-width="2"/>
+  <text x="50" y="30" text-anchor="middle" fill="white" font-family="serif" font-size="8" font-weight="bold">UNIVERSITY</text>
+  <text x="50" y="42" text-anchor="middle" fill="white" font-family="serif" font-size="8" font-weight="bold">OF VIENNA</text>
+  <text x="50" y="58" text-anchor="middle" fill="#FFD700" font-family="serif" font-size="6">UNIVERSITÄT</text>
+  <text x="50" y="68" text-anchor="middle" fill="#FFD700" font-family="serif" font-size="6">WIEN</text>
+  <text x="50" y="82" text-anchor="middle" fill="white" font-family="serif" font-size="4">EST. 1365</text>
+</svg>

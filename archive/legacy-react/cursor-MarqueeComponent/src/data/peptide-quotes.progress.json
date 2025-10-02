@@ -1,0 +1,356 @@
+{
+  "metadata": {
+    "title": "Peptide Quote Coverage Progress",
+    "summary": {
+      "total_peptides": 46,
+      "completed": 5,
+      "in_progress": 14,
+      "outstanding": 27,
+      "covered_peptides": [
+        "AHK-Cu",
+        "AICAR",
+        "BPC-157",
+        "CJC-1295",
+        "Cagrilintide",
+        "DSIP",
+        "GHK-Cu",
+        "GHRP-2",
+        "Glutathione",
+        "Gonadorelin",
+        "Ipamorelin",
+        "Kisspeptin-10",
+        "LL-37",
+        "NAD+",
+        "Oxytocin",
+        "Semaglutide",
+        "Tesamorelin",
+        "Thymosin Alpha-1",
+        "Tirzepatide"
+      ]
+    }
+  },
+  "items": [
+    {
+      "peptide": "5-Amino-1MQ",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "Adipotide",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "AHK-Cu",
+      "verified_total": 3,
+      "target_required": 3,
+      "remaining": 0,
+      "status": "Complete"
+    },
+    {
+      "peptide": "AICAR",
+      "verified_total": 1,
+      "target_required": 3,
+      "remaining": 2,
+      "status": "In Progress"
+    },
+    {
+      "peptide": "AOD9604",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "ARA-290",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "BPC-157",
+      "verified_total": 1,
+      "target_required": 3,
+      "remaining": 2,
+      "status": "In Progress"
+    },
+    {
+      "peptide": "Cagrilintide",
+      "verified_total": 4,
+      "target_required": 3,
+      "remaining": 0,
+      "status": "Complete"
+    },
+    {
+      "peptide": "CJC-1295 DAC",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "CJC-1295",
+      "verified_total": 1,
+      "target_required": 3,
+      "remaining": 2,
+      "status": "In Progress"
+    },
+    {
+      "peptide": "DSIP",
+      "verified_total": 3,
+      "target_required": 3,
+      "remaining": 0,
+      "status": "Complete"
+    },
+    {
+      "peptide": "Epithalon",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "FOXO4-DRI",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "GHK-Cu",
+      "verified_total": 2,
+      "target_required": 3,
+      "remaining": 1,
+      "status": "In Progress"
+    },
+    {
+      "peptide": "GHRP-2",
+      "verified_total": 2,
+      "target_required": 3,
+      "remaining": 1,
+      "status": "In Progress"
+    },
+    {
+      "peptide": "GHRP-6",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "Glutathione",
+      "verified_total": 1,
+      "target_required": 3,
+      "remaining": 2,
+      "status": "In Progress"
+    },
+    {
+      "peptide": "Gonadorelin",
+      "verified_total": 1,
+      "target_required": 3,
+      "remaining": 2,
+      "status": "In Progress"
+    },
+    {
+      "peptide": "Hexarelin",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "IGF-1 LR3",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "Ipamorelin",
+      "verified_total": 1,
+      "target_required": 3,
+      "remaining": 2,
+      "status": "In Progress"
+    },
+    {
+      "peptide": "Kisspeptin-10",
+      "verified_total": 2,
+      "target_required": 3,
+      "remaining": 1,
+      "status": "In Progress"
+    },
+    {
+      "peptide": "KPV",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "LL-37",
+      "verified_total": 2,
+      "target_required": 3,
+      "remaining": 1,
+      "status": "In Progress"
+    },
+    {
+      "peptide": "MGF (IGF-1 Ec)",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "MOTS-c",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "Melanotan-1",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "Melanotan-2",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "NAD+",
+      "verified_total": 4,
+      "target_required": 3,
+      "remaining": 0,
+      "status": "Complete"
+    },
+    {
+      "peptide": "Oxytocin",
+      "verified_total": 3,
+      "target_required": 3,
+      "remaining": 0,
+      "status": "Complete"
+    },
+    {
+      "peptide": "PEG-MGF",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "PT-141",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "Retatrutide",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "Selank",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "Semaglutide",
+      "verified_total": 2,
+      "target_required": 3,
+      "remaining": 1,
+      "status": "In Progress"
+    },
+    {
+      "peptide": "Semax",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "Sermorelin",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "Snap-8",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "SS-31",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "Survodutide",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "TB-500",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "Tesamorelin",
+      "verified_total": 2,
+      "target_required": 3,
+      "remaining": 1,
+      "status": "In Progress"
+    },
+    {
+      "peptide": "Thymalin",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    },
+    {
+      "peptide": "Thymosin Alpha-1",
+      "verified_total": 2,
+      "target_required": 3,
+      "remaining": 1,
+      "status": "In Progress"
+    },
+    {
+      "peptide": "Tirzepatide",
+      "verified_total": 2,
+      "target_required": 3,
+      "remaining": 1,
+      "status": "In Progress"
+    },
+    {
+      "peptide": "VIP",
+      "verified_total": 0,
+      "target_required": 3,
+      "remaining": 3,
+      "status": "Outstanding"
+    }
+  ]
+}

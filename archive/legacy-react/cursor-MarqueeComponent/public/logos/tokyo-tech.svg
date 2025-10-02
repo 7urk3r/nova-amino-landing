@@ -1,0 +1,9 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="45" fill="#DC143C" stroke="#fff" stroke-width="2"/>
+  <text x="50" y="18" text-anchor="middle" fill="white" font-family="serif" font-size="6" font-weight="bold">INSTITUTE OF</text>
+  <text x="50" y="28" text-anchor="middle" fill="white" font-family="serif" font-size="6" font-weight="bold">SCIENCE</text>
+  <text x="50" y="38" text-anchor="middle" fill="white" font-family="serif" font-size="6" font-weight="bold">TOKYO</text>
+  <text x="50" y="55" text-anchor="middle" fill="#FFD700" font-family="serif" font-size="12" font-weight="bold">東工大</text>
+  <text x="50" y="75" text-anchor="middle" fill="white" font-family="serif" font-size="5">TOKYO TECH</text>
+  <text x="50" y="85" text-anchor="middle" fill="white" font-family="serif" font-size="4">EST. 1881</text>
+</svg>

@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nova Amino</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.svg" />
+    
+    <!-- Adobe Typekit for IBM Plex Mono -->
+    <link rel="stylesheet" href="https://use.typekit.net/ljx4huh.css">
+
+    <!-- TT Commons Pro (headings) – add your licensed files to /public/fonts -->
+    <style>
+    @font-face{
+      font-family:"TT Commons Pro";
+      src:url("/fonts/TTCommonsPro-Regular.woff2") format("woff2");
+      font-weight:400; font-style:normal; font-display:swap;
+    }
+    :root{
+      --font-heading:"TT Commons Pro", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-body:"IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    body{ font-family:var(--font-body); }
+    h1,h2,h3,.heading{ font-family:var(--font-heading); }
+    
+    /* Force font change with highest specificity */
+    #hero-supporting-text, 
+    #hero-supporting-text.hero-card__lead,
+    .hero-card #hero-supporting-text,
+    .hero-card__content #hero-supporting-text {
+      font-family: 'ibm-plex-mono', monospace !important;
+      font-weight: normal !important;
+    }
+    
+    /* Make only navbar pill sticky */
+    .nav-pill--sticky {
+      position: sticky !important;
+      top: 0 !important;
+      z-index: 1000 !important;
+    }
+    </style>
+
+    <!-- Core styles -->
+    <link rel="stylesheet" href="src/css/base.css?v=dev1" />
+    <link rel="stylesheet" href="src/css/grid.css?v=dev1" />
+    <link rel="stylesheet" href="src/css/components.css?v=dev1" />
+    <link rel="stylesheet" href="src/css/utilities.css?v=dev1" />
+    <!-- Frosted glass helpers -->
+    <link rel="stylesheet" href="src/styles/glass.css?v=dev1" />
+    <!-- Lightweight gradients + marquee styles -->
+    <link rel="stylesheet" href="src/styles/gradients.css?v=dev3" />
+    <link rel="stylesheet" href="src/styles/marquee.css?v=dev3" />
+    <!-- Optional carousel skin -->
+    <link rel="stylesheet" href="/assets/embla.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container site-header__row">
+        <a href="/" class="site-logo" aria-label="Nova Amino home">
+          <img src="/assets/NovaAminoLogo.svg" alt="Nova Amino" width="157" height="36" />
+        </a>
+        <nav class="site-nav" aria-label="Primary">
+          <div class="nav-pillbar" id="nav-pillbar">
+            <div class="nav-menu"><a class="nav-link" href="#" aria-current="page">Home</a></div>
+            <div class="nav-menu">
+              <button class="nav-link" aria-haspopup="menu" aria-expanded="false">Catalog</button>
+              <div class="nav-dropdown" role="menu">
+                <button class="nav-item" role="menuitem">All Products</button>
+                <button class="nav-item" role="menuitem">Best Sellers</button>
+                <div class="nav-sep" aria-hidden="true"></div>
+                <button class="nav-item" role="menuitem">Peptides</button>
+                <button class="nav-item" role="menuitem">Amino Acids</button>
+              </div>
+            </div>
+            <div class="nav-menu"><a class="nav-link" href="#faq">FAQ</a></div>
+            <div class="nav-menu">
+              <button class="nav-link" aria-haspopup="menu" aria-expanded="false">Announcements</button>
+              <div class="nav-dropdown" role="menu">
+                <button class="nav-item" role="menuitem">Latest News</button>
+                <button class="nav-item" role="menuitem">Lab Updates</button>
+              </div>
+            </div>
+          </div>
+        </nav>
+        <div class="site-actions">
+          <a href="/login" class="link-plain">Sign in</a>
+          <a href="/signup" class="btn btn--black btn--sm" style="margin-left:8px">Sign up</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- Hero replaced with wide card -->
+      <section class="hero-section" style="padding-top:0; padding-bottom:var(--space-7);">
+        <div class="hero-card bg-aurora-hero has-grain grain-hero" style="position: relative; display: flex; align-items: flex-start; padding: var(--space-7);">
+          <div class="hero-card__content">
+            <h1 class="heading hero-card__title" style="font-family: var(--font-heading); font-size: clamp(2rem, 4vw, 3.25rem); line-height: 1.2; margin: 0 0 var(--space-4); color: var(--ink); white-space: nowrap;">
+              <span style="display: block; white-space: normal;">The Future of Wellness</span><span style="display: block; white-space: normal;">Research Is Here.</span>
+            </h1>
+            <p id="hero-supporting-text" style="font-family: 'ibm-plex-mono', monospace !important; font-weight: 400; font-size: 1.125rem; line-height: 1.5; margin: 0 0 var(--space-5); color: var(--muted); max-width: 460px;">
+              Compare products, review research studies, and order with confidence. Our complete peptide catalog is just one click away.
+            </p>
+            <a class="btn btn--primary" href="/shop" style="margin-top: var(--space-4);">View Catalog</a>
+          </div>
+          <div class="hero-card__right">
+            <div class="hero-card__image">
+              <img src="/hero-view.png" alt="Hero view" style="width: 100%; height: auto; display: block;" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Text above 3-card section -->
+      <section class="container" style="padding-top:var(--space-8); padding-bottom:var(--space-6);">
+        <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+          <p style="font-family: var(--font-heading); font-size: clamp(2rem, 4vw, 3.25rem); line-height: 1.2; color: #6b7280; margin: 0; font-weight: 400;">
+            Nova Amino delivers excellence without compromise<br>
+            premium compounds, fast shipping, and dedicated support to help you succeed.
+          </p>
+        </div>
+      </section>
+
+      <!-- 3-card section -->
+      <section class="container" style="padding-block:var(--space-6);">
+        <div class="grid" style="grid-template-columns: repeat(3, 1fr); gap: var(--space-6);">
+          <div class="card" style="text-align: center; padding: var(--space-6); min-height: 400px; display: flex; flex-direction: column; background-image: url('/assets/3CardBackground.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+            <div style="flex: 1; display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-6);">
+              <img src="/assets/Card1FastShipping.svg" alt="Fast Shipping" style="width: 90%; height: auto; max-width: none;" />
+            </div>
+            <div class="card-content" style="height: 120px; display: flex; align-items: center; justify-content: center; text-align:center;">
+              <div>
+                <div class="heading" style="font-family: var(--font-heading); font-weight:600; font-size:1.125rem; line-height:1.2; color:var(--ink); margin-bottom: var(--space-2);">
+                  Shipped Within 24 Hours
+                </div>
+                <p style="font-family: 'ibm-plex-mono', monospace; font-weight:400; font-size:0.9375rem; line-height:1.4; color:var(--muted); max-width: 30ch; margin: 0 auto; text-align:left;">
+                  Most orders are processed and out the door in one business day. Delays have no place in discovery.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="text-align: center; padding: var(--space-6); min-height: 400px; display: flex; flex-direction: column; background-image: url('/assets/3CardBackground.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+            <div style="flex: 1; display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-6);">
+              <img src="/assets/Card2Testing.svg" alt="Testing" style="width: 90%; height: auto; max-width: none;" />
+            </div>
+            <div class="card-content" style="height: 120px; display: flex; align-items: center; justify-content: center; text-align:center;">
+              <div>
+                <div class="heading" style="font-family: var(--font-heading); font-weight:600; font-size:1.125rem; line-height:1.2; color:var(--ink); margin-bottom: var(--space-2);">
+                  Purity You Can Trust
+                </div>
+                <p style="font-family: 'ibm-plex-mono', monospace; font-weight:400; font-size:0.9375rem; line-height:1.4; color:var(--muted); max-width: 30ch; margin: 0 auto; text-align:left;">
+                  Every compound is tested for identity and purity using gold-standard lab techniques. Clarity at the molecular scale.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="text-align: center; padding: var(--space-6); min-height: 400px; display: flex; flex-direction: column; background-image: url('/assets/3CardBackground.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+            <div style="flex: 1; display: flex; align-items: center; justify-content: center; margin-bottom: var(--space-6);">
+              <img src="/assets/Card3Autoship.svg" alt="Autoship" style="width: 90%; height: auto; max-width: none;" />
+            </div>
+            <div class="card-content" style="height: 120px; display: flex; align-items: center; justify-content: center; text-align:center;">
+              <div>
+                <div class="heading" style="font-family: var(--font-heading); font-weight:600; font-size:1.125rem; line-height:1.2; color:var(--ink); margin-bottom: var(--space-2);">
+                  Schedule Your Supply
+                </div>
+                <p style="font-family: 'ibm-plex-mono', monospace; font-weight:400; font-size:0.9375rem; line-height:1.4; color:var(--muted); max-width: 30ch; margin: 0 auto; text-align:left;">
+                  Choose recurring deliveries so you’re always stocked. Ideal for long-term protocols and consistent outcomes.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Peptide Marquee Section -->
+      <div id="peptide-marquee-mount" style="margin-top: var(--space-8);"></div>
+
+      <!-- Optional carousel (Embla) - Temporarily commented out due to missing vial images -->
+      <!--
+      <section class="container" style="padding-block:var(--space-8);">
+        <h2 class="heading mb-5">Featured Compounds</h2>
+        <div class="embla" data-carousel>
+          <div class="embla__container">
+            <div class="embla__slide"><img src="public/assets/vials/aod9604.webp" alt="AOD9604"></div>
+            <div class="embla__slide"><img src="public/assets/vials/bpc157.webp" alt="BPC-157"></div>
+          </div>
+        </div>
+      </section>
+      -->
+
+      <!-- FAQ -->
+      <section class="container" style="padding-block:var(--space-8);">
+        <div class="grid">
+          <div class="col-8 md:col-12">
+            <h2 class="heading" style="margin-bottom:var(--space-5);">FAQ</h2>
+
+            <details class="faq">
+              <summary>What does RUO mean?</summary>
+              <div>Research Use Only—products are not for human use.</div>
+            </details>
+
+            <details class="faq">
+              <summary>How do you source compounds?</summary>
+              <div>GMP-aligned partners and batch testing protocols.</div>
+            </details>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div>&copy; <span id="year"></span> Nova Amino. All rights reserved.</div>
+      </div>
+    </footer>
+
+    <!-- Sanity CMS init (loads content, sets globals) -->
+    <script>
+      window.SANITY_CONFIG = {
+        projectId: 'ojsvc60h',
+        dataset: 'production'
+      }
+      // Try without token first to test if dataset is public
+      // window.SANITY_CONFIG.token = 'ski4khm95e9PsHiMpmjL760hMy8RObwnh2Q4piDfJeYRCgXUVC13U3W6d79Qzg1rpEFItCsjrZaw6cBxEoaW8ZQGSJ983kqQqPXjGnpYJToMisXunIswaONsGYs3dIhOC7bw1x5ybF1lgWNG96rzCjF1hXqQ8NE5ZQpA07vpNKNd0ykASzsh'
+    </script>
+    <!-- Sanity CMS content injection - INLINE -->
+    <script>
+      console.log('🚀 Starting CMS injection...')
+
+      // Add debug indicator
+      document.body.insertAdjacentHTML('afterbegin', '<div id="debug-cms" style="position:fixed;top:0;right:0;background:yellow;padding:5px;z-index:9999;font-size:12px;">🔄 CMS Loading...</div>')
+
+      // Sanity config
+      const SANITY = {
+        projectId: 'ojsvc60h',
+        dataset: 'production',
+        apiVersion: '2021-10-21'
+      }
+
+      function endpoint(query) {
+        const base = `https://${SANITY.projectId}.api.sanity.io/v${SANITY.apiVersion}/data/query/${SANITY.dataset}`
+        return `${base}?query=${encodeURIComponent(query)}`
+      }
+
+      async function sanityQuery(query) {
+        console.log('🔍 Querying Sanity:', query)
+        const res = await fetch(endpoint(query))
+        if (!res.ok) {
+          console.error('❌ Sanity query failed:', res.status, await res.text())
+          throw new Error(`Sanity query failed: ${res.status}`)
+        }
+        const json = await res.json()
+        console.log('✅ Sanity response:', json)
+        return json.result
+      }
+
+      async function injectContent() {
+        try {
+          console.log('📦 Fetching homepage content...')
+
+          // Get hero content
+          const [hero] = await sanityQuery(`*[_type=="hero"] | order(_createdAt desc)[0...1]{
+            headline, subheadline, ctaButtonCopy, "heroImageUrl": heroImage.asset->url
+          }`)
+
+          // Get cards content
+          const cardDoc = await sanityQuery(`*[_type=="card"][0]{
+            cards[]{
+              headline,
+              subheadline,
+              "imageUrl": image.asset->url
+            }
+          }`)
+
+          console.log('📋 Hero content:', hero)
+          console.log('📋 Card content:', cardDoc?.cards)
+
+          // Inject hero content
+          if (hero) {
+            const h1 = document.querySelector('.hero-card__title')
+            const p = document.getElementById('hero-supporting-text')
+            const ctaBtn = document.querySelector('.hero-card__content .btn')
+            const heroImg = document.querySelector('.hero-card__image img')
+
+            if (h1 && hero.headline) {
+              console.log('📝 Updating hero title:', hero.headline)
+              const lines = String(hero.headline).split('|')
+              h1.innerHTML = lines.map(l => `<span style="display:block; white-space: normal;">${l.trim()}</span>`).join('')
+            }
+            if (p && hero.subheadline) {
+              console.log('📝 Updating hero subtitle:', hero.subheadline)
+              p.textContent = hero.subheadline
+            }
+            if (ctaBtn && hero.ctaButtonCopy) {
+              console.log('📝 Updating CTA button:', hero.ctaButtonCopy)
+              ctaBtn.textContent = hero.ctaButtonCopy
+            }
+            if (heroImg && hero.heroImageUrl) {
+              console.log('📝 Updating hero image:', hero.heroImageUrl)
+              heroImg.src = hero.heroImageUrl
+            }
+          }
+
+          // Inject cards content
+          if (Array.isArray(cardDoc?.cards) && cardDoc.cards.length) {
+            console.log('📋 Injecting cards from Sanity:', cardDoc.cards)
+            const cardEls = document.querySelectorAll('.card')
+            console.log('🎯 Found card elements:', cardEls.length)
+
+            cardDoc.cards.slice(0, 3).forEach((card, i) => {
+              const cardEl = cardEls[i]
+              if (!cardEl) return
+
+              const titleEl = cardEl.querySelector('.card-content .heading')
+              const bodyEl = cardEl.querySelector('.card-content p')
+              const imgEl = cardEl.querySelector('img')
+
+              console.log(`📝 Card ${i+1}: "${card.headline}"`)
+
+              if (titleEl && card.headline) {
+                titleEl.textContent = card.headline
+                console.log(`✅ Updated card ${i+1} title`)
+              }
+              if (bodyEl && card.subheadline) {
+                bodyEl.textContent = card.subheadline
+                console.log(`✅ Updated card ${i+1} description`)
+              }
+              if (imgEl && card.imageUrl) {
+                imgEl.src = card.imageUrl
+                console.log(`✅ Updated card ${i+1} image`)
+              }
+            })
+          }
+
+          // Update debug status
+          const debugEl = document.getElementById('debug-cms')
+          if (debugEl) debugEl.innerHTML = '✅ CMS Loaded'
+          console.log('🎉 CMS injection completed successfully!')
+
+        } catch (err) {
+          console.error('❌ CMS error:', err)
+          const debugEl = document.getElementById('debug-cms')
+          if (debugEl) debugEl.innerHTML = '❌ CMS Error: ' + err.message
+        }
+      }
+
+      // Wait for DOM then inject
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', injectContent)
+      } else {
+        setTimeout(injectContent, 100)
+      }
+    </script>
+    <!-- Progressive enhancement -->
+    <script type="module" src="src/js/index.js"></script>
+    <!-- Lightweight vanilla marquee (reads window.__NA_QUOTES__ if provided) -->
+    <script type="module" src="src/js/marquee.js?v=dev2"></script>
+    <style>
+      /* Keep only small helper tweaks if needed */
+    </style>
+    <!-- Optional Embla (vanilla) -->
+    <script type="module">
+      import EmblaCarousel from 'https://cdn.jsdelivr.net/npm/embla-carousel/embla-carousel.esm.js'
+      document.addEventListener('DOMContentLoaded', () => {
+        const node = document.querySelector('[data-carousel]');
+        if(node) EmblaCarousel(node, { loop:true, align:'start' });
+        const y = document.getElementById('year'); if(y) y.textContent = new Date().getFullYear();
+      });
+    </script>
+  </body>
+  </html>

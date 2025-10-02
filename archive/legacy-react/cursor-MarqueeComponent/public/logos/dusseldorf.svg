@@ -1,0 +1,10 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect x="5" y="5" width="90" height="90" fill="#003366" stroke="#fff" stroke-width="2" rx="5"/>
+  <text x="50" y="20" text-anchor="middle" fill="white" font-family="serif" font-size="6" font-weight="bold">HEINRICH</text>
+  <text x="50" y="28" text-anchor="middle" fill="white" font-family="serif" font-size="6" font-weight="bold">HEINE</text>
+  <text x="50" y="36" text-anchor="middle" fill="white" font-family="serif" font-size="6" font-weight="bold">UNIVERSITY</text>
+  <text x="50" y="50" text-anchor="middle" fill="#FFD700" font-family="serif" font-size="10" font-weight="bold">HHU</text>
+  <text x="50" y="68" text-anchor="middle" fill="white" font-family="serif" font-size="5">DÜSSELDORF</text>
+  <text x="50" y="78" text-anchor="middle" fill="white" font-family="serif" font-size="5">GERMANY</text>
+  <text x="50" y="88" text-anchor="middle" fill="white" font-family="serif" font-size="4">EST. 1965</text>
+</svg>

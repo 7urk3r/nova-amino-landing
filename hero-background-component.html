@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Background Component</title>
+    <style>
+        /* CSS Variables */
+        :root {
+            --space-0: 0;
+            --space-1: 4px;
+            --space-2: 8px;
+            --space-3: 16px;
+            --space-4: 24px;
+            --space-5: 32px;
+            --space-6: 40px;
+            --space-7: 56px;
+            --space-8: 72px;
+            --space-9: 96px;
+            --space-10: 120px;
+            --container-max: 1200px;
+            --gutter: 24px;
+            --bg: #ffffff;
+            --ink: #0f172a;
+            --muted: #64748b;
+            --brand: #2D60EE;
+            --font-heading: system-ui, -apple-system, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+            --font-body: system-ui, -apple-system, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: #f8fafc;
+            padding: 20px;
+        }
+
+        /* Hero Background Gradient - increased vibrancy by 20% */
+        .bg-aurora-hero {
+            background:
+                radial-gradient(ellipse at bottom left, #ccc9f675 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, #bbd2ec75 0%, transparent 50%),
+                linear-gradient(90deg, #ccc9f6 0%, #cdcdf5 25%, #c3d3f4 50%, #b8d4f2 75%, #bbd2f2 100%);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Grain Effect */
+        .has-grain {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            border-radius: inherit;
+        }
+
+        .grain-hero {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            border-radius: inherit;
+        }
+
+        .grain-hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            border-radius: inherit;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.5' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.8'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 150px 150px;
+            mix-blend-mode: overlay;
+            opacity: .8;
+            filter: contrast(260%) brightness(110%);
+        }
+
+        /* Container */
+        .container {
+            max-width: var(--container-max);
+            margin-inline: auto;
+            padding-inline: var(--gutter);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding-top: 0;
+            padding-bottom: var(--space-7);
+        }
+
+        .hero-card {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-7);
+            border-radius: 16px;
+            min-height: 400px;
+        }
+
+        .hero-card__content {
+            flex: 1;
+            max-width: 50%;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-card__title {
+            font-family: var(--font-heading);
+            font-size: clamp(2.25rem, 4.5vw, 3.2rem);
+            line-height: 1.2;
+            margin: 0 0 var(--space-4);
+            color: var(--ink);
+            font-weight: 700;
+        }
+
+        .hero-card__title span {
+            display: block;
+            white-space: normal;
+        }
+
+        .hero-supporting-text {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-weight: 400;
+            font-size: 1.125rem;
+            line-height: 1.5;
+            margin: 0 0 var(--space-5);
+            color: #000;
+            max-width: 560px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn {
+            position: relative;
+            z-index: 2;
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn--primary {
+            background: var(--brand);
+            color: white;
+            border: 2px solid var(--brand);
+        }
+
+        .btn--primary:hover {
+            background: #1d4ed8;
+            border-color: #1d4ed8;
+        }
+
+        .hero-images {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            max-width: 45%;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-images img {
+            width: 100%;
+            max-width: 520px;
+            height: auto;
+            border-radius: 12px;
+            object-fit: cover;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-card {
+                flex-direction: column;
+                text-align: center;
+                padding: var(--space-5);
+            }
+
+            .hero-card__content {
+                max-width: 100%;
+                margin-bottom: var(--space-4);
+            }
+
+            .hero-images {
+                max-width: 100%;
+            }
+        }
+
+        /* Demo styles for this standalone component */
+        .demo-container {
+            margin-bottom: 40px;
+        }
+
+        .demo-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--ink);
+            font-weight: 600;
+        }
+
+        .demo-description {
+            margin-bottom: 20px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1 class="demo-title">Hero Background Component</h1>
+        <p class="demo-description">
+            Self-contained hero background with aurora gradient and film grain effect.
+            Copy the CSS classes and HTML structure below to use in your projects.
+        </p>
+    </div>
+
+    <!-- HERO COMPONENT START -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-card bg-aurora-hero has-grain grain-hero">
+                <div class="hero-card__content">
+                    <h1 class="hero-card__title">
+                        <span>The Future of Wellness</span>
+                        <span>Research Is Here.</span>
+                    </h1>
+                    <p class="hero-supporting-text">
+                        Compare products, review research studies, and order with confidence. Our complete peptide catalog is just one click away.
+                    </p>
+                    <a class="btn btn--primary" href="#catalog">View Catalog</a>
+                </div>
+
+                <div class="hero-images">
+                    <img src="https://via.placeholder.com/520x400/e0dff6/374151?text=Hero+Image" alt="Hero image" />
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- HERO COMPONENT END -->
+
+    <div class="demo-container" style="margin-top: 40px;">
+        <h2 class="demo-title">Usage Instructions</h2>
+        <div style="background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <h3 style="margin-bottom: 15px; font-size: 1.1rem;">Key Classes:</h3>
+            <ul style="margin-left: 20px; line-height: 1.6;">
+                <li><strong>.bg-aurora-hero</strong> - Aurora gradient background</li>
+                <li><strong>.has-grain</strong> - Base grain effect</li>
+                <li><strong>.grain-hero</strong> - Enhanced grain for hero sections</li>
+                <li><strong>.hero-card</strong> - Main hero container</li>
+                <li><strong>.hero-card__content</strong> - Text content area</li>
+                <li><strong>.hero-card__title</strong> - Hero headline styling</li>
+            </ul>
+
+            <h3 style="margin: 20px 0 15px; font-size: 1.1rem;">Customization:</h3>
+            <ul style="margin-left: 20px; line-height: 1.6;">
+                <li>Modify CSS variables at the top for spacing and colors</li>
+                <li>Adjust gradient colors in <code>.bg-aurora-hero</code></li>
+                <li>Change grain intensity by modifying opacity and filter values</li>
+                <li>Update responsive breakpoints as needed</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Optional: Add any interactive functionality here
+        console.log('Hero background component loaded successfully!');
+
+        // Example: Smooth scroll for CTA button
+        document.querySelector('.btn--primary').addEventListener('click', function(e) {
+            if (this.getAttribute('href').startsWith('#')) {
+                e.preventDefault();
+                console.log('CTA clicked:', this.getAttribute('href'));
+                // Add your navigation logic here
+            }
+        });
+    </script>
+</body>
+</html>

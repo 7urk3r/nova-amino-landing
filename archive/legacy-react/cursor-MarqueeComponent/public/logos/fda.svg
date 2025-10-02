@@ -1,0 +1,10 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect x="5" y="5" width="90" height="90" fill="#003366" stroke="#fff" stroke-width="2" rx="5"/>
+  <text x="50" y="25" text-anchor="middle" fill="white" font-family="serif" font-size="16" font-weight="bold">FDA</text>
+  <text x="50" y="40" text-anchor="middle" fill="#FFD700" font-family="serif" font-size="6">FOOD AND DRUG</text>
+  <text x="50" y="48" text-anchor="middle" fill="#FFD700" font-family="serif" font-size="6">ADMINISTRATION</text>
+  <text x="50" y="65" text-anchor="middle" fill="white" font-family="serif" font-size="5">UNITED STATES</text>
+  <text x="50" y="75" text-anchor="middle" fill="white" font-family="serif" font-size="5">DEPARTMENT OF</text>
+  <text x="50" y="83" text-anchor="middle" fill="white" font-family="serif" font-size="5">HEALTH & HUMAN</text>
+  <text x="50" y="91" text-anchor="middle" fill="white" font-family="serif" font-size="5">SERVICES</text>
+</svg>

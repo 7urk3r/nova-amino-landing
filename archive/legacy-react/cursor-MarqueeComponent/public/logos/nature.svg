@@ -1,0 +1,7 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect x="5" y="5" width="90" height="90" fill="#E41E20" stroke="#fff" stroke-width="2" rx="5"/>
+  <text x="50" y="35" text-anchor="middle" fill="white" font-family="serif" font-size="14" font-weight="bold">Nature</text>
+  <text x="50" y="55" text-anchor="middle" fill="white" font-family="serif" font-size="6">INTERNATIONAL</text>
+  <text x="50" y="65" text-anchor="middle" fill="white" font-family="serif" font-size="6">JOURNAL OF</text>
+  <text x="50" y="75" text-anchor="middle" fill="white" font-family="serif" font-size="6">SCIENCE</text>
+</svg>

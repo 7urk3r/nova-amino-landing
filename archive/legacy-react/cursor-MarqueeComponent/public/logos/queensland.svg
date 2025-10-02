@@ -1,0 +1,10 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="45" fill="#2E1065" stroke="#fff" stroke-width="2"/>
+  <text x="50" y="22" text-anchor="middle" fill="white" font-family="serif" font-size="7" font-weight="bold">UNIVERSITY</text>
+  <text x="50" y="32" text-anchor="middle" fill="white" font-family="serif" font-size="7" font-weight="bold">OF</text>
+  <text x="50" y="42" text-anchor="middle" fill="white" font-family="serif" font-size="7" font-weight="bold">QUEENSLAND</text>
+  <text x="50" y="58" text-anchor="middle" fill="#FFD700" font-family="serif" font-size="8" font-weight="bold">UQ</text>
+  <text x="50" y="72" text-anchor="middle" fill="white" font-family="serif" font-size="5">AUSTRALIA</text>
+  <text x="50" y="82" text-anchor="middle" fill="white" font-family="serif" font-size="4">EST. 1909</text>
+  <text x="50" y="90" text-anchor="middle" fill="#FFD700" font-family="serif" font-size="3">CIPPS</text>
+</svg>

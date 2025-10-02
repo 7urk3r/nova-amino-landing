@@ -1,0 +1,6 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="45" fill="#A51C30" stroke="#fff" stroke-width="2"/>
+  <text x="50" y="35" text-anchor="middle" fill="white" font-family="serif" font-size="12" font-weight="bold">HARVARD</text>
+  <text x="50" y="50" text-anchor="middle" fill="white" font-family="serif" font-size="8">UNIVERSITY</text>
+  <text x="50" y="70" text-anchor="middle" fill="white" font-family="serif" font-size="6">EST. 1636</text>
+</svg>

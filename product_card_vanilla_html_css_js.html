@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nova Amino – Product Card (Vanilla + Aurora Media)</title>
+  <style>
+    :root {
+      --card-radius: 20px;
+      --card-bg: #ffffff;
+      --text: #111827;          /* neutral-900 */
+      --muted-600: #4b5563;     /* neutral-600 */
+      --border: #e5e7eb;        /* neutral-200 */
+      --shadow: 0 2px 6px rgba(0,0,0,0.06), 0 10px 30px rgba(0,0,0,0.10);
+      --cta: #0f172a;           /* slate-900 */
+      --cta-text: #ffffff;
+      --focus: 0 0 0 3px rgba(15, 23, 42, 0.2);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px;
+      background: #1f2937; /* app bg just for contrast */
+      font: 14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+    }
+
+    .grid { display: grid; place-items: center; min-height: 100vh; }
+
+    /* --- Card --- */
+    .product-card {
+      width: 100%;
+      max-width: 380px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      background: var(--card-bg);
+      border-radius: var(--card-radius);
+      box-shadow: var(--shadow);
+      overflow: hidden; /* ensures no stray lines on media corners */
+    }
+
+    /* --- Media: Aurora background with optional PNG overlay --- */
+    .media { position: relative; aspect-ratio: 4 / 3; background: transparent; overflow: hidden; }
+    .aurora { position: absolute; inset: 0; }
+    .aurora-gradient { position: absolute; inset: 0; background:
+        radial-gradient(120% 80% at 0% 100%, #f0f8fb 0%, transparent 55%),
+        radial-gradient(120% 80% at 100% 100%, #f2f6fc 0%, transparent 55%),
+        linear-gradient(90deg,#ffffff 0%,#fafcfd 25%,#f8fbfc 50%,#f4f9fb 75%,#f1f7fa 100%);
+    }
+    .grain { position: absolute; inset: 0; opacity: 0.6; mix-blend-mode: overlay; filter: contrast(180%) brightness(105%);
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.5' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.8'/%3E%3C/svg%3E");
+    }
+    /* Optional PNG overlay for the vial */
+    .vial { position: absolute; inset: 0; margin: auto; width: 72%; height: 88%; object-fit: contain; display: none; pointer-events: none; }
+    .vial.show { display: block; }
+
+    /* Stock pill overlay */
+    .stock-pill { position: absolute; top: 12px; right: 12px; display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.92); border: 1px solid rgba(255,255,255,0.9); color: #111827; padding: 6px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+    .stock-pill .dot { width: 10px; height: 10px; border-radius: 50%; background: #10b981; }
+    .stock-pill.low .dot { background: #f59e0b; }
+    .stock-pill.oos .dot { background: #9ca3af; }
+
+    /* --- Body --- */
+    .body { padding: 16px; display: grid; gap: 12px; }
+    .header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .name  { margin: 0; font-size: 18px; line-height: 1.2; font-weight: 700; color: var(--text); }
+    .price { text-align: right; font-weight: 700; font-size: 16px; }
+
+    .label { font-size: 12px; color: var(--muted-600); font-weight: 600; margin-bottom: 6px; display: inline-block; }
+    .benefits { display: flex; flex-wrap: wrap; gap: 6px; }
+    .pill { border: 1px solid var(--border); border-radius: 999px; padding: 6px 10px; font-size: 11px; color: #374151; background: #ffffff; }
+
+    /* Dosage */
+    .field { display: grid; gap: 6px; }
+    .select { appearance: none; width: 100%; border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; font-size: 14px; background: #fff; color: var(--text); outline: none;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="%2355637c"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px 16px; }
+    .select:focus { box-shadow: var(--focus); }
+
+    /* --- Footer CTA --- */
+    .footer { padding: 12px; }
+    .btn { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 10px; border: 0; border-radius: 16px; padding: 14px 16px; background: var(--cta); color: var(--cta-text); font-weight: 700; cursor: pointer; box-shadow: 0 2px 0 rgba(0,0,0,0.06) inset; }
+    .btn:focus { outline: none; box-shadow: var(--focus); }
+    .btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+    .cart { width: 18px; height: 18px; display: inline-block; }
+  </style>
+</head>
+<body>
+  <main class="grid">
+    <!-- Set data-vial to the PNG path you want to overlay (optional) -->
+    <article class="product-card" aria-label="Semaglutide product card" data-stock="8" data-vial="">
+      <!-- Media (Aurora background + optional vial overlay) -->
+      <div class="media">
+        <div class="aurora" aria-hidden="true">
+          <div class="aurora-gradient"></div>
+          <div class="grain"></div>
+        </div>
+        <!-- Overlay your PNG vial here by setting the data-vial attribute above -->
+        <img id="vialOverlay" class="vial" alt="Vial overlay" />
+        <div class="stock-pill" id="stock-pill">
+          <span class="dot" aria-hidden="true"></span>
+          <span class="txt">In stock</span>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="body">
+        <div class="header">
+          <h3 class="name">Semaglutide</h3>
+          <div class="price" aria-label="Price">$129.00</div>
+        </div>
+
+        <div>
+          <span class="label">Areas of study</span>
+          <div class="benefits" aria-label="Areas of study tags">
+            <span class="pill">Metabolism</span>
+            <span class="pill">Glucose</span>
+            <span class="pill">Satiety</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label" for="dose">Dosage</label>
+          <select id="dose" class="select" aria-label="Dosage">
+            <option>2 mg</option>
+            <option>5 mg</option>
+            <option>10 mg</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <button class="btn" id="addToCart">
+          <svg class="cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 12.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <span>Add to cart</span>
+        </button>
+      </div>
+    </article>
+  </main>
+
+  <script>
+    // --- Stock pill logic (reads data-stock on the card)
+    (function initStockPill(){
+      const card = document.querySelector('.product-card');
+      const stock = Number(card?.getAttribute('data-stock') || 0);
+      const pill  = document.getElementById('stock-pill');
+      const txt   = pill?.querySelector('.txt');
+
+      pill?.classList.remove('low','oos');
+      if (stock <= 0) {
+        pill?.classList.add('oos');
+        if (txt) txt.textContent = 'Out of stock';
+      } else if (stock < 5) {
+        pill?.classList.add('low');
+        if (txt) txt.textContent = `Low stock (${stock} left)`;
+      } else {
+        if (txt) txt.textContent = 'In stock';
+      }
+    })();
+
+    // --- Overlay vial PNG from data-vial attribute (optional)
+    (function initVial(){
+      const card = document.querySelector('.product-card');
+      const src = card?.getAttribute('data-vial') || '';
+      const img = document.getElementById('vialOverlay');
+      if (src && img) { img.setAttribute('src', src); img.classList.add('show'); }
+    })();
+
+    // --- Demo cart behavior
+    document.getElementById('addToCart')?.addEventListener('click', () => {
+      const dose = /** @type {HTMLSelectElement} */(document.getElementById('dose')).value;
+      alert(`Added Semaglutide (${dose}) to cart`);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Content Injection</title>
+    <style>
+        body { font-family: system-ui; padding: 20px; }
+        .test-panel { background: #f8f9fa; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        pre { background: white; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Content Injection Debug Test</h1>
+
+    <div class="test-panel">
+        <h3>1. Test Direct Sanity API</h3>
+        <button onclick="testDirectAPI()">Test Direct API</button>
+        <div id="direct-api-result"></div>
+    </div>
+
+    <div class="test-panel">
+        <h3>2. Test httpSanity.js Module</h3>
+        <button onclick="testHttpSanityModule()">Test Module Import</button>
+        <div id="module-test-result"></div>
+    </div>
+
+    <div class="test-panel">
+        <h3>3. Test Content Injection Function</h3>
+        <button onclick="testContentInjection()">Test Injection Logic</button>
+        <div id="injection-test-result"></div>
+    </div>
+
+    <script>
+        // Test direct API access
+        async function testDirectAPI() {
+            const resultEl = document.getElementById('direct-api-result');
+            resultEl.innerHTML = '<p>Testing direct API...</p>';
+
+            try {
+                const response = await fetch('https://ojsvc60h.api.sanity.io/v2021-10-21/data/query/production?query=*%5B_type%3D%3D%22hero%22%5D%5B0%5D%7Bheadline%7D');
+                const data = await response.json();
+
+                resultEl.innerHTML = `
+                    <div class="success">✅ Direct API Success</div>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultEl.innerHTML = `
+                    <div class="error">❌ Direct API Failed</div>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+
+        // Test module import
+        async function testHttpSanityModule() {
+            const resultEl = document.getElementById('module-test-result');
+            resultEl.innerHTML = '<p>Testing module import...</p>';
+
+            try {
+                const module = await import('/src/js/cms/httpSanity.js');
+                const content = await module.fetchHomepageContent();
+
+                resultEl.innerHTML = `
+                    <div class="success">✅ Module Import Success</div>
+                    <pre>${JSON.stringify(content, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultEl.innerHTML = `
+                    <div class="error">❌ Module Import Failed</div>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+
+        // Test content injection
+        async function testContentInjection() {
+            const resultEl = document.getElementById('injection-test-result');
+            resultEl.innerHTML = '<p>Testing content injection...</p>';
+
+            try {
+                // Set up global config like in main page
+                window.SANITY_CONFIG = { projectId: 'ojsvc60h', dataset: 'production' };
+
+                // Import and run the init module
+                const initModule = await import('/src/js/cms/init.js');
+
+                // Check if window.__NA_CONTENT__ was set
+                const content = window.__NA_CONTENT__;
+
+                resultEl.innerHTML = `
+                    <div class="success">✅ Content Injection Test Complete</div>
+                    <h4>Global Content Object:</h4>
+                    <pre>${JSON.stringify(content, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultEl.innerHTML = `
+                    <div class="error">❌ Content Injection Failed</div>
+                    <pre>${error.message}\n\nStack: ${error.stack}</pre>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

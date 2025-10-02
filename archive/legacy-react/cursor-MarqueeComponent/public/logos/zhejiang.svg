@@ -1,0 +1,8 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="45" fill="#1E3A8A" stroke="#fff" stroke-width="2"/>
+  <text x="50" y="28" text-anchor="middle" fill="white" font-family="serif" font-size="8" font-weight="bold">ZHEJIANG</text>
+  <text x="50" y="40" text-anchor="middle" fill="white" font-family="serif" font-size="8" font-weight="bold">UNIVERSITY</text>
+  <text x="50" y="58" text-anchor="middle" fill="#FFD700" font-family="serif" font-size="6">浙江大学</text>
+  <text x="50" y="75" text-anchor="middle" fill="white" font-family="serif" font-size="5">SCHOOL OF MEDICINE</text>
+  <text x="50" y="85" text-anchor="middle" fill="white" font-family="serif" font-size="4">EST. 1897</text>
+</svg>

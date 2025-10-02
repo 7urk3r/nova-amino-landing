@@ -1,0 +1,7 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="45" fill="#8C1515" stroke="#fff" stroke-width="2"/>
+  <text x="50" y="35" text-anchor="middle" fill="white" font-family="serif" font-size="10" font-weight="bold">STANFORD</text>
+  <text x="50" y="50" text-anchor="middle" fill="white" font-family="serif" font-size="8">UNIVERSITY</text>
+  <polygon points="50,55 45,65 55,65" fill="white"/>
+  <text x="50" y="75" text-anchor="middle" fill="white" font-family="serif" font-size="6">EST. 1885</text>
+</svg>

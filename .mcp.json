@@ -1,0 +1,27 @@
+{
+  "mcpServers": {
+    "sequential-thinking": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "env": {}
+    },
+    "sanity": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@sanity/mcp-server"
+      ],
+      "env": {
+        "SANITY_PROJECT_ID": "ojsvc60h",
+        "SANITY_DATASET": "production",
+        "SANITY_READ_TOKEN": "sk9KIctAnRnAZgljNDqx1MqCTARCSKINtx8oGSOq1J19hYDM3PGf8qMlQZbwf0gsk42MpU4fkVwbMVB9pF2Fz3AHMBkiIkKUd7YngFirkIbFszn9UUUW3b5Fp0OXp6tlc32NH9m7MUHLq2xb8Mti5486rlcdn5mhtVMUeV2NPCtye8b0NsQ3",
+        "MCP_USER_ROLE": "developer"
+      }
+    }
+  }
+}

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanity Debug Dashboard</title>
+    <style>
+        body { font-family: system-ui; padding: 20px; background: #f5f5f5; }
+        .debug-panel { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .debug-title { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 10px; }
+        .status { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .status.success { background: #d4edda; color: #155724; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        .status.warning { background: #fff3cd; color: #856404; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; font-size: 12px; }
+        .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .comparison h4 { margin: 0 0 10px 0; }
+        button { background: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        #results { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Sanity CMS Debug Dashboard</h1>
+
+    <div class="debug-panel">
+        <div class="debug-title">Connection Test</div>
+        <button onclick="testSanityConnection()">Test Sanity API Connection</button>
+        <div id="connection-status"></div>
+    </div>
+
+    <div class="debug-panel">
+        <div class="debug-title">Content Audit</div>
+        <button onclick="auditAllContent()">Audit All Sanity Content</button>
+        <div id="content-audit"></div>
+    </div>
+
+    <div class="debug-panel">
+        <div class="debug-title">Frontend Integration Test</div>
+        <button onclick="testFrontendIntegration()">Test Content Injection</button>
+        <div id="frontend-test"></div>
+    </div>
+
+    <div class="debug-panel">
+        <div class="debug-title">Live Comparison</div>
+        <button onclick="compareContent()">Compare Sanity vs Page Content</button>
+        <div id="comparison"></div>
+    </div>
+
+    <script>
+        const SANITY_CONFIG = { projectId: 'ojsvc60h', dataset: 'production' };
+
+        async function sanityQuery(query) {
+            const url = `https://${SANITY_CONFIG.projectId}.api.sanity.io/v2021-10-21/data/query/${SANITY_CONFIG.dataset}?query=${encodeURIComponent(query)}`;
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
+            return data.result;
+        }
+
+        async function testSanityConnection() {
+            const statusEl = document.getElementById('connection-status');
+            statusEl.innerHTML = '<div class="status warning">Testing...</div>';
+
+            try {
+                const result = await sanityQuery('*[_type == "hero"][0]{headline}');
+                statusEl.innerHTML = `
+                    <div class="status success">✅ Connected</div>
+                    <pre>${JSON.stringify(result, null, 2)}</pre>
+                `;
+            } catch (error) {
+                statusEl.innerHTML = `
+                    <div class="status error">❌ Failed: ${error.message}</div>
+                `;
+            }
+        }
+
+        async function auditAllContent() {
+            const auditEl = document.getElementById('content-audit');
+            auditEl.innerHTML = '<div class="status warning">Auditing...</div>';
+
+            try {
+                const [hero, features, quotes, marquee, copyBlock] = await Promise.all([
+                    sanityQuery('*[_type == "hero"][0]{headline, subheadline, ctaButtonCopy, "heroImageUrl": heroImage.asset->url}'),
+                    sanityQuery('*[_type == "featureCard"] | order(order asc){title, body, order, "iconUrl": icon.asset->url}'),
+                    sanityQuery('*[_type == "quote"]{compound, quote, scientist, organization, source}'),
+                    sanityQuery('*[_type == "marqueeSection"][0]{title, subtitle, quotes[]->{compound, quote, scientist, organization, source}}'),
+                    sanityQuery('*[_type == "copyBlock"][0]{content}')
+                ]);
+
+                const audit = {
+                    hero: { status: hero ? 'Found' : 'Missing', data: hero },
+                    features: { status: features?.length ? `Found ${features.length}` : 'Missing', data: features },
+                    quotes: { status: quotes?.length ? `Found ${quotes.length}` : 'Missing', data: quotes },
+                    marquee: { status: marquee ? 'Found' : 'Missing', data: marquee },
+                    copyBlock: { status: copyBlock ? 'Found' : 'Missing', data: copyBlock }
+                };
+
+                auditEl.innerHTML = `
+                    <div class="status success">✅ Audit Complete</div>
+                    <pre>${JSON.stringify(audit, null, 2)}</pre>
+                `;
+            } catch (error) {
+                auditEl.innerHTML = `
+                    <div class="status error">❌ Audit Failed: ${error.message}</div>
+                `;
+            }
+        }
+
+        async function testFrontendIntegration() {
+            const testEl = document.getElementById('frontend-test');
+            testEl.innerHTML = '<div class="status warning">Testing frontend integration...</div>';
+
+            try {
+                // Import and test the CMS functions
+                const { fetchHomepageContent } = await import('./src/js/cms/httpSanity.js');
+                const content = await fetchHomepageContent();
+
+                testEl.innerHTML = `
+                    <div class="status success">✅ Frontend Integration Working</div>
+                    <pre>${JSON.stringify(content, null, 2)}</pre>
+                `;
+            } catch (error) {
+                testEl.innerHTML = `
+                    <div class="status error">❌ Frontend Integration Failed: ${error.message}</div>
+                `;
+            }
+        }
+
+        async function compareContent() {
+            const comparisonEl = document.getElementById('comparison');
+            comparisonEl.innerHTML = '<div class="status warning">Comparing...</div>';
+
+            try {
+                // Get content from Sanity
+                const features = await sanityQuery('*[_type == "featureCard"] | order(order asc){title, body, order}');
+
+                // Simulate getting content from main page
+                const pageResponse = await fetch('http://127.0.0.1:3010');
+                const pageHTML = await pageResponse.text();
+
+                // Extract current card titles from page
+                const titleMatches = pageHTML.match(/class="heading"[^>]*>\s*([^<]+)/g);
+                const pageTitles = titleMatches ? titleMatches.map(m => m.replace(/.*>/, '').trim()) : [];
+
+                comparisonEl.innerHTML = `
+                    <div class="status success">✅ Comparison Complete</div>
+                    <div class="comparison">
+                        <div>
+                            <h4>📦 Sanity Content</h4>
+                            <pre>${JSON.stringify(features.map(f => ({ title: f.title, body: f.body?.substring(0, 50) + '...' })), null, 2)}</pre>
+                        </div>
+                        <div>
+                            <h4>🌐 Page Content</h4>
+                            <pre>${JSON.stringify(pageTitles.filter(t => !t.includes('hero-card')), null, 2)}</pre>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <strong>Status:</strong>
+                        ${features[0]?.title === pageTitles.find(t => !t.includes('hero-card'))
+                            ? '<span class="status success">✅ Content Matching</span>'
+                            : '<span class="status error">❌ Content NOT Matching</span>'}
+                    </div>
+                `;
+            } catch (error) {
+                comparisonEl.innerHTML = `
+                    <div class="status error">❌ Comparison Failed: ${error.message}</div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

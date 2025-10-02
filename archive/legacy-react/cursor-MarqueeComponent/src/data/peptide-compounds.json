@@ -1,0 +1,469 @@
+{
+  "metadata": {
+    "title": "Peptide Compounds Database",
+    "description": "Comprehensive list of research peptides and compounds with their primary therapeutic applications",
+    "last_updated": "2025-01-15",
+    "total_compounds": 46,
+    "disclaimer": "This information is for research purposes only. Consult healthcare professionals before use."
+  },
+  "peptides": [
+    {
+      "id": 1,
+      "name": "5-Amino-1MQ",
+      "full_name": "5-Amino-1-methylquinolinium",
+      "category": "Metabolic & Weight Management",
+      "primary_function": "NNMT inhibitor for fat loss and metabolic enhancement",
+      "molecular_weight": "159.2 g/mol",
+      "research_applications": ["Fat loss", "Metabolic enhancement", "Anti-aging"]
+    },
+    {
+      "id": 2,
+      "name": "Adipotide",
+      "full_name": "Adipose tissue-targeting peptide",
+      "category": "Metabolic & Weight Management",
+      "primary_function": "Targets blood vessels in adipose tissue for weight reduction",
+      "molecular_weight": "~2000 g/mol",
+      "research_applications": ["Weight loss", "Adipose tissue reduction", "Obesity treatment"]
+    },
+    {
+      "id": 3,
+      "name": "AHK-Cu",
+      "full_name": "Ala-His-Lys-Cu (Copper peptide)",
+      "category": "Regenerative & Cosmetic",
+      "primary_function": "Copper peptide for skin repair and anti-aging",
+      "molecular_weight": "404.9 g/mol",
+      "research_applications": ["Skin repair", "Anti-aging", "Wound healing", "Hair growth"]
+    },
+    {
+      "id": 4,
+      "name": "AICAR",
+      "full_name": "5-Aminoimidazole-4-carboxamide ribonucleotide",
+      "category": "Metabolic & Weight Management",
+      "primary_function": "AMPK activator for metabolic enhancement",
+      "molecular_weight": "338.2 g/mol",
+      "research_applications": ["Endurance enhancement", "Metabolic regulation", "Diabetes research"]
+    },
+    {
+      "id": 5,
+      "name": "AOD9604",
+      "full_name": "Anti-Obesity Drug 9604",
+      "category": "Metabolic & Weight Management",
+      "primary_function": "Growth hormone fragment for fat loss",
+      "molecular_weight": "1815.1 g/mol",
+      "research_applications": ["Fat loss", "Weight management", "Metabolic enhancement"]
+    },
+    {
+      "id": 6,
+      "name": "ARA-290",
+      "full_name": "Cibinetide",
+      "category": "Cognitive & Neurological",
+      "primary_function": "Erythropoietin receptor agonist for neuroprotection",
+      "molecular_weight": "1972.2 g/mol",
+      "research_applications": ["Neuroprotection", "Diabetic neuropathy", "Tissue repair"]
+    },
+    {
+      "id": 7,
+      "name": "BPC-157",
+      "full_name": "Body Protection Compound-157",
+      "category": "Regenerative & Cosmetic",
+      "primary_function": "Gastric pentadecapeptide for healing and recovery",
+      "molecular_weight": "1419.5 g/mol",
+      "research_applications": ["Wound healing", "GI protection", "Tendon repair", "Anti-inflammatory"]
+    },
+    {
+      "id": 8,
+      "name": "Cagrilintide",
+      "full_name": "Amylin receptor agonist",
+      "category": "Metabolic & Weight Management",
+      "primary_function": "Long-acting amylin analog for weight management",
+      "molecular_weight": "~4000 g/mol",
+      "research_applications": ["Weight loss", "Diabetes management", "Appetite suppression"]
+    },
+    {
+      "id": 9,
+      "name": "CJC-1295 DAC",
+      "full_name": "CJC-1295 with Drug Affinity Complex",
+      "category": "Growth & Performance",
+      "primary_function": "Long-acting GHRH analog with extended half-life",
+      "molecular_weight": "3647.2 g/mol",
+      "research_applications": ["Growth hormone release", "Anti-aging", "Muscle growth", "Fat loss"]
+    },
+    {
+      "id": 10,
+      "name": "CJC-1295",
+      "full_name": "Growth Hormone Releasing Hormone analog",
+      "category": "Growth & Performance",
+      "primary_function": "GHRH analog for growth hormone stimulation",
+      "molecular_weight": "3367.9 g/mol",
+      "research_applications": ["Growth hormone release", "Anti-aging", "Muscle development"]
+    },
+    {
+      "id": 11,
+      "name": "DSIP",
+      "full_name": "Delta Sleep-Inducing Peptide",
+      "category": "Cognitive & Neurological",
+      "primary_function": "Natural sleep-promoting neuropeptide",
+      "molecular_weight": "849.0 g/mol",
+      "research_applications": ["Sleep enhancement", "Stress reduction", "Pain management"]
+    },
+    {
+      "id": 12,
+      "name": "Epithalon",
+      "full_name": "Epitalon",
+      "category": "Longevity & Anti-Aging",
+      "primary_function": "Telomerase activator for longevity",
+      "molecular_weight": "390.4 g/mol",
+      "research_applications": ["Anti-aging", "Telomere extension", "Longevity", "Immune function"]
+    },
+    {
+      "id": 13,
+      "name": "FOXO4-DRI",
+      "full_name": "FOXO4-D-Retro-Inverso",
+      "category": "Longevity & Anti-Aging",
+      "primary_function": "Senolytic peptide for cellular rejuvenation",
+      "molecular_weight": "~3000 g/mol",
+      "research_applications": ["Senescent cell removal", "Anti-aging", "Cellular rejuvenation"]
+    },
+    {
+      "id": 14,
+      "name": "GHK-Cu",
+      "full_name": "Gly-His-Lys-Cu (Copper peptide)",
+      "category": "Regenerative & Cosmetic",
+      "primary_function": "Copper peptide for skin and hair regeneration",
+      "molecular_weight": "404.0 g/mol",
+      "research_applications": ["Skin regeneration", "Hair growth", "Wound healing", "Anti-aging"]
+    },
+    {
+      "id": 15,
+      "name": "GHRP-2",
+      "full_name": "Growth Hormone Releasing Peptide-2",
+      "category": "Growth & Performance",
+      "primary_function": "Growth hormone secretagogue",
+      "molecular_weight": "817.9 g/mol",
+      "research_applications": ["Growth hormone release", "Muscle growth", "Fat loss", "Anti-aging"]
+    },
+    {
+      "id": 16,
+      "name": "GHRP-6",
+      "full_name": "Growth Hormone Releasing Peptide-6",
+      "category": "Growth & Performance",
+      "primary_function": "Growth hormone secretagogue and appetite stimulant",
+      "molecular_weight": "872.0 g/mol",
+      "research_applications": ["Growth hormone release", "Appetite stimulation", "Muscle growth"]
+    },
+    {
+      "id": 17,
+      "name": "Glutathione",
+      "full_name": "L-Glutathione",
+      "category": "Longevity & Anti-Aging",
+      "primary_function": "Master antioxidant for cellular protection",
+      "molecular_weight": "307.3 g/mol",
+      "research_applications": ["Antioxidant protection", "Detoxification", "Immune support", "Anti-aging"]
+    },
+    {
+      "id": 18,
+      "name": "Gonadorelin",
+      "full_name": "Gonadotropin-Releasing Hormone",
+      "category": "Hormonal & Sexual Health",
+      "primary_function": "GnRH for reproductive hormone regulation",
+      "molecular_weight": "1182.3 g/mol",
+      "research_applications": ["Fertility treatment", "Hormone regulation", "Testosterone production"]
+    },
+    {
+      "id": 19,
+      "name": "Hexarelin",
+      "full_name": "Hexarelin acetate",
+      "category": "Growth & Performance",
+      "primary_function": "Potent growth hormone secretagogue",
+      "molecular_weight": "887.0 g/mol",
+      "research_applications": ["Growth hormone release", "Cardioprotection", "Muscle growth"]
+    },
+    {
+      "id": 20,
+      "name": "IGF-1 LR3",
+      "full_name": "Insulin-like Growth Factor-1 Long R3",
+      "category": "Growth & Performance",
+      "primary_function": "Extended-release IGF-1 for muscle growth",
+      "molecular_weight": "9117.5 g/mol",
+      "research_applications": ["Muscle growth", "Recovery", "Anti-aging", "Metabolic enhancement"]
+    },
+    {
+      "id": 21,
+      "name": "Ipamorelin",
+      "full_name": "Ipamorelin acetate",
+      "category": "Growth & Performance",
+      "primary_function": "Selective growth hormone secretagogue",
+      "molecular_weight": "711.9 g/mol",
+      "research_applications": ["Growth hormone release", "Anti-aging", "Body composition", "Recovery"]
+    },
+    {
+      "id": 22,
+      "name": "Kisspeptin-10",
+      "full_name": "Kisspeptin-10",
+      "category": "Hormonal & Sexual Health",
+      "primary_function": "Reproductive hormone regulation",
+      "molecular_weight": "1302.5 g/mol",
+      "research_applications": ["Fertility enhancement", "Libido improvement", "Hormone regulation"]
+    },
+    {
+      "id": 23,
+      "name": "KPV",
+      "full_name": "Lys-Pro-Val",
+      "category": "Immune & Defense",
+      "primary_function": "Anti-inflammatory and antimicrobial peptide",
+      "molecular_weight": "371.5 g/mol",
+      "research_applications": ["Anti-inflammatory", "Antimicrobial", "Skin conditions", "IBD"]
+    },
+    {
+      "id": 24,
+      "name": "LL-37",
+      "full_name": "Cathelicidin LL-37",
+      "category": "Immune & Defense",
+      "primary_function": "Antimicrobial peptide for immune defense",
+      "molecular_weight": "4493.4 g/mol",
+      "research_applications": ["Antimicrobial", "Immune support", "Wound healing", "Anti-inflammatory"]
+    },
+    {
+      "id": 25,
+      "name": "MGF (IGF-1 Ec)",
+      "full_name": "Mechano Growth Factor",
+      "category": "Growth & Performance",
+      "primary_function": "Muscle-specific growth factor",
+      "molecular_weight": "~2900 g/mol",
+      "research_applications": ["Muscle repair", "Recovery", "Muscle growth", "Injury healing"]
+    },
+    {
+      "id": 26,
+      "name": "MOTS-c",
+      "full_name": "Mitochondrial Open Reading Frame of the 12S rRNA-c",
+      "category": "Metabolic & Weight Management",
+      "primary_function": "Mitochondrial peptide for metabolic regulation",
+      "molecular_weight": "1675.0 g/mol",
+      "research_applications": ["Metabolic enhancement", "Longevity", "Exercise performance", "Diabetes"]
+    },
+    {
+      "id": 27,
+      "name": "Melanotan-1",
+      "full_name": "Afamelanotide",
+      "category": "Regenerative & Cosmetic",
+      "primary_function": "Melanocortin receptor agonist for tanning",
+      "molecular_weight": "1646.9 g/mol",
+      "research_applications": ["Skin tanning", "Photoprotection", "Erythropoietic protoporphyria"]
+    },
+    {
+      "id": 28,
+      "name": "Melanotan-2",
+      "full_name": "MT-2",
+      "category": "Regenerative & Cosmetic",
+      "primary_function": "Melanocortin receptor agonist for tanning and libido",
+      "molecular_weight": "1024.2 g/mol",
+      "research_applications": ["Skin tanning", "Libido enhancement", "Appetite suppression"]
+    },
+    {
+      "id": 29,
+      "name": "NAD+",
+      "full_name": "Nicotinamide Adenine Dinucleotide",
+      "category": "Longevity & Anti-Aging",
+      "primary_function": "Cellular energy and DNA repair cofactor",
+      "molecular_weight": "663.4 g/mol",
+      "research_applications": ["Anti-aging", "Energy metabolism", "DNA repair", "Neuroprotection"]
+    },
+    {
+      "id": 30,
+      "name": "Oxytocin",
+      "full_name": "Oxytocin",
+      "category": "Hormonal & Sexual Health",
+      "primary_function": "Social bonding and uterine contraction hormone",
+      "molecular_weight": "1007.2 g/mol",
+      "research_applications": ["Social bonding", "Anxiety reduction", "Labor induction", "Autism research"]
+    },
+    {
+      "id": 31,
+      "name": "PEG-MGF",
+      "full_name": "Pegylated Mechano Growth Factor",
+      "category": "Growth & Performance",
+      "primary_function": "Extended-release muscle growth factor",
+      "molecular_weight": "~25000 g/mol",
+      "research_applications": ["Muscle repair", "Recovery", "Muscle growth", "Injury healing"]
+    },
+    {
+      "id": 32,
+      "name": "PT-141",
+      "full_name": "Bremelanotide",
+      "category": "Hormonal & Sexual Health",
+      "primary_function": "Melanocortin receptor agonist for sexual dysfunction",
+      "molecular_weight": "1025.2 g/mol",
+      "research_applications": ["Sexual dysfunction", "Libido enhancement", "Female sexual arousal"]
+    },
+    {
+      "id": 33,
+      "name": "Retatrutide",
+      "full_name": "LY3437943",
+      "category": "Metabolic & Weight Management",
+      "primary_function": "Triple agonist for weight loss (GLP-1, GIP, glucagon)",
+      "molecular_weight": "~4000 g/mol",
+      "research_applications": ["Weight loss", "Diabetes management", "Metabolic syndrome"]
+    },
+    {
+      "id": 34,
+      "name": "Selank",
+      "full_name": "Selank",
+      "category": "Cognitive & Neurological",
+      "primary_function": "Anxiolytic and nootropic peptide",
+      "molecular_weight": "751.9 g/mol",
+      "research_applications": ["Anxiety reduction", "Cognitive enhancement", "Stress management", "ADHD"]
+    },
+    {
+      "id": 35,
+      "name": "Semaglutide",
+      "full_name": "Semaglutide",
+      "category": "Metabolic & Weight Management",
+      "primary_function": "GLP-1 receptor agonist for diabetes and weight loss",
+      "molecular_weight": "4113.6 g/mol",
+      "research_applications": ["Type 2 diabetes", "Weight loss", "Cardiovascular protection"]
+    },
+    {
+      "id": 36,
+      "name": "Semax",
+      "full_name": "Semax",
+      "category": "Cognitive & Neurological",
+      "primary_function": "Neuroprotective and cognitive enhancing peptide",
+      "molecular_weight": "813.9 g/mol",
+      "research_applications": ["Cognitive enhancement", "Neuroprotection", "Stroke recovery", "ADHD"]
+    },
+    {
+      "id": 37,
+      "name": "Sermorelin",
+      "full_name": "Sermorelin acetate",
+      "category": "Growth & Performance",
+      "primary_function": "GHRH analog for natural GH stimulation",
+      "molecular_weight": "3357.9 g/mol",
+      "research_applications": ["Growth hormone release", "Anti-aging", "Sleep improvement", "Body composition"]
+    },
+    {
+      "id": 38,
+      "name": "Snap-8",
+      "full_name": "Acetyl Octapeptide-3",
+      "category": "Regenerative & Cosmetic",
+      "primary_function": "Topical peptide for wrinkle reduction",
+      "molecular_weight": "1075.2 g/mol",
+      "research_applications": ["Wrinkle reduction", "Anti-aging", "Muscle relaxation", "Cosmetic applications"]
+    },
+    {
+      "id": 39,
+      "name": "SS-31",
+      "full_name": "Elamipretide",
+      "category": "Longevity & Anti-Aging",
+      "primary_function": "Mitochondrial-targeted peptide for cellular protection",
+      "molecular_weight": "639.8 g/mol",
+      "research_applications": ["Mitochondrial dysfunction", "Heart failure", "Aging", "Neurodegenerative diseases"]
+    },
+    {
+      "id": 40,
+      "name": "Survodutide",
+      "full_name": "BI 456906",
+      "category": "Metabolic & Weight Management",
+      "primary_function": "Dual GLP-1/glucagon receptor agonist",
+      "molecular_weight": "~4500 g/mol",
+      "research_applications": ["Weight loss", "Metabolic syndrome", "NASH", "Type 2 diabetes"]
+    },
+    {
+      "id": 41,
+      "name": "TB-500",
+      "full_name": "Thymosin Beta-4 fragment",
+      "category": "Regenerative & Cosmetic",
+      "primary_function": "Tissue repair and regeneration peptide",
+      "molecular_weight": "889.0 g/mol",
+      "research_applications": ["Wound healing", "Tissue repair", "Anti-inflammatory", "Recovery"]
+    },
+    {
+      "id": 42,
+      "name": "Tesamorelin",
+      "full_name": "Tesamorelin",
+      "category": "Growth & Performance",
+      "primary_function": "GHRH analog for visceral fat reduction",
+      "molecular_weight": "5135.9 g/mol",
+      "research_applications": ["Visceral fat reduction", "HIV lipodystrophy", "Growth hormone deficiency"]
+    },
+    {
+      "id": 43,
+      "name": "Thymalin",
+      "full_name": "Thymalin",
+      "category": "Immune & Defense",
+      "primary_function": "Thymic peptide for immune system support",
+      "molecular_weight": "~1000 g/mol",
+      "research_applications": ["Immune system support", "Anti-aging", "Thymic function restoration"]
+    },
+    {
+      "id": 44,
+      "name": "Thymosin Alpha-1",
+      "full_name": "Thymosin α1",
+      "category": "Immune & Defense",
+      "primary_function": "Immunomodulatory peptide",
+      "molecular_weight": "3108.3 g/mol",
+      "research_applications": ["Immune enhancement", "Hepatitis treatment", "Cancer therapy", "Vaccine adjuvant"]
+    },
+    {
+      "id": 45,
+      "name": "Tirzepatide",
+      "full_name": "Tirzepatide",
+      "category": "Metabolic & Weight Management",
+      "primary_function": "Dual GLP-1/GIP receptor agonist",
+      "molecular_weight": "4813.5 g/mol",
+      "research_applications": ["Type 2 diabetes", "Weight loss", "Metabolic syndrome"]
+    },
+    {
+      "id": 46,
+      "name": "VIP",
+      "full_name": "Vasoactive Intestinal Peptide",
+      "category": "Cognitive & Neurological",
+      "primary_function": "Neuropeptide for immune and neurological functions",
+      "molecular_weight": "3326.8 g/mol",
+      "research_applications": ["Autoimmune conditions", "Neuroprotection", "Anti-inflammatory", "CIRS"]
+    }
+  ],
+  "categories": {
+    "Metabolic & Weight Management": {
+      "description": "Compounds targeting metabolism, weight loss, diabetes, and metabolic disorders",
+      "applications": ["Weight loss", "Diabetes management", "Metabolic enhancement", "Appetite regulation"],
+      "compound_count": 11
+    },
+    "Growth & Performance": {
+      "description": "Growth hormones, growth factors, and performance-enhancing compounds",
+      "applications": ["Muscle growth", "Recovery", "Body composition", "Athletic performance", "Anti-aging"],
+      "compound_count": 9
+    },
+    "Regenerative & Cosmetic": {
+      "description": "Healing, tissue repair, skin improvement, and aesthetic enhancement",
+      "applications": ["Wound healing", "Skin regeneration", "Anti-aging", "Hair growth", "Tissue repair"],
+      "compound_count": 7
+    },
+    "Cognitive & Neurological": {
+      "description": "Brain health, cognitive enhancement, neuroprotection, and sleep regulation",
+      "applications": ["Cognitive enhancement", "Neuroprotection", "Sleep improvement", "Stress management", "Mental performance"],
+      "compound_count": 4
+    },
+    "Immune & Defense": {
+      "description": "Immune system support, antimicrobial activity, and inflammatory response",
+      "applications": ["Immune enhancement", "Antimicrobial", "Anti-inflammatory", "Infection resistance", "Autoimmune support"],
+      "compound_count": 4
+    },
+    "Hormonal & Sexual Health": {
+      "description": "Hormone regulation, reproductive health, and sexual function",
+      "applications": ["Hormone regulation", "Fertility enhancement", "Libido improvement", "Sexual dysfunction", "Reproductive health"],
+      "compound_count": 4
+    },
+    "Longevity & Anti-Aging": {
+      "description": "Cellular rejuvenation, mitochondrial function, and age-related decline prevention",
+      "applications": ["Longevity", "Cellular rejuvenation", "Mitochondrial health", "Antioxidant protection", "Senescence prevention"],
+      "compound_count": 7
+    }
+  },
+  "safety_disclaimer": "This database is for research and educational purposes only. These compounds are not approved for human consumption outside of approved clinical settings. Always consult with qualified healthcare professionals before considering any therapeutic interventions.",
+  "usage_notes": {
+    "research_only": "All compounds listed are for research purposes",
+    "medical_supervision": "Clinical use requires medical supervision",
+    "regulatory_status": "Regulatory status varies by jurisdiction",
+    "quality_control": "Source quality and purity are critical factors"
+  }
+}

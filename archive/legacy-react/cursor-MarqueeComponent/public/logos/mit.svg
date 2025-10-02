@@ -1,0 +1,7 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect x="5" y="5" width="90" height="90" fill="#8B1538" stroke="#fff" stroke-width="2" rx="5"/>
+  <text x="50" y="35" text-anchor="middle" fill="white" font-family="sans-serif" font-size="16" font-weight="bold">MIT</text>
+  <text x="50" y="55" text-anchor="middle" fill="white" font-family="sans-serif" font-size="6">MASSACHUSETTS</text>
+  <text x="50" y="65" text-anchor="middle" fill="white" font-family="sans-serif" font-size="6">INSTITUTE OF</text>
+  <text x="50" y="75" text-anchor="middle" fill="white" font-family="sans-serif" font-size="6">TECHNOLOGY</text>
+</svg>

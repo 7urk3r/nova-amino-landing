@@ -1,0 +1,9 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="45" fill="#003366" stroke="#fff" stroke-width="2"/>
+  <text x="50" y="22" text-anchor="middle" fill="white" font-family="serif" font-size="7" font-weight="bold">UNIVERSITY</text>
+  <text x="50" y="32" text-anchor="middle" fill="white" font-family="serif" font-size="7" font-weight="bold">OF TORINO</text>
+  <text x="50" y="50" text-anchor="middle" fill="#FFD700" font-family="serif" font-size="10" font-weight="bold">UNITO</text>
+  <text x="50" y="68" text-anchor="middle" fill="white" font-family="serif" font-size="6">UNIVERSITÀ</text>
+  <text x="50" y="78" text-anchor="middle" fill="white" font-family="serif" font-size="6">DI TORINO</text>
+  <text x="50" y="88" text-anchor="middle" fill="white" font-family="serif" font-size="4">EST. 1404</text>
+</svg>
