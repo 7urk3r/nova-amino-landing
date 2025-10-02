@@ -71,10 +71,6 @@ const escapeHtml = (value: string) =>
 
 const escapeRegExp = (value: string) => value.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
 
-const rawLanguages = Array.isArray(propsData.languages) && propsData.languages.length
-  ? propsData.languages
-  : [defaultLanguage, defaultSpanish]
-
 const termsLabel = propsData.termsLabel?.trim() || 'Terms of Service'
 const privacyLabel = propsData.privacyLabel?.trim() || 'Privacy Policy'
 const termsUrl = propsData.termsUrl?.trim() || '#'
@@ -88,7 +84,7 @@ const highlightLinks = (text: string) => {
     const pattern = new RegExp(escapeRegExp(sanitizedTerms), 'g')
     html = html.replace(
       pattern,
-      `<a href="${termsUrl}" class="ac-link" target="_blank" rel="noopener">${sanitizedTerms}</a>`
+      `<a href="${termsUrl}" class="access-link" target="_blank" rel="noopener">${sanitizedTerms}</a>`
     )
   }
 
@@ -97,12 +93,16 @@ const highlightLinks = (text: string) => {
     const pattern = new RegExp(escapeRegExp(sanitizedPrivacy), 'g')
     html = html.replace(
       pattern,
-      `<a href="${privacyUrl}" class="ac-link" target="_blank" rel="noopener">${sanitizedPrivacy}</a>`
+      `<a href="${privacyUrl}" class="access-link" target="_blank" rel="noopener">${sanitizedPrivacy}</a>`
     )
   }
 
   return `<p>${html}</p>`
 }
+
+const rawLanguages = Array.isArray(propsData.languages) && propsData.languages.length
+  ? propsData.languages
+  : [defaultLanguage, defaultSpanish]
 
 const normalizedLanguages = rawLanguages
   .map((lang) => ({
@@ -112,7 +112,7 @@ const normalizedLanguages = rawLanguages
     question: lang.question?.trim() || defaultLanguage.question,
     acceptButtonLabel: lang.acceptButtonLabel?.trim() || defaultLanguage.acceptButtonLabel,
     declineButtonLabel: lang.declineButtonLabel?.trim() || defaultLanguage.declineButtonLabel,
-    paragraphs: (lang.paragraphs && lang.paragraphs.length ? lang.paragraphs : defaultLanguage.paragraphs).map(highlightLinks),
+    paragraphs: (lang.paragraphs && lang.paragraphs.length ? lang.paragraphs : defaultLanguage.paragraphs).map(highlightLinks)
   }))
   .filter((lang, index, self) => lang && lang.langCode && self.findIndex((candidate) => candidate.langCode === lang.langCode) === index)
 
@@ -127,16 +127,11 @@ const defaultLanguageCode = propsData.defaultLanguage && normalizedLanguages.som
 const initialLanguage = normalizedLanguages.find((lang) => lang.langCode === defaultLanguageCode) || normalizedLanguages[0]
 
 const config = {
-  overlayId,
   acceptKey: confirmationKey,
   acceptAtKey: confirmationTimestampKey,
   rememberForMs: safeRememberDays * 24 * 60 * 60 * 1000,
   declineRedirectUrl: propsData.declineRedirectUrl?.trim() || defaultDeclineUrl,
   successRedirectUrl: propsData.successRedirectUrl?.trim() || '',
-  termsUrl,
-  privacyUrl,
-  termsLabel,
-  privacyLabel,
   languages: normalizedLanguages,
   defaultLanguage: initialLanguage?.langCode ?? defaultLanguage.langCode,
   minimumAge: propsData.minimumAge ?? 21,
@@ -149,25 +144,25 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
   <>
     <div
       id={overlayId}
-      class="ac-overlay"
+      class="access-overlay"
       data-active="true"
       aria-hidden="true"
     >
-      <div class="ac-container">
-        <div class="ac-gradients" aria-hidden="true">
-          <div class="ac-orb ac-orb-top-left"></div>
-          <div class="ac-orb ac-orb-bottom-left"></div>
-          <div class="ac-orb ac-orb-top-right"></div>
-          <div class="ac-orb ac-orb-bottom-right"></div>
-          <div class="ac-orb ac-orb-top-center"></div>
-          <div class="ac-orb ac-orb-bottom-center"></div>
-          <div class="ac-orb ac-orb-left-vertical"></div>
+      <div class="access-container">
+        <div class="access-gradients" aria-hidden="true">
+          <div class="access-orb access-orb-top-left"></div>
+          <div class="access-orb access-orb-bottom-left"></div>
+          <div class="access-orb access-orb-top-right"></div>
+          <div class="access-orb access-orb-bottom-right"></div>
+          <div class="access-orb access-orb-top-center"></div>
+          <div class="access-orb access-orb-bottom-center"></div>
+          <div class="access-orb access-orb-left-vertical"></div>
         </div>
 
-        <div class="ac-card" role="dialog" aria-modal="true" aria-labelledby="access-confirmation-title">
-          <svg class="ac-card-cutout" viewBox="0 0 72 70" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <div class="access-card" role="dialog" aria-modal="true" aria-labelledby="access-confirmation-title">
+          <svg class="access-card-cutout" viewBox="0 0 72 70" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
             <defs>
-              <g id="nova-amino-logo">
+              <g id="access-logo">
                 <path d="M135.06,94.71h-12.75v-58.98h12.75l28.85,43.52h-3.99v-43.52h12.75v58.98h-12.75l-28.85-43.44h3.99v43.44Z" />
                 <path d="M218.5,62.26c-1.97-3.3-4.65-5.86-8.08-7.69-3.45-1.84-7.38-2.75-11.8-2.75s-8.39.92-11.84,2.75c-3.47,1.84-6.18,4.39-8.15,7.69-1.97,3.3-2.95,7.12-2.95,11.49s.98,8.19,2.95,11.47c1.97,3.28,4.68,5.81,8.15,7.65,3.45,1.84,7.41,2.73,11.84,2.73s8.35-.9,11.8-2.73c3.43-1.84,6.12-4.37,8.08-7.65,1.97-3.28,2.95-7.08,2.95-11.47s-.98-8.19-2.95-11.49ZM198.56,82.29c-4.72,0-8.59-3.85-8.59-8.59s3.87-8.59,8.59-8.59,8.61,3.85,8.61,8.59-3.85,8.59-8.61,8.59Z" />
                 <path d="M236,94.71l-15.54-39.85h13.23l4.86,13.95c1.01,2.92,1.87,5.54,2.59,7.85.72,2.31,1.16,3.92,1.32,4.82.27-1.17.78-2.92,1.55-5.26.77-2.34,1.66-4.81,2.67-7.41l5.34-13.95h12.75l-16.66,39.85h-12.11Z" />
@@ -183,42 +178,49 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
                 <path d="M72.07,27.25c-.58,20.98-17.39,37.87-38.3,38.51,20.91.58,37.73,17.53,38.3,38.45.51-20.92,17.33-37.87,38.24-38.45-20.91-.64-37.73-17.53-38.24-38.51h0Z" />
               </g>
 
-              <mask id="card-cutout" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse" x="0" y="0" width="72" height="70">
+              <mask id="access-card-cutout" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse" x="0" y="0" width="72" height="70">
                 <rect width="72" height="70" fill="white" />
                 <g transform="translate(3,3) scale(0.04486) translate(-33,-27)" fill="black">
-                  <use href="#nova-amino-logo" />
+                  <use href="#access-logo" />
                 </g>
               </mask>
             </defs>
-            <rect class="ac-card-background" width="72" height="70" rx="4" mask="url(#card-cutout)" />
+            <rect class="access-card-background" width="72" height="70" rx="4" mask="url(#access-card-cutout)" />
           </svg>
 
-          <div class="ac-content">
-            <div class="ac-header">
-              <div class="ac-lang-switch" role="tablist" aria-label="Language selector">
-                {normalizedLanguages.map((lang) => (
-                  <button
-                    class={`ac-lang-option${lang.langCode === (initialLanguage?.langCode ?? defaultLanguage.langCode) ? ' ac-lang-active' : ''}`}
-                    role="tab"
-                    aria-selected={lang.langCode === (initialLanguage?.langCode ?? defaultLanguage.langCode) ? 'true' : 'false'}
-                    data-lang={lang.langCode}
-                    tabIndex={lang.langCode === (initialLanguage?.langCode ?? defaultLanguage.langCode) ? 0 : -1}
-                  >
-                    {lang.label}
-                  </button>
-                ))}
+          <div class="access-content">
+            <div class="access-header">
+              <div class="access-lang-switch" role="tablist" aria-label="Language selector">
+                {normalizedLanguages.map((lang) => {
+                  const isActive = lang.langCode === (initialLanguage?.langCode ?? normalizedLanguages[0]?.langCode ?? defaultLanguage.langCode)
+                  return (
+                    <button
+                      class={`access-lang-option${isActive ? ' access-lang-active' : ''}`}
+                      role="tab"
+                      aria-selected={isActive ? 'true' : 'false'}
+                      data-lang={lang.langCode}
+                      tabIndex={isActive ? 0 : -1}
+                    >
+                      {lang.label}
+                    </button>
+                  )
+                })}
               </div>
             </div>
 
-            <div class="ac-logo-measure" aria-hidden="true"></div>
+            <div class="access-logo-measure" aria-hidden="true"></div>
 
-            <div class="ac-main">
-              <h1 id="access-confirmation-title" class="ac-title">{initialLanguage?.title ?? defaultLanguage.title}</h1>
-              <div class="ac-text" set:html={(initialLanguage?.paragraphs ?? defaultLanguage.paragraphs.map(highlightLinks)).join('')}></div>
-              <p class="ac-question">{initialLanguage?.question ?? defaultLanguage.question}</p>
-              <div class="ac-buttons">
-                <button class="ac-btn ac-btn-primary" type="button" data-action="confirm">{initialLanguage?.acceptButtonLabel ?? defaultLanguage.acceptButtonLabel}</button>
-                <button class="ac-btn ac-btn-secondary" type="button" data-action="exit">{initialLanguage?.declineButtonLabel ?? defaultLanguage.declineButtonLabel}</button>
+            <div class="access-main">
+              <h1 id="access-confirmation-title" class="access-title">{initialLanguage?.title ?? defaultLanguage.title}</h1>
+              <div class="access-text" set:html={(initialLanguage?.paragraphs ?? defaultLanguage.paragraphs.map(highlightLinks)).join('')}></div>
+              <p class="access-question">{initialLanguage?.question ?? defaultLanguage.question}</p>
+              <div class="access-buttons">
+                <button class="access-btn access-btn-primary" type="button" data-action="confirm">
+                  {initialLanguage?.acceptButtonLabel ?? defaultLanguage.acceptButtonLabel}
+                </button>
+                <button class="access-btn access-btn-secondary" type="button" data-action="exit">
+                  {initialLanguage?.declineButtonLabel ?? defaultLanguage.declineButtonLabel}
+                </button>
               </div>
             </div>
           </div>
@@ -231,7 +233,7 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
     </script>
 
     <style>
-      .ac-overlay {
+      .access-overlay {
         position: fixed;
         inset: 0;
         z-index: 10000;
@@ -251,7 +253,25 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       }
 
-      .ac-overlay::after {
+      .access-overlay[data-active="false"] {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .access-container {
+        position: relative;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        pointer-events: none;
+      }
+
+      .access-container * {
+        box-sizing: border-box;
+      }
+
+      .access-container::after {
         content: "";
         position: absolute;
         inset: 0;
@@ -264,20 +284,7 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         opacity: 0.3;
       }
 
-      .ac-overlay[data-active="false"] {
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-      }
-
-      .ac-container {
-        position: relative;
-        height: 100%;
-        width: 100%;
-        z-index: 10;
-      }
-
-      .ac-gradients {
+      .access-gradients {
         position: absolute;
         inset: 0;
         overflow: hidden;
@@ -286,7 +293,7 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         z-index: 0;
       }
 
-      .ac-orb {
+      .access-orb {
         position: absolute;
         width: 180vmin;
         height: 180vmin;
@@ -296,15 +303,15 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         will-change: transform;
       }
 
-      .ac-orb-top-left { animation: ac-orbit-1 8s ease-in-out infinite; animation-delay: -1s; }
-      .ac-orb-bottom-left { animation: ac-orbit-4-rev 9s ease-in-out infinite; animation-delay: -3.5s; }
-      .ac-orb-top-right { animation: ac-orbit-3-rev 7s ease-in-out infinite; animation-delay: -2s; }
-      .ac-orb-bottom-right { animation: ac-orbit-6 8.5s ease-in-out infinite; animation-delay: -2.5s; }
-      .ac-orb-top-center { animation: ac-orbit-clockwise-rev 6s ease-in-out infinite; }
-      .ac-orb-bottom-center { animation: ac-orbit-5 7.5s ease-in-out infinite; animation-delay: -3s; }
-      .ac-orb-left-vertical { animation: ac-orbit-vertical 10s ease-in-out infinite; }
+      .access-orb-top-left { animation: access-orbit-1 8s ease-in-out infinite; animation-delay: -1s; }
+      .access-orb-bottom-left { animation: access-orbit-4-rev 9s ease-in-out infinite; animation-delay: -3.5s; }
+      .access-orb-top-right { animation: access-orbit-3-rev 7s ease-in-out infinite; animation-delay: -2s; }
+      .access-orb-bottom-right { animation: access-orbit-6 8.5s ease-in-out infinite; animation-delay: -2.5s; }
+      .access-orb-top-center { animation: access-orbit-clockwise-rev 6s ease-in-out infinite; }
+      .access-orb-bottom-center { animation: access-orbit-5 7.5s ease-in-out infinite; animation-delay: -3s; }
+      .access-orb-left-vertical { animation: access-orbit-vertical 10s ease-in-out infinite; }
 
-      .ac-card {
+      .access-card {
         position: absolute;
         top: 50%;
         left: 50%;
@@ -314,23 +321,24 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         max-width: 900px;
         max-height: 700px;
         z-index: 2;
+        pointer-events: auto;
       }
 
-      .ac-card-cutout {
+      .access-card-cutout {
         position: absolute;
         inset: 0;
         width: 100%;
         height: 100%;
       }
 
-      .ac-card-background {
+      .access-card-background {
         width: 100%;
         height: 100%;
         fill: rgba(255, 255, 255, 0.95);
         filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.1));
       }
 
-      .ac-content {
+      .access-content {
         position: relative;
         z-index: 3;
         border-radius: 28px;
@@ -338,17 +346,15 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         height: 100%;
         overflow: hidden;
         pointer-events: none;
-        box-sizing: border-box;
-        --ac-pad-left: 64px;
-        --ac-pad-right: 64px;
+        --access-pad-left: 64px;
+        --access-pad-right: 64px;
       }
 
-      .ac-content > * {
+      .access-content > * {
         pointer-events: auto;
-        box-sizing: border-box;
       }
 
-      .ac-logo-measure {
+      .access-logo-measure {
         position: absolute;
         top: 5%;
         left: 5%;
@@ -358,7 +364,7 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         pointer-events: none;
       }
 
-      .ac-header {
+      .access-header {
         position: absolute;
         top: 24px;
         right: 5%;
@@ -367,7 +373,7 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         gap: 16px;
       }
 
-      .ac-lang-switch {
+      .access-lang-switch {
         display: inline-flex;
         align-items: center;
         background: rgba(255, 255, 255, 0.9);
@@ -379,7 +385,7 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         height: 44px;
       }
 
-      .ac-lang-option {
+      .access-lang-option {
         position: relative;
         display: flex;
         align-items: center;
@@ -397,16 +403,16 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         border: none;
       }
 
-      .ac-lang-option:focus-visible {
+      .access-lang-option:focus-visible {
         outline: 2px solid #2D5BFF;
         outline-offset: 2px;
       }
 
-      .ac-lang-option.ac-lang-active {
+      .access-lang-option.access-lang-active {
         color: #ffffff;
       }
 
-      .ac-lang-option.ac-lang-active::before {
+      .access-lang-option.access-lang-active::before {
         content: "";
         position: absolute;
         inset: 2px;
@@ -416,41 +422,41 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
       }
 
       @media (max-width: 640px) {
-        .ac-lang-switch {
+        .access-lang-switch {
           height: 40px;
         }
 
-        .ac-lang-option {
+        .access-lang-option {
           padding: 0 12px;
           font-size: 13px;
         }
       }
 
-      .ac-main {
+      .access-main {
         position: relative;
         display: grid;
         grid-template-rows: auto 1fr auto;
         height: 100%;
-        padding: 80px var(--ac-pad-right) 40px var(--ac-pad-left);
+        padding: 80px var(--access-pad-right) 40px var(--access-pad-left);
         gap: 32px;
         box-sizing: border-box;
       }
 
-      .ac-title {
+      .access-title {
         font-size: 32px;
         font-weight: 700;
         line-height: 40px;
         color: #111827;
-        margin: 40px var(--ac-pad-right) 0 var(--ac-pad-left);
+        margin: 40px var(--access-pad-right) 0 var(--access-pad-left);
         text-align: center;
         letter-spacing: -0.025em;
       }
 
-      .ac-text {
+      .access-text {
         overflow-y: auto;
         width: 100%;
         box-sizing: border-box;
-        padding: 24px var(--ac-pad-right) 24px var(--ac-pad-left);
+        padding: 24px var(--access-pad-right) 24px var(--access-pad-left);
         background: rgba(0, 0, 0, 0.02);
         border: 1px solid rgba(0, 0, 0, 0.06);
         box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06), inset 0 1px 2px rgba(0, 0, 0, 0.04);
@@ -458,7 +464,7 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         border-radius: 0;
       }
 
-      .ac-text p {
+      .access-text p {
         font-size: 15px;
         line-height: 24px;
         color: #374151;
@@ -466,11 +472,11 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         font-weight: 400;
       }
 
-      .ac-text p:last-child {
+      .access-text p:last-child {
         margin-bottom: 0;
       }
 
-      .ac-link {
+      .access-link {
         color: #2D5BFF;
         text-decoration: none;
         font-weight: 500;
@@ -478,28 +484,28 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         transition: color 0.15s ease, border-color 0.15s ease;
       }
 
-      .ac-link:hover {
+      .access-link:hover {
         color: #1e40af;
         border-bottom-color: #1e40af;
       }
 
-      .ac-question {
+      .access-question {
         font-weight: 600;
         font-size: 16px;
         line-height: 24px;
         text-align: center;
         color: #111827;
-        margin: 0 var(--ac-pad-right) 0 var(--ac-pad-left);
+        margin: 0 var(--access-pad-right) 0 var(--access-pad-left);
       }
 
-      .ac-buttons {
+      .access-buttons {
         display: flex;
         gap: 16px;
         justify-content: center;
-        margin: 0 var(--ac-pad-right) 0 var(--ac-pad-left);
+        margin: 0 var(--access-pad-right) 0 var(--access-pad-left);
       }
 
-      .ac-btn {
+      .access-btn {
         padding: 16px 32px;
         border-radius: 12px;
         font-size: 16px;
@@ -510,77 +516,76 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         transition: all 0.2s ease;
         min-width: 144px;
         text-align: center;
-        font-family: inherit;
       }
 
-      .ac-btn-primary {
+      .access-btn-primary {
         background: #2D5BFF;
         color: #ffffff;
         box-shadow: 0 1px 3px rgba(45, 91, 255, 0.3);
       }
 
-      .ac-btn-primary:hover {
+      .access-btn-primary:hover {
         background: #1e40af;
         transform: translateY(-1px);
         box-shadow: 0 4px 12px rgba(45, 91, 255, 0.4);
       }
 
-      .ac-btn-primary:active {
+      .access-btn-primary:active {
         transform: translateY(0);
         box-shadow: 0 1px 3px rgba(45, 91, 255, 0.3);
       }
 
-      .ac-btn-secondary {
+      .access-btn-secondary {
         background: #ffffff;
         color: #374151;
         border: 1px solid #d1d5db;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       }
 
-      .ac-btn-secondary:hover {
+      .access-btn-secondary:hover {
         background: #f9fafb;
         border-color: #9ca3af;
         transform: translateY(-1px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       }
 
-      .ac-btn-secondary:active {
+      .access-btn-secondary:active {
         transform: translateY(0);
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       }
 
       @media (max-width: 640px) {
-        .ac-content {
-          --ac-pad-left: 32px;
-          --ac-pad-right: 32px;
+        .access-content {
+          --access-pad-left: 32px;
+          --access-pad-right: 32px;
         }
 
-        .ac-card {
+        .access-card {
           width: min(92vw, 520px);
           height: min(92vh, 640px);
         }
 
-        .ac-main {
-          padding: 64px var(--ac-pad-right) 32px var(--ac-pad-left);
+        .access-main {
+          padding: 64px var(--access-pad-right) 32px var(--access-pad-left);
           gap: 24px;
         }
 
-        .ac-title {
+        .access-title {
           font-size: 28px;
           line-height: 32px;
-          margin: 32px var(--ac-pad-right) 0 var(--ac-pad-left);
+          margin: 32px var(--access-pad-right) 0 var(--access-pad-left);
         }
 
-        .ac-text {
-          padding: 20px var(--ac-pad-right) 20px var(--ac-pad-left);
+        .access-text {
+          padding: 20px var(--access-pad-right) 20px var(--access-pad-left);
         }
 
-        .ac-buttons {
+        .access-buttons {
           flex-direction: column;
           gap: 12px;
         }
 
-        .ac-btn {
+        .access-btn {
           width: 100%;
           padding: 14px 24px;
           font-size: 15px;
@@ -588,12 +593,12 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         }
       }
 
-      @keyframes ac-orbit-5 {
+      @keyframes access-orbit-5 {
         0% { transform: translate(calc(43vw - 90vmin), calc(50vh - 90vmin)) rotate(0deg) translateX(150px) rotate(0deg); }
         100% { transform: translate(calc(43vw - 90vmin), calc(50vh - 90vmin)) rotate(360deg) translateX(150px) rotate(-360deg); }
       }
 
-      @keyframes ac-orbit-3 {
+      @keyframes access-orbit-3 {
         0% { top: calc(30% + 16.67% - 90vmin); left: calc(53% + 12.5% - 90vmin); }
         25% { top: calc(45% + 16.67% - 90vmin); left: calc(43% + 12.5% - 90vmin); }
         50% { top: calc(55% + 16.67% - 90vmin); left: calc(48% + 12.5% - 90vmin); }
@@ -601,7 +606,7 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         100% { top: calc(30% + 16.67% - 90vmin); left: calc(53% + 12.5% - 90vmin); }
       }
 
-      @keyframes ac-orbit-3-rev {
+      @keyframes access-orbit-3-rev {
         0% { top: calc(30% + 16.67% - 90vmin); left: calc(53% + 12.5% - 90vmin); }
         25% { top: calc(55% + 16.67% - 90vmin); left: calc(53% + 12.5% - 90vmin); }
         50% { top: calc(35% + 16.67% - 90vmin); left: calc(53% + 12.5% - 90vmin); }
@@ -609,7 +614,7 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         100% { top: calc(30% + 16.67% - 90vmin); left: calc(53% + 12.5% - 90vmin); }
       }
 
-      @keyframes ac-orbit-1 {
+      @keyframes access-orbit-1 {
         0% { top: calc(35% + 16.67% - 90vmin); left: calc(33% + 12.5% - 90vmin); }
         16.67% { top: calc(38% + 16.67% - 90vmin); left: calc(35% + 12.5% - 90vmin); }
         33.33% { top: calc(50% + 16.67% - 90vmin); left: calc(35% + 12.5% - 90vmin); }
@@ -619,7 +624,7 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         100% { top: calc(35% + 16.67% - 90vmin); left: calc(33% + 12.5% - 90vmin); }
       }
 
-      @keyframes ac-orbit-4 {
+      @keyframes access-orbit-4 {
         0% { top: calc(55% + 16.67% - 90vmin); left: calc(33% + 12.5% - 90vmin); }
         25% { top: calc(35% + 16.67% - 90vmin); left: calc(33% + 12.5% - 90vmin); }
         50% { top: calc(35% + 16.67% - 90vmin); left: calc(53% + 12.5% - 90vmin); }
@@ -627,7 +632,7 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         100% { top: calc(55% + 16.67% - 90vmin); left: calc(33% + 12.5% - 90vmin); }
       }
 
-      @keyframes ac-orbit-4-rev {
+      @keyframes access-orbit-4-rev {
         0% { top: calc(55% + 16.67% - 90vmin); left: calc(33% + 12.5% - 90vmin); }
         25% { top: calc(55% + 16.67% - 90vmin); left: calc(53% + 12.5% - 90vmin); }
         50% { top: calc(35% + 16.67% - 90vmin); left: calc(53% + 12.5% - 90vmin); }
@@ -635,7 +640,7 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         100% { top: calc(55% + 16.67% - 90vmin); left: calc(33% + 12.5% - 90vmin); }
       }
 
-      @keyframes ac-orbit-6 {
+      @keyframes access-orbit-6 {
         0% { top: calc(50% + 16.67% - 90vmin); left: calc(48% + 12.5% - 90vmin); }
         12.5% { top: calc(55% + 16.67% - 90vmin); left: calc(43% + 12.5% - 90vmin); }
         25% { top: calc(50% + 16.67% - 90vmin); left: calc(35% + 12.5% - 90vmin); }
@@ -647,306 +652,315 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
         100% { top: calc(50% + 16.67% - 90vmin); left: calc(48% + 12.5% - 90vmin); }
       }
 
-      @keyframes ac-orbit-clockwise {
+      @keyframes access-orbit-clockwise {
         0% { transform: translate(calc(33vw - 90vmin), calc(40vh - 90vmin)) rotate(0deg) translateX(120px) rotate(0deg); }
         100% { transform: translate(calc(33vw - 90vmin), calc(40vh - 90vmin)) rotate(360deg) translateX(120px) rotate(-360deg); }
       }
 
-      @keyframes ac-orbit-clockwise-rev {
+      @keyframes access-orbit-clockwise-rev {
         0% { transform: translate(calc(33vw - 90vmin), calc(40vh - 90vmin)) rotate(0deg) translateX(120px) rotate(0deg); }
         100% { transform: translate(calc(33vw - 90vmin), calc(40vh - 90vmin)) rotate(-360deg) translateX(120px) rotate(360deg); }
       }
 
-      @keyframes ac-orbit-vertical {
+      @keyframes access-orbit-vertical {
         0% { top: 10%; left: 3%; }
         50% { top: 70%; left: 3%; }
         100% { top: 10%; left: 3%; }
       }
 
-      :global(body.ac-no-scroll) {
+      :global(body.access-lock) {
         overflow: hidden !important;
       }
     </style>
 
     <script>
-      const OVERLAY_ID = "{overlayId}"
-      const CONFIG_SCRIPT_ID = "{configScriptId}"
-      const ACCEPT_KEY = "{confirmationKey}"
-      const ACCEPT_AT_KEY = "{confirmationTimestampKey}"
+      const OVERLAY_ID = "{overlayId}";
+      const CONFIG_ID = "{configScriptId}";
+      const ACCEPT_KEY = "{confirmationKey}";
+      const ACCEPT_AT_KEY = "{confirmationTimestampKey}";
+      const DEFAULT_REMEMBER_MS = {defaultRememberDays * 24 * 60 * 60 * 1000};
+      const DEFAULT_DECLINE_URL = "{defaultDeclineUrl}";
+      const LOCK_CLASS = 'access-lock';
 
       const ready = (fn) => {
         if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', fn, { once: true })
+          document.addEventListener('DOMContentLoaded', fn, { once: true });
         } else {
-          fn()
+          fn();
         }
-      }
+      };
 
       ready(() => {
-        const overlay = document.getElementById(OVERLAY_ID)
-        if (!overlay) return
+        const overlay = document.getElementById(OVERLAY_ID);
+        if (!overlay) return;
 
-        const configEl = document.getElementById(CONFIG_SCRIPT_ID)
-        let config = {}
-
+        const configEl = document.getElementById(CONFIG_ID);
+        let config = {};
         try {
-          config = configEl?.textContent ? JSON.parse(configEl.textContent) : {}
+          config = configEl?.textContent ? JSON.parse(configEl.textContent) : {};
         } catch (error) {
-          console.warn('Failed to parse access confirmation config', error)
-          config = {}
+          console.warn('Failed to parse access confirmation config', error);
         }
 
-        const languages = Array.isArray(config.languages) ? config.languages : []
-        const confirmBtn = overlay.querySelector('[data-action="confirm"]')
-        const exitBtn = overlay.querySelector('[data-action="exit"]')
-        const langButtons = Array.from(overlay.querySelectorAll('.ac-lang-option'))
-        const titleEl = overlay.querySelector('.ac-title')
-        const questionEl = overlay.querySelector('.ac-question')
-        const textEl = overlay.querySelector('.ac-text')
-        const contentEl = overlay.querySelector('.ac-content')
-        const langSwitch = overlay.querySelector('.ac-lang-switch')
-        const header = overlay.querySelector('.ac-header')
-        const logoMeasure = overlay.querySelector('.ac-logo-measure')
-        const cardRectEl = overlay.querySelector('.ac-card-background')
+        const contentEl = overlay.querySelector('.access-content');
+        const mainEl = overlay.querySelector('.access-main');
+        const cardBackgroundEl = overlay.querySelector('.access-card-background');
+        const textEl = overlay.querySelector('.access-text');
+        const titleEl = overlay.querySelector('.access-title');
+        const questionEl = overlay.querySelector('.access-question');
+        const confirmBtn = overlay.querySelector('[data-action="confirm"]');
+        const exitBtn = overlay.querySelector('[data-action="exit"]');
+        const langButtons = Array.from(overlay.querySelectorAll('.access-lang-option'));
+        const langSwitch = overlay.querySelector('.access-lang-switch');
+        const header = overlay.querySelector('.access-header');
+        const logoMeasure = overlay.querySelector('.access-logo-measure');
 
         const rememberForMs = typeof config.rememberForMs === 'number' && Number.isFinite(config.rememberForMs)
           ? Math.max(0, config.rememberForMs)
-          : 30 * 24 * 60 * 60 * 1000
+          : DEFAULT_REMEMBER_MS;
 
-        const declineUrl = typeof config.declineRedirectUrl === 'string' ? config.declineRedirectUrl : ''
-        const successUrl = typeof config.successRedirectUrl === 'string' ? config.successRedirectUrl : ''
+        const declineUrl = typeof config.declineRedirectUrl === 'string' && config.declineRedirectUrl.length
+          ? config.declineRedirectUrl
+          : DEFAULT_DECLINE_URL;
 
-        const setDataset = (value) => {
-          overlay.dataset.active = value ? 'true' : 'false'
-          overlay.setAttribute('aria-hidden', value ? 'false' : 'true')
-        }
+        const successUrl = typeof config.successRedirectUrl === 'string' ? config.successRedirectUrl : '';
+
+        const setDataset = (active) => {
+          overlay.dataset.active = active ? 'true' : 'false';
+          overlay.setAttribute('aria-hidden', active ? 'false' : 'true');
+        };
 
         const applyLanguage = (language) => {
-          if (!language) return
-          if (titleEl) titleEl.textContent = language.title || ''
-          if (questionEl) questionEl.textContent = language.question || ''
+          if (!language) return;
+          if (titleEl) titleEl.textContent = language.title || '';
+          if (questionEl) questionEl.textContent = language.question || '';
           if (textEl && Array.isArray(language.paragraphs)) {
-            textEl.innerHTML = language.paragraphs.join('')
+            textEl.innerHTML = language.paragraphs.join('');
           }
-          if (confirmBtn) confirmBtn.textContent = language.acceptButtonLabel || confirmBtn.textContent
-          if (exitBtn) exitBtn.textContent = language.declineButtonLabel || exitBtn.textContent
-        }
+          if (confirmBtn) confirmBtn.textContent = language.acceptButtonLabel || confirmBtn.textContent;
+          if (exitBtn) exitBtn.textContent = language.declineButtonLabel || exitBtn.textContent;
+        };
 
         const setLanguage = (button, langCode) => {
-          const language = languages.find((entry) => entry.langCode === langCode) || languages[0]
+          const language = Array.isArray(config.languages)
+            ? config.languages.find((entry) => entry.langCode === langCode) || config.languages[0]
+            : null;
+
           langButtons.forEach((btn) => {
-            const isActive = btn === button
-            btn.classList.toggle('ac-lang-active', isActive)
-            btn.setAttribute('aria-selected', String(isActive))
-            btn.tabIndex = isActive ? 0 : -1
-          })
+            const isActive = btn === button;
+            btn.classList.toggle('access-lang-active', isActive);
+            btn.setAttribute('aria-selected', String(isActive));
+            btn.tabIndex = isActive ? 0 : -1;
+          });
 
           if (language) {
-            applyLanguage(language)
+            applyLanguage(language);
             if (language.langCode) {
-              document.documentElement.setAttribute('lang', language.langCode)
+              document.documentElement.setAttribute('lang', language.langCode);
               try {
-                localStorage.setItem('novaAminoLang', language.langCode)
+                localStorage.setItem('novaAminoLang', language.langCode);
               } catch (error) {
                 // ignore storage issues
               }
             }
           }
-        }
+        };
 
         const storedLang = (() => {
           try {
-            return localStorage.getItem('novaAminoLang')
+            return localStorage.getItem('novaAminoLang');
           } catch (error) {
-            return null
+            return null;
           }
-        })()
+        })();
 
-        const initialLangCode = languages.find((entry) => entry.langCode === storedLang)?.langCode
-          || (typeof config.defaultLanguage === 'string' ? config.defaultLanguage : languages[0]?.langCode)
+        const initialLangCode = Array.isArray(config.languages)
+          ? (config.languages.find((entry) => entry.langCode === storedLang)?.langCode
+              || (typeof config.defaultLanguage === 'string' ? config.defaultLanguage : config.languages[0]?.langCode))
+          : null;
 
-        const initialButton = langButtons.find((btn) => btn.dataset.lang === initialLangCode) || langButtons[0]
+        const initialButton = langButtons.find((btn) => btn.dataset.lang === initialLangCode) || langButtons[0];
         if (initialButton) {
-          setLanguage(initialButton, initialButton.dataset.lang)
-        } else if (languages[0]) {
-          applyLanguage(languages[0])
+          setLanguage(initialButton, initialButton.dataset.lang);
+        } else if (Array.isArray(config.languages) && config.languages[0]) {
+          applyLanguage(config.languages[0]);
         }
 
         langButtons.forEach((button) => {
-          button.addEventListener('click', () => setLanguage(button, button.dataset.lang))
+          button.addEventListener('click', () => setLanguage(button, button.dataset.lang));
           button.addEventListener('keydown', (event) => {
             if (event.key === 'Enter' || event.key === ' ') {
-              event.preventDefault()
-              setLanguage(button, button.dataset.lang)
+              event.preventDefault();
+              setLanguage(button, button.dataset.lang);
             }
 
             if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-              event.preventDefault()
-              const index = langButtons.indexOf(button)
+              event.preventDefault();
+              const index = langButtons.indexOf(button);
               const nextIndex = event.key === 'ArrowRight'
                 ? (index + 1) % langButtons.length
-                : (index - 1 + langButtons.length) % langButtons.length
-              const nextButton = langButtons[nextIndex]
-              setLanguage(nextButton, nextButton.dataset.lang)
-              nextButton.focus()
+                : (index - 1 + langButtons.length) % langButtons.length;
+              const nextButton = langButtons[nextIndex];
+              setLanguage(nextButton, nextButton.dataset.lang);
+              nextButton.focus();
             }
-          })
-        })
+          });
+        });
 
         const hasValidAcceptance = () => {
           try {
-            const stored = localStorage.getItem(ACCEPT_KEY)
-            if (stored !== 'true') return false
+            const stored = localStorage.getItem(ACCEPT_KEY);
+            if (stored !== 'true') return false;
 
-            if (!rememberForMs) return true
+            if (!rememberForMs) return true;
 
-            const storedAt = localStorage.getItem(ACCEPT_AT_KEY)
-            if (!storedAt) return true
+            const storedAt = localStorage.getItem(ACCEPT_AT_KEY);
+            if (!storedAt) return true;
 
-            const timestamp = Date.parse(storedAt)
-            if (Number.isNaN(timestamp)) return true
+            const timestamp = Date.parse(storedAt);
+            if (Number.isNaN(timestamp)) return true;
 
             if (Date.now() - timestamp <= rememberForMs) {
-              return true
+              return true;
             }
 
-            localStorage.removeItem(ACCEPT_KEY)
-            localStorage.removeItem(ACCEPT_AT_KEY)
-            return false
+            localStorage.removeItem(ACCEPT_KEY);
+            localStorage.removeItem(ACCEPT_AT_KEY);
+            return false;
           } catch (error) {
-            return false
+            return false;
           }
-        }
+        };
 
         const alignLanguages = () => {
-          if (!langSwitch || !logoMeasure || !header || !contentEl) return
-          const contentRect = contentEl.getBoundingClientRect()
-          const measureRect = logoMeasure.getBoundingClientRect()
+          if (!langSwitch || !logoMeasure || !header || !contentEl) return;
+          const contentRect = contentEl.getBoundingClientRect();
+          const measureRect = logoMeasure.getBoundingClientRect();
 
-          if (!contentRect?.width || !measureRect?.width) return
+          if (!contentRect.width || !measureRect.width) return;
 
-          const switchHeight = langSwitch.offsetHeight || parseFloat(window.getComputedStyle(langSwitch).height) || 48
-          const top = (measureRect.top - contentRect.top) + (measureRect.height - switchHeight) / 2
-          const verticalNudge = -5
-          header.style.top = `${Math.max(0, Math.round(top) + verticalNudge)}px`
+          const switchHeight = langSwitch.offsetHeight || parseFloat(window.getComputedStyle(langSwitch).height) || 48;
+          const top = (measureRect.top - contentRect.top) + (measureRect.height - switchHeight) / 2;
+          const verticalNudge = -5;
+          header.style.top = `${Math.max(0, Math.round(top) + verticalNudge)}px`;
 
-          const rightPadding = Math.round(measureRect.left - contentRect.left)
-          const bleedCompensation = 10
-          const userNudge = 70
-          header.style.right = `${Math.max(0, rightPadding + bleedCompensation + userNudge)}px`
-        }
+          const rightPadding = Math.round(measureRect.left - contentRect.left);
+          const bleedCompensation = 10;
+          const userNudge = 70;
+          header.style.right = `${Math.max(0, rightPadding + bleedCompensation + userNudge)}px`;
+        };
 
         const updateHorizontalPadding = () => {
-          if (!contentEl || !cardRectEl) return
+          if (!contentEl || !cardBackgroundEl || !mainEl) return;
+          const contentRect = contentEl.getBoundingClientRect();
+          const cardRect = cardBackgroundEl.getBoundingClientRect();
 
-          const contentRect = contentEl.getBoundingClientRect()
-          const cardRect = cardRectEl.getBoundingClientRect()
+          if (!contentRect.width || !cardRect.width) return;
 
-          if (!contentRect.width || !cardRect.width) return
+          const minPad = 32;
+          const leftOffset = Math.max(minPad, Math.round(cardRect.left - contentRect.left));
+          const rightOffset = Math.max(minPad, Math.round(contentRect.right - cardRect.right));
 
-          const leftOffset = Math.max(24, Math.round(cardRect.left - contentRect.left))
-          const rightOffset = Math.max(24, Math.round(contentRect.right - cardRect.right))
+          contentEl.style.setProperty('--access-pad-left', `${leftOffset}px`);
+          contentEl.style.setProperty('--access-pad-right', `${rightOffset}px`);
+        };
 
-          contentEl.style.setProperty('--ac-pad-left', `${leftOffset}px`)
-          contentEl.style.setProperty('--ac-pad-right', `${rightOffset}px`)
-        }
-
-        const resizeObservers = []
-
-        if (window.ResizeObserver) {
-          const observer = new ResizeObserver(() => alignLanguages())
-          const contentEl = overlay.querySelector('.ac-content')
-          if (contentEl) observer.observe(contentEl)
-          if (logoMeasure) observer.observe(logoMeasure)
-          resizeObservers.push(observer)
-        }
-
-        window.addEventListener('resize', alignLanguages)
-        window.addEventListener('orientationchange', alignLanguages)
+        const resizeObservers = [];
 
         if (window.ResizeObserver) {
-          const observer = new ResizeObserver(() => updateHorizontalPadding())
-          if (contentEl) observer.observe(contentEl)
-          if (cardRectEl) observer.observe(cardRectEl)
-          resizeObservers.push(observer)
+          const observer = new ResizeObserver(() => alignLanguages());
+          if (contentEl) observer.observe(contentEl);
+          if (logoMeasure) observer.observe(logoMeasure);
+          resizeObservers.push(observer);
         }
 
-        window.addEventListener('resize', updateHorizontalPadding)
-        window.addEventListener('orientationchange', updateHorizontalPadding)
+        if (window.ResizeObserver) {
+          const observer = new ResizeObserver(() => updateHorizontalPadding());
+          if (contentEl) observer.observe(contentEl);
+          if (cardBackgroundEl) observer.observe(cardBackgroundEl);
+          resizeObservers.push(observer);
+        }
+
+        window.addEventListener('resize', alignLanguages);
+        window.addEventListener('orientationchange', alignLanguages);
+        window.addEventListener('resize', updateHorizontalPadding);
+        window.addEventListener('orientationchange', updateHorizontalPadding);
 
         window.requestAnimationFrame(() => {
-          alignLanguages()
-          updateHorizontalPadding()
-        })
+          alignLanguages();
+          updateHorizontalPadding();
+        });
 
         const cleanup = () => {
-          window.removeEventListener('resize', alignLanguages)
-          window.removeEventListener('orientationchange', alignLanguages)
-          window.removeEventListener('resize', updateHorizontalPadding)
-          window.removeEventListener('orientationchange', updateHorizontalPadding)
-          resizeObservers.forEach((observer) => observer.disconnect())
-          resizeObservers.length = 0
-        }
+          window.removeEventListener('resize', alignLanguages);
+          window.removeEventListener('orientationchange', alignLanguages);
+          window.removeEventListener('resize', updateHorizontalPadding);
+          window.removeEventListener('orientationchange', updateHorizontalPadding);
+          document.body.classList.remove(LOCK_CLASS);
+          resizeObservers.forEach((observer) => observer.disconnect());
+          resizeObservers.length = 0;
+        };
 
         const hideOverlay = ({ persist }) => {
-          cleanup()
-          setDataset(false)
-          document.body.classList.remove('ac-no-scroll')
+          setDataset(false);
+          cleanup();
 
           window.setTimeout(() => {
-            overlay.remove()
-            if (persist && successUrl) {
-              window.location.href = successUrl
+            overlay.remove();
+            if (persist) {
+              if (successUrl) {
+                window.location.href = successUrl;
+              }
             }
-          }, 400)
+          }, 400);
 
           if (persist) {
             try {
-              localStorage.setItem(ACCEPT_KEY, 'true')
-              localStorage.setItem(ACCEPT_AT_KEY, new Date().toISOString())
+              localStorage.setItem(ACCEPT_KEY, 'true');
+              localStorage.setItem(ACCEPT_AT_KEY, new Date().toISOString());
             } catch (error) {
-              console.warn('Unable to persist access confirmation', error)
+              console.warn('Unable to persist access confirmation', error);
             }
           }
-        }
+        };
 
         if (hasValidAcceptance()) {
-          cleanup()
-          setDataset(false)
-          window.requestAnimationFrame(() => overlay.remove())
-          return
+          setDataset(false);
+          cleanup();
+          window.requestAnimationFrame(() => overlay.remove());
+          return;
         }
 
-        setDataset(true)
-        document.body.classList.add('ac-no-scroll')
+        setDataset(true);
+        document.body.classList.add(LOCK_CLASS);
 
-        confirmBtn?.addEventListener('click', () => hideOverlay({ persist: true }))
+        confirmBtn?.addEventListener('click', () => hideOverlay({ persist: true }));
 
         exitBtn?.addEventListener('click', () => {
           if (declineUrl) {
-            window.location.href = declineUrl
-            return
+            window.location.href = declineUrl;
+            return;
           }
 
           if (window.history.length > 1) {
-            window.history.back()
+            window.history.back();
           } else {
-            window.location.href = 'https://www.google.com'
+            window.location.href = DEFAULT_DECLINE_URL;
           }
-        })
+        });
 
         overlay.addEventListener('keydown', (event) => {
           if (event.key === 'Escape') {
-            hideOverlay({ persist: false })
+            hideOverlay({ persist: false });
           }
-        })
+        });
 
         document.addEventListener('visibilitychange', () => {
           if (document.visibilityState === 'hidden') {
-            resizeObservers.forEach((observer) => observer.disconnect())
+            resizeObservers.forEach((observer) => observer.disconnect());
           }
-        }, { once: true })
-      })
+        }, { once: true });
+      });
     </script>
   </>
 )}
