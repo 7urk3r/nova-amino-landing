@@ -231,6 +231,11 @@ const shouldRender = isEnabled && normalizedLanguages.length > 0
     </script>
 
     <style>
+      .ac-overlay,
+      .ac-overlay * {
+        box-sizing: border-box;
+      }
+
       .ac-overlay {
         position: fixed;
         inset: 0;
